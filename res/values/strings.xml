@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">OLSR deployer</string>
+    <string name="test_olsr_existence">Test OLSR Existing</string>
+    <string name="action_settings">Settings</string>
+    <string name="deploy_olsr">Deploy OLSR</string>
+    <string name="remove_olsr">Remove OLSR</string>
+	<string name="olsr_not_found">OLSR Not Found</string>
+	<string name="olsr_found">OLSR Found</string>
+	<string name="deploy_wpa_supplicant">Write WPA Supplicant</string>
+</resources>
