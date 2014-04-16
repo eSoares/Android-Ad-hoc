@@ -3,6 +3,6 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pt.it.esoares.android.olsrdeployer.OLSR_Deployer"
+    tools:context="pt.it.esoares.android.UI.OLSR_Deployer"
     tools:ignore="MergeRootFrame" />
 

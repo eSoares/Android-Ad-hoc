@@ -1,4 +1,4 @@
-package pt.it.esoares.android.olsrdeployer;
+package pt.it.esoares.android.util;
 
 import android.os.AsyncTask;
 

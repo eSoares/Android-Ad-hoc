@@ -1,4 +1,4 @@
-package pt.it.esoares.android.olsrdeployer;
+package pt.it.esoares.android.wpa_supplicant;
 
 import android.os.AsyncTask;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package pt.it.esoares.android.olsrdeployer;
+package pt.it.esoares.android.UI;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -14,6 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.it.esoares.android.olsr.TestOLSRExistence;
+import pt.it.esoares.android.olsrdeployer.R;
+import pt.it.esoares.android.util.CopyFromRawArg;
+import pt.it.esoares.android.util.FileCopy;
+import pt.it.esoares.android.util.FileRemover;
+import pt.it.esoares.android.wpa_supplicant.GenerateWPA_supplicant;
 
 import java.io.File;
 

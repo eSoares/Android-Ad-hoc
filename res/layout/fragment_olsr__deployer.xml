@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="pt.it.esoares.android.olsrdeployer.OLSR_Deployer$PlaceholderFragment" >
+    tools:context="pt.it.esoares.android.UI.OLSR_Deployer$PlaceholderFragment" >
 
     <Button
         android:layout_width="fill_parent"

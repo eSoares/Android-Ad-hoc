@@ -1,17 +1,13 @@
-package pt.it.esoares.android.olsrdeployer;
+package pt.it.esoares.android.util;
 
 import android.os.AsyncTask;
 
 import eu.chainfire.libsuperuser.Shell.SU;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 public abstract class FileCopy extends AsyncTask<CopyFromRawArg, Integer, Boolean> {

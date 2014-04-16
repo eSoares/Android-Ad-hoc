@@ -1,8 +1,8 @@
-package pt.it.esoares.android.olsrdeployer;
+package pt.it.esoares.android.util;
 
 import android.content.res.Resources;
 
-class CopyFromRawArg {
+public class CopyFromRawArg {
 	private Resources resource;
 	private int ID;
 	private String destination;
