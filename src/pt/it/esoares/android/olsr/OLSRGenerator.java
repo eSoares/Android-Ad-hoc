@@ -2,7 +2,7 @@ package pt.it.esoares.android.olsr;
 
 import pt.it.esoares.android.devices.Device;
 
-public class GenerateOLSR {
+public class OLSRGenerator {
 
 	public static String getOLSRConfig(Device device, OLSRSetting setting) {
 
