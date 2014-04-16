@@ -22,32 +22,11 @@ public abstract class FileCopy extends AsyncTask<CopyFromRawArg, Integer, Boolea
 			return false;
 		}
 		try {
-			if (!destination.createNewFile()) {
-				return false;
-			}
+			return FileCopy.copy(destination, arg0[0].getResource().openRawResource(arg0[0].getID()));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
-
-		InputStream instream = arg0[0].getResource().openRawResource(arg0[0].getID());
-		byte[] buffer = new byte[512];
-		int size;
-		try {
-			OutputStream outStream = new FileOutputStream(destination);
-			size = instream.read(buffer);
-			while (size > 0) {
-				outStream.write(buffer, 0, size);
-				size = instream.read(buffer);
-			}
-			outStream.close();
-			instream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		SU.run("chmod 755 "+arg0[0].getDestination());
-		return true;
 	}
 
 	@Override
@@ -55,5 +34,25 @@ public abstract class FileCopy extends AsyncTask<CopyFromRawArg, Integer, Boolea
 
 	@Override
 	abstract protected void onProgressUpdate(Integer... values);
+
+	public static boolean copy(File destination, InputStream source) throws IOException {
+		if (!destination.createNewFile()) {
+			return false;
+		}
+
+		byte[] buffer = new byte[512];
+		int size;
+		OutputStream outStream = new FileOutputStream(destination);
+		size = source.read(buffer);
+		while (size > 0) {
+			outStream.write(buffer, 0, size);
+			size = source.read(buffer);
+		}
+		outStream.close();
+		source.close();
+		SU.run("chmod 755 " + destination.getAbsolutePath());
+		// TODO check if chmod correctly was applied
+		return true;
+	}
 
 }

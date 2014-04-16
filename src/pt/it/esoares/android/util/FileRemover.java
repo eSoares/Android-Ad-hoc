@@ -12,7 +12,7 @@ public abstract class FileRemover extends AsyncTask<String, Void, Boolean> {
 			return false;
 		}
 		for (String file : params) {
-			SU.run("rm " + file);
+			removeFile(file);
 		}
 		return true;
 	}
@@ -20,4 +20,7 @@ public abstract class FileRemover extends AsyncTask<String, Void, Boolean> {
 	@Override
 	protected abstract void onPostExecute(Boolean result);
 
+	public static void removeFile(String filePath){
+		SU.run("rm " + filePath);
+	}
 }
