@@ -4,7 +4,7 @@ import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell.SU;
 
-public class DeviceDefault implements Device {
+class DeviceDefault implements Device {
 	private static final String SUPPLICANT_LOCATION = "/data/misc/wifi/";
 	private static final String SUPPLICANT_NAME = "wpa_supplicant.conf";
 	private static final String TEST_EXISTENCE = "if [ -e /data/misc/wifi/wpa_supplicant.conf ]; then echo 1; else echo 0; fi";

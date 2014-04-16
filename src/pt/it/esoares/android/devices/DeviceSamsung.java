@@ -4,7 +4,7 @@ import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell.SU;
 
-public class DeviceSamsung implements Device {
+class DeviceSamsung implements Device {
 	private static final String SUPPLICANT_LOCATION = "/data/wifi/";
 	private static final String SUPPLICANT_NAME = "bcm_supp.conf";
 	private static final String TEST_EXISTENCE = "if [ -e /data/wifi/bcm_supp.conf ]; then echo 1; else echo 0; fi";
