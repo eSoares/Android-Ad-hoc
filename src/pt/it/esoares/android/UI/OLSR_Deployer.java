@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,10 @@ import pt.it.esoares.android.util.CopyFromRawArg;
 import pt.it.esoares.android.util.FileCopy;
 import pt.it.esoares.android.util.FileRemover;
 import pt.it.esoares.android.wpa_supplicant.GenerateWPA_supplicant;
+import pt.it.esoares.android.wpa_supplicant.TestWpaCliExistence;
+import pt.it.esoares.android.wpa_supplicant.WpaCliDeployException;
+import pt.it.esoares.android.wpa_supplicant.WpaCliDeployListener;
+import pt.it.esoares.android.wpa_supplicant.WpaCliDeployer;
 
 import java.io.File;
 
@@ -27,6 +32,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 	static TextView statusOfOLSR;
 	ProgressDialog dialog;
 	private String OLSRD_PATH;
+	private String WPACLI_PATH;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,8 @@ public class OLSR_Deployer extends ActionBarActivity {
 		}
 		dialog = new ProgressDialog(this);
 		OLSRD_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "olsrd";
+		WPACLI_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "wpa_cli";
+		Log.d("OLSR DEPLOYER", "Generated path: "+OLSRD_PATH);
 		// findViewById(R.id.txt_status_olsr);
 	}
 
@@ -97,6 +105,35 @@ public class OLSR_Deployer extends ActionBarActivity {
 		dialog.show();
 	}
 	
+	public void existsWPACli(View v){
+		new wpa_cli_exists().execute(WPACLI_PATH);
+		dialog.show();
+	}
+	
+	public void deployWPACli(View v){
+		new WpaCliDeployer(new WpaCliDeployListener() {
+			
+			@Override
+			public void onError(WpaCliDeployException e) {
+				dialog.dismiss();
+				Toast.makeText(getApplicationContext(), "Failed to deploy wpa_cli",
+						Toast.LENGTH_SHORT).show();
+			}
+			
+			@Override
+			public void onDeployStatusUpdate(int percentage, int status) {
+			}
+			
+			@Override
+			public void onDeployFinish() {
+				dialog.dismiss();
+				Toast.makeText(getApplicationContext(), "Sucessfull deployed wpa_cli",
+						Toast.LENGTH_SHORT).show();
+			}
+		}).execute(new CopyFromRawArg(getResources(), R.raw.wpa_cli, WPACLI_PATH));
+		dialog.show();
+	}
+	
 	class ExistsOLSR extends TestOLSRExistence {
 
 		@Override
@@ -118,7 +155,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			dialog.dismiss();
-			Toast.makeText(getApplicationContext(), result ? "Sucess" : "Failed", Toast.LENGTH_SHORT).show();;
+			Toast.makeText(getApplicationContext(), result ? "Sucess" : "Failed", Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
@@ -136,7 +173,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 		protected void onPostExecute(Boolean result) {
 			dialog.dismiss();
 			Toast.makeText(getApplicationContext(), result ? "Sucess to remove file" : "Failed to remove file",
-					Toast.LENGTH_SHORT).show();;
+					Toast.LENGTH_SHORT).show();
 		}
 
 	}
@@ -146,11 +183,24 @@ public class OLSR_Deployer extends ActionBarActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			dialog.dismiss();
-			Toast.makeText(getApplicationContext(), result ? "Sucess to update wpa_supplicant" : "Failed to update wpa_supplicantq",
-					Toast.LENGTH_SHORT).show();;
+			Toast.makeText(getApplicationContext(), result ? "Sucess to update wpa_supplicant" : "Failed to update wpa_supplicant",
+					Toast.LENGTH_SHORT).show();
 			
 		}
 		
 	}
+	
+	class wpa_cli_exists extends TestWpaCliExistence{
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			dialog.dismiss();
+			Toast.makeText(getApplicationContext(), result ? "Found wpa_cli" : "Missing wpa_cli",
+					Toast.LENGTH_SHORT).show();
+		}
+		
+	}
+	
+	
 
 }

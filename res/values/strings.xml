@@ -6,7 +6,11 @@
     <string name="action_settings">Settings</string>
     <string name="deploy_olsr">Deploy OLSR</string>
     <string name="remove_olsr">Remove OLSR</string>
-	<string name="olsr_not_found">OLSR Not Found</string>
-	<string name="olsr_found">OLSR Found</string>
-	<string name="deploy_wpa_supplicant">Write WPA Supplicant</string>
+    <string name="olsr_not_found">OLSR Not Found</string>
+    <string name="olsr_found">OLSR Found</string>
+    <string name="deploy_wpa_supplicant">Write WPA Supplicant</string>
+    <string name="test_wpacli_existence">Test wpa_cli existence</string>
+    <string name="deploy_wpacli">Deploy wpa_cli</string>
+    <string name="empty"></string>
+
 </resources>

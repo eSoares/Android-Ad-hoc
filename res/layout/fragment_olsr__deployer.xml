@@ -20,7 +20,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:text=" " />
+        android:text="@string/empty" />
 
     <Button
         android:layout_width="fill_parent"
@@ -39,5 +39,17 @@
         android:layout_height="wrap_content"
         android:onClick="wpa_supplicant"
         android:text="@string/deploy_wpa_supplicant" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="existsWPACli"
+        android:text="@string/test_wpacli_existence" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="deployWPACli"
+        android:text="@string/deploy_wpacli" />
 
 </LinearLayout>
