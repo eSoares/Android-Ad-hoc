@@ -28,8 +28,13 @@ public class OLSRDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.esoar
 		}
 		CopyFromRawArg olsr = params[0];
 		// first we place the OLSR
-		boolean result = FileCopy.copy(new File(olsr.getDestination() + "olsr"),
-				olsr.getResource().openRawResource(R.raw.olsrd));
+		boolean result;
+		try {
+			result = FileCopy.copy(new File(olsr.getDestination() + "olsr"),
+					olsr.getResource().openRawResource(R.raw.olsrd));
+		} catch (IOException e1) {
+			return new Result(new OLSRDeployException(e1.toString()));
+		}
 		if (!result) {
 			return new Result(new OLSRDeployException("Deploy of OLSR failed"));
 		}
