@@ -3,7 +3,6 @@ package pt.it.esoares.android.UI;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import pt.it.esoares.android.olsr.TestOLSRExistence;
 import pt.it.esoares.android.olsrdeployer.R;
@@ -29,7 +27,7 @@ import java.io.File;
 
 public class OLSR_Deployer extends ActionBarActivity {
 	Boolean existsOLSR;
-	static TextView statusOfOLSR;
+	static TextView status;
 	ProgressDialog dialog;
 	private String OLSRD_PATH;
 	private String WPACLI_PATH;
@@ -45,8 +43,9 @@ public class OLSR_Deployer extends ActionBarActivity {
 		dialog = new ProgressDialog(this);
 		OLSRD_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "olsrd";
 		WPACLI_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "wpa_cli";
-		Log.d("OLSR DEPLOYER", "Generated path: "+OLSRD_PATH);
-		// findViewById(R.id.txt_status_olsr);
+		Log.d("OLSR DEPLOYER", "Generated path: " + OLSRD_PATH);
+		// status= (TextView) findViewById(R.id.txt_status);
+
 	}
 
 	@Override
@@ -80,7 +79,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_olsr__deployer, container, false);
-			statusOfOLSR = (TextView) rootView.findViewById(R.id.txt_status_olsr);
+			status = (TextView) rootView.findViewById(R.id.txt_status);
 			return rootView;
 		}
 	}
@@ -95,55 +94,53 @@ public class OLSR_Deployer extends ActionBarActivity {
 		new PlaceOLSR().execute(new CopyFromRawArg(getResources(), R.raw.olsrd, OLSRD_PATH));
 		dialog.show();
 	}
+
 	public void removeOLSR(View v) {
 		new RemoveOLSR().execute(OLSRD_PATH);
 		dialog.show();
 	}
-	
-	public void wpa_supplicant(View v){
+
+	public void wpa_supplicant(View v) {
 		new Write_wpa_supplicant().execute(true);
 		dialog.show();
 	}
-	
-	public void existsWPACli(View v){
+
+	public void existsWPACli(View v) {
 		new wpa_cli_exists().execute(WPACLI_PATH);
 		dialog.show();
 	}
-	
-	public void deployWPACli(View v){
+
+	public void deployWPACli(View v) {
 		new WpaCliDeployer(new WpaCliDeployListener() {
-			
+
 			@Override
 			public void onError(WpaCliDeployException e) {
 				dialog.dismiss();
-				Toast.makeText(getApplicationContext(), "Failed to deploy wpa_cli",
-						Toast.LENGTH_SHORT).show();
+				setStatus("Failed to deploy wpa_cli", false);
 			}
-			
+
 			@Override
 			public void onDeployStatusUpdate(int percentage, int status) {
 			}
-			
+
 			@Override
 			public void onDeployFinish() {
 				dialog.dismiss();
-				Toast.makeText(getApplicationContext(), "Sucessfull deployed wpa_cli",
-						Toast.LENGTH_SHORT).show();
+				setStatus("Sucessfull deployed wpa_cli", true);
+
 			}
 		}).execute(new CopyFromRawArg(getResources(), R.raw.wpa_cli, WPACLI_PATH));
 		dialog.show();
 	}
-	
+
 	class ExistsOLSR extends TestOLSRExistence {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
-				statusOfOLSR.setText(R.string.olsr_found);
-				statusOfOLSR.setTextColor(Color.BLACK);
+				setStatus(R.string.olsr_found, true);
 			} else {
-				statusOfOLSR.setTextColor(Color.RED);
-				statusOfOLSR.setText(R.string.olsr_not_found);
+				setStatus(R.string.olsr_not_found, false);
 			}
 			dialog.dismiss();
 		}
@@ -155,7 +152,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			dialog.dismiss();
-			Toast.makeText(getApplicationContext(), result ? "Sucess" : "Failed", Toast.LENGTH_SHORT).show();
+			setStatus(result ? "Sucess placing OLSR" : "Failed placing OLSR", result);
 		}
 
 		@Override
@@ -172,35 +169,41 @@ public class OLSR_Deployer extends ActionBarActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			dialog.dismiss();
-			Toast.makeText(getApplicationContext(), result ? "Sucess to remove file" : "Failed to remove file",
-					Toast.LENGTH_SHORT).show();
+			setStatus(result ? "Sucess to remove file" : "Failed to remove file", result);
+
 		}
 
 	}
-	
-	class Write_wpa_supplicant extends GenerateWPA_supplicant{
 
-		@Override
-		protected void onPostExecute(Boolean result) {
-			dialog.dismiss();
-			Toast.makeText(getApplicationContext(), result ? "Sucess to update wpa_supplicant" : "Failed to update wpa_supplicant",
-					Toast.LENGTH_SHORT).show();
-			
-		}
-		
-	}
-	
-	class wpa_cli_exists extends TestWpaCliExistence{
+	class Write_wpa_supplicant extends GenerateWPA_supplicant {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
 			dialog.dismiss();
-			Toast.makeText(getApplicationContext(), result ? "Found wpa_cli" : "Missing wpa_cli",
-					Toast.LENGTH_SHORT).show();
+			setStatus(result ? "Sucess to update wpa_supplicant" : "Failed to update wpa_supplicant", result);
+
 		}
-		
+
 	}
-	
-	
+
+	class wpa_cli_exists extends TestWpaCliExistence {
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			dialog.dismiss();
+			setStatus(result ? "Found wpa_cli" : "Missing wpa_cli", result);
+		}
+
+	}
+
+	private void setStatus(String value, boolean sucessfull) {
+		status.setText(value);
+		status.setBackgroundResource(sucessfull ? R.color.okey : R.color.error);
+	}
+
+	private void setStatus(int resourceStringID, boolean sucessfull) {
+		status.setText(resourceStringID);
+		status.setBackgroundResource(sucessfull ? R.color.okey : R.color.error);
+	}
 
 }

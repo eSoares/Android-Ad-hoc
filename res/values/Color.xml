@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="error">#c21919</color>
+    <color name="okey">#19bf1e</color>
+    <color name="empty">#D3D3D3</color>
+
+</resources>
