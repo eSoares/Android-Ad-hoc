@@ -11,13 +11,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.olsr.TestOLSRExistence;
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.util.CopyFromRawArg;
 import pt.it.esoares.android.util.FileCopy;
 import pt.it.esoares.android.util.FileRemover;
 import pt.it.esoares.android.wpa_supplicant.GenerateWPA_supplicant;
+import pt.it.esoares.android.wpa_supplicant.ScanExistingNetworks;
+import pt.it.esoares.android.wpa_supplicant.ScanNetworkListener;
+import pt.it.esoares.android.wpa_supplicant.ScanNetworksException;
 import pt.it.esoares.android.wpa_supplicant.TestWpaCliExistence;
 import pt.it.esoares.android.wpa_supplicant.WpaCliDeployException;
 import pt.it.esoares.android.wpa_supplicant.WpaCliDeployListener;
@@ -110,6 +115,26 @@ public class OLSR_Deployer extends ActionBarActivity {
 		dialog.show();
 	}
 
+	public void scanExistingNetworks(View v) {
+		new ScanExistingNetworks(new ScanNetworkListener() {
+
+			@Override
+			public void onNetworkFound(Network network) {
+				Toast.makeText(getApplicationContext(), network.toString(), Toast.LENGTH_SHORT).show();
+			}
+
+			@Override
+			public void onEndedWithError(ScanNetworksException scanNetworksException) {
+				setStatus("Failed scan: " + scanNetworksException.getMessage(), false);
+			}
+
+			@Override
+			public void onEnd() {
+				setStatus("Sucessfull Scan", true);
+			}
+		}).run(WPACLI_PATH);
+	}
+
 	public void deployWPACli(View v) {
 		new WpaCliDeployer(new WpaCliDeployListener() {
 
@@ -130,6 +155,11 @@ public class OLSR_Deployer extends ActionBarActivity {
 
 			}
 		}).execute(new CopyFromRawArg(getResources(), R.raw.wpa_cli, WPACLI_PATH));
+		dialog.show();
+	}
+
+	public void removeWPACli(View v) {
+		new RemoveOLSR().execute(WPACLI_PATH);
 		dialog.show();
 	}
 
