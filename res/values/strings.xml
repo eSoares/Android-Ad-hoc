@@ -14,5 +14,6 @@
     <string name="remove_wpacli">Remove wpa_cli</string>
     <string name="empty"></string>
     <string name="scan_networks">Scan Networks</string>
+    <string name="generateIPAddress">Generate IP Address</string>
 
 </resources>

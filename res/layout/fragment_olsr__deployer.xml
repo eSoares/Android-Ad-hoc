@@ -66,6 +66,12 @@
                 android:layout_height="wrap_content"
                 android:onClick="scanExistingNetworks"
                 android:text="@string/scan_networks" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="generateIPAddress"
+                android:text="@string/generateIPAddress" />
         </LinearLayout>
     </ScrollView>
 

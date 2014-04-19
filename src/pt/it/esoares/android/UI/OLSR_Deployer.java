@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.it.esoares.android.devices.Network;
+import pt.it.esoares.android.ip.IPGenerator;
 import pt.it.esoares.android.olsr.TestOLSRExistence;
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.util.CopyFromRawArg;
@@ -29,6 +30,8 @@ import pt.it.esoares.android.wpa_supplicant.WpaCliDeployListener;
 import pt.it.esoares.android.wpa_supplicant.WpaCliDeployer;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class OLSR_Deployer extends ActionBarActivity {
 	Boolean existsOLSR;
@@ -113,6 +116,17 @@ public class OLSR_Deployer extends ActionBarActivity {
 	public void existsWPACli(View v) {
 		new wpa_cli_exists().execute(WPACLI_PATH);
 		dialog.show();
+	}
+
+	public void generateIPAddress(View v) {
+		String result = IPGenerator.getMacAddress();
+		try {
+			InetAddress ip = IPGenerator.generateIP(result);
+			setStatus(ip != null ? ip.getHostAddress() : "", ip != null ? true : false);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void scanExistingNetworks(View v) {
