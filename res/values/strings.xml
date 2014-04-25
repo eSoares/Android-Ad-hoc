@@ -15,5 +15,7 @@
     <string name="empty"></string>
     <string name="scan_networks">Scan Networks</string>
     <string name="generateIPAddress">Generate IP Address</string>
+    <string name="start_olsr">Start OLSR</string>
+    <string name="check_olsr_running">Check OLSR Running</string>
 
 </resources>

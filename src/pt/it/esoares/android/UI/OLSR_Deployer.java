@@ -1,4 +1,4 @@
-package pt.it.esoares.android.UI;
+package pt.it.esoares.android.ui;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
