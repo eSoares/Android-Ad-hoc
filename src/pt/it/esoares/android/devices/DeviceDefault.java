@@ -9,6 +9,7 @@ class DeviceDefault implements Device {
 	private static final String SUPPLICANT_NAME = "wpa_supplicant.conf";
 	private static final String TEST_EXISTENCE = "if [ -e /data/misc/wifi/wpa_supplicant.conf ]; then echo 1; else echo 0; fi";
 	private static final String INTERFACE_NAME = "ip link show";
+	private String interfaceName;
 
 	@Override
 	public String supplicantLocation() {
@@ -27,6 +28,7 @@ class DeviceDefault implements Device {
 			return false;
 		}
 		if (result.get(0).equals("1")) {
+			getInterfaceName();
 			return true;
 		}
 		return false;
@@ -39,16 +41,21 @@ class DeviceDefault implements Device {
 
 	@Override
 	public String interfaceName() {
+		if (interfaceName == null) {
+			getInterfaceName();
+		}
+		return interfaceName;
+	}
+
+	public void getInterfaceName() {
 		List<String> result = SU.run(INTERFACE_NAME);
 		for (String res : result) {
 			if (res.contains("wlan0")) {
-				return "wlan0";
+				interfaceName = "wlan0";
 			}
 			if (res.contains("eth0")) {
-				return "eth0";
+				interfaceName = "eth0";
 			}
 		}
-		return null;
 	}
-
 }
