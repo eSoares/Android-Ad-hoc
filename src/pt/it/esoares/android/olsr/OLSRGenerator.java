@@ -7,10 +7,10 @@ public class OLSRGenerator {
 	public static String getOLSRConfig(Device device, OLSRSetting setting) {
 
 		StringBuilder result = new StringBuilder();
-		result.append("FIBMetric \"flat\"");
-		result.append("ClearScreen yes");
-		result.append("AllowNoInt yes");
-		result.append("IpcConnect\n{");
+		result.append("FIBMetric \"flat\"\n");
+		result.append("ClearScreen yes\n");
+		result.append("AllowNoInt yes\n");
+		result.append("IpcConnect{\n");
 		result.append("	MaxConnections 0\n");
 		result.append("	Host 127.0.0.1\n}");
 		result.append("UseHysteresis no\n" + "NicChgsPollInt 3.0\n" + "TcRedundancy 2\n" + "MprCoverage 3\n");
@@ -24,9 +24,9 @@ public class OLSRGenerator {
 		}
 
 		// Interface
-		result.append("Interface " + device.interfaceName() + "\n");
-		result.append("{\n		 Ip4Broadcast 255.255.255.255\n");
-		result.append("		 Mode \"mesh\"\n		}");
+		result.append("Interface \"" + device.interfaceName() + "\"\n");
+		result.append("{\n	 Ip4Broadcast 255.255.255.255\n");
+		result.append("	 Mode \"mesh\"\n}\n");
 
 		return result.toString();
 	}
