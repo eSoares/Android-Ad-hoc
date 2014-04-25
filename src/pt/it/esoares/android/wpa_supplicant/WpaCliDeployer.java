@@ -6,11 +6,11 @@ import android.os.AsyncTask;
 import java.io.File;
 import java.io.IOException;
 
-import pt.it.esoares.android.olsrdeployer.R;
-import pt.it.esoares.android.util.CopyFromRawArg;
-import pt.it.esoares.android.util.FileCopy;
+import pt.it.esoares.android.util.FileCopyFromResources;
 
-public class WpaCliDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.esoares.android.wpa_supplicant.WpaCliDeployer.Result> {
+public class WpaCliDeployer
+		extends
+		AsyncTask<pt.it.esoares.android.wpa_supplicant.WpaCliDeployer.Data, Integer, pt.it.esoares.android.wpa_supplicant.WpaCliDeployer.Result> {
 	public static final int STATUS_CODE_NOT_EXPECIFIED = 0;
 	private WpaCliDeployListener listener;
 
@@ -20,16 +20,16 @@ public class WpaCliDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.eso
 	}
 
 	@Override
-	protected Result doInBackground(CopyFromRawArg... params) {
+	protected Result doInBackground(Data... params) {
 		if (params.length < 1) {
 			return new Result(new WpaCliDeployException("Wrong parameter size"));
 		}
-		CopyFromRawArg param = params[0];
+		Data param = params[0];
 		// first we place the OLSR
 		boolean result = false;
 		try {
-			result = FileCopy.copy(new File(param.getDestination()),
-					param.getResource().openRawResource(R.raw.wpa_cli));
+			result = FileCopyFromResources.copy(new File(param.getDestination()),
+					param.getResource().openRawResource(param.getID()));
 		} catch (IOException e) {
 			return new Result(new WpaCliDeployException(e.toString()));
 		}
@@ -39,7 +39,7 @@ public class WpaCliDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.eso
 		// TODO: test the wpa_cli installation
 		return new Result();
 	}
-	
+
 	@Override
 	protected void onPostExecute(Result result) {
 		if (!result.failed()) {
@@ -55,8 +55,9 @@ public class WpaCliDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.eso
 		listener.onDeployStatusUpdate(values[0], values.length > 1 ? values[1] : STATUS_CODE_NOT_EXPECIFIED);
 	}
 
-	public void run(Resources resources, String privateAppFolderLocation) {
-		CopyFromRawArg raw = new CopyFromRawArg(resources, R.raw.olsrd, privateAppFolderLocation);
+	
+	public void execute(Resources resources, int resourceID, String privateAppFolderLocation) {
+		Data raw = new Data(resources, resourceID, privateAppFolderLocation);
 		this.execute(raw);
 	}
 
@@ -76,6 +77,31 @@ public class WpaCliDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.eso
 
 		public WpaCliDeployException getException() {
 			return exception;
+		}
+	}
+
+	class Data {
+		private Resources resource;
+		private int ID;
+		private String destination;
+
+		public Resources getResource() {
+			return resource;
+		}
+
+		public int getID() {
+			return ID;
+		}
+
+		public String getDestination() {
+			return destination;
+		}
+
+		public Data(Resources resource, int iD, String destination) {
+			super();
+			this.resource = resource;
+			ID = iD;
+			this.destination = destination;
 		}
 
 	}

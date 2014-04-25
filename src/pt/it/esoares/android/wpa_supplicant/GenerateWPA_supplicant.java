@@ -3,18 +3,22 @@ package pt.it.esoares.android.wpa_supplicant;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import pt.it.esoares.android.util.GenericExecutionCallback;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell.SU;
 
-public abstract class GenerateWPA_supplicant extends AsyncTask<Boolean, Void, Boolean> {
-	String command_toPlace = "cd /data/misc/wifi/";
-	String overwrite_wpa = "cat %s > wpa_supplicant.conf";
-	String temp_file_name = "random_name_here";
-	String bk_wpa_supplicant="cp wpa_supplicant.conf wpa_supplicant.conf.bk";
-	
+public class GenerateWPA_supplicant extends AsyncTask<Boolean, Void, Boolean> {
+	private String command_toPlace = "cd /data/misc/wifi/";
+	private String overwrite_wpa = "cat %s > wpa_supplicant.conf";
+	private String temp_file_name = "random_name_here";
+	private String bk_wpa_supplicant = "cp wpa_supplicant.conf wpa_supplicant.conf.bk";
+
+	private GenericExecutionCallback listener;
+
 	@Override
 	protected Boolean doInBackground(Boolean... arg0) {
 		if (arg0.length != 1) {
@@ -40,10 +44,8 @@ public abstract class GenerateWPA_supplicant extends AsyncTask<Boolean, Void, Bo
 		config.append(" mode=1\n");
 		config.append("}\n");
 
-
 		File f = null;
 		try {
-
 			// Environment.getDownloadCacheDirectory();
 			f = File.createTempFile(temp_file_name, null);
 			FileWriter fileWriter = new FileWriter(f);
@@ -54,7 +56,8 @@ public abstract class GenerateWPA_supplicant extends AsyncTask<Boolean, Void, Bo
 			return false;
 		}
 
-		List<String> result = SU.run(new String[] { command_toPlace, String.format(overwrite_wpa, f.getAbsolutePath()) });
+		List<String> result = SU
+				.run(new String[] { command_toPlace, String.format(overwrite_wpa, f.getAbsolutePath()) });
 		for (String r : result) {
 			Log.d("OVERWRITE_WPA_SUPPLICANT", r);
 		}
@@ -62,6 +65,17 @@ public abstract class GenerateWPA_supplicant extends AsyncTask<Boolean, Void, Bo
 		return true;
 	}
 
+	public void execute(boolean useEncryption, GenericExecutionCallback callback) {
+		this.listener = callback;
+		this.execute(useEncryption);
+	}
+
 	@Override
-	protected abstract void onPostExecute(Boolean result);
+	protected void onPostExecute(Boolean result) {
+		if (result) {
+			listener.onSucessfullExecution();
+		} else {
+			listener.onUnsucessfullExecution();
+		}
+	}
 }

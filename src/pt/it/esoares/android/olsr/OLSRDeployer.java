@@ -9,10 +9,11 @@ import java.io.IOException;
 
 import pt.it.esoares.android.devices.DeviceFactory;
 import pt.it.esoares.android.olsrdeployer.R;
-import pt.it.esoares.android.util.CopyFromRawArg;
-import pt.it.esoares.android.util.FileCopy;
+import pt.it.esoares.android.util.FileCopyFromResources;
 
-public class OLSRDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.esoares.android.olsr.OLSRDeployer.Result> {
+public class OLSRDeployer
+		extends
+		AsyncTask<pt.it.esoares.android.olsr.OLSRDeployer.Data, Integer, pt.it.esoares.android.olsr.OLSRDeployer.Result> {
 	public static final int STATUS_CODE_NOT_EXPECIFIED = 0;
 	private OLSRDeployListener listener;
 
@@ -22,16 +23,16 @@ public class OLSRDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.esoar
 	}
 
 	@Override
-	protected Result doInBackground(CopyFromRawArg... params) {
+	protected Result doInBackground(Data... params) {
 		if (params.length < 1) {
 			return new Result(new OLSRDeployException("Wrong parameter size"));
 		}
-		CopyFromRawArg olsr = params[0];
+		Data olsr = params[0];
 		// first we place the OLSR
 		boolean result;
 		try {
-			result = FileCopy.copy(new File(olsr.getDestination() + "olsr"),
-					olsr.getResource().openRawResource(R.raw.olsrd));
+			result = FileCopyFromResources.copy(new File(olsr.getDestination() + "olsr"), olsr.getResource()
+					.openRawResource(R.raw.olsrd));
 		} catch (IOException e1) {
 			return new Result(new OLSRDeployException(e1.toString()));
 		}
@@ -40,7 +41,7 @@ public class OLSRDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.esoar
 		}
 		// TODO: test the OLSR installation
 		// then the olsr config
-		String olsr_config=OLSRGenerator.getOLSRConfig(DeviceFactory.getDevice(), new OLSRSetting()); 
+		String olsr_config = OLSRGenerator.getOLSRConfig(DeviceFactory.getDevice(), new OLSRSetting());
 		try {
 			deployOLSRConfig(olsr.getDestination(), olsr_config);
 		} catch (IOException e) {
@@ -48,20 +49,20 @@ public class OLSRDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.esoar
 		}
 		return new Result();
 	}
-	
-	private static boolean deployOLSRConfig(String destination, String config) throws IOException{
-		File f=new File(destination+"olsr.conf");
-		if(!f.createNewFile()){
+
+	private static boolean deployOLSRConfig(String destination, String config) throws IOException {
+		File f = new File(destination + "olsr.conf");
+		if (!f.createNewFile()) {
 			return false;
 		}
-		FileWriter writer=new FileWriter(f);
+		FileWriter writer = new FileWriter(f);
 		writer.append(config);
 		writer.flush();
 		writer.close();
 		return true;
-		
+
 	}
-	
+
 	@Override
 	protected void onPostExecute(Result result) {
 		if (!result.failed()) {
@@ -78,7 +79,7 @@ public class OLSRDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.esoar
 	}
 
 	public void run(Resources resources, String privateAppFolderLocation) {
-		CopyFromRawArg raw = new CopyFromRawArg(resources, R.raw.olsrd, privateAppFolderLocation);
+		Data raw = new Data(resources, R.raw.olsrd, privateAppFolderLocation);
 		this.execute(raw);
 	}
 
@@ -98,6 +99,31 @@ public class OLSRDeployer extends AsyncTask<CopyFromRawArg, Integer, pt.it.esoar
 
 		public OLSRDeployException getException() {
 			return exception;
+		}
+	}
+
+	class Data {
+		private Resources resource;
+		private int ID;
+		private String destination;
+
+		public Resources getResource() {
+			return resource;
+		}
+
+		public int getID() {
+			return ID;
+		}
+
+		public String getDestination() {
+			return destination;
+		}
+
+		public Data(Resources resource, int iD, String destination) {
+			super();
+			this.resource = resource;
+			ID = iD;
+			this.destination = destination;
 		}
 
 	}

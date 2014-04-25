@@ -3,6 +3,7 @@ package pt.it.esoares.android.ui;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,13 +14,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import pt.it.esoares.android.devices.Device;
+import pt.it.esoares.android.devices.DeviceFactory;
 import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.ip.IPGenerator;
+import pt.it.esoares.android.olsr.ExecuteOLSR;
+import pt.it.esoares.android.olsr.OLSRConfigDeploy;
+import pt.it.esoares.android.olsr.OLSRGenerator;
+import pt.it.esoares.android.olsr.OLSRRunningTest;
+import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.olsr.TestOLSRExistence;
 import pt.it.esoares.android.olsrdeployer.R;
-import pt.it.esoares.android.util.CopyFromRawArg;
-import pt.it.esoares.android.util.FileCopy;
+import pt.it.esoares.android.util.FileCopyFromResources;
 import pt.it.esoares.android.util.FileRemover;
+import pt.it.esoares.android.util.GenericExecutionCallback;
 import pt.it.esoares.android.wpa_supplicant.GenerateWPA_supplicant;
 import pt.it.esoares.android.wpa_supplicant.ScanExistingNetworks;
 import pt.it.esoares.android.wpa_supplicant.ScanNetworkListener;
@@ -38,6 +46,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 	static TextView status;
 	ProgressDialog dialog;
 	private String OLSRD_PATH;
+	private String OLSRD_CONFIG_PATH;
 	private String WPACLI_PATH;
 
 	@Override
@@ -50,6 +59,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 		}
 		dialog = new ProgressDialog(this);
 		OLSRD_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "olsrd";
+		OLSRD_CONFIG_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "olsr.conf";
 		WPACLI_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "wpa_cli";
 		Log.d("OLSR DEPLOYER", "Generated path: " + OLSRD_PATH);
 		// status= (TextView) findViewById(R.id.txt_status);
@@ -58,7 +68,6 @@ public class OLSR_Deployer extends ActionBarActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.olsr__deployer, menu);
 		return true;
@@ -95,26 +104,157 @@ public class OLSR_Deployer extends ActionBarActivity {
 	public void existsOLSR(View v) {
 		dialog.setTitle("Loading");
 		dialog.show();
-		new ExistsOLSR().execute(OLSRD_PATH);
+		new TestOLSRExistence().execute(OLSRD_PATH, new GenericExecutionCallback() {
+
+			@Override
+			public void onUnsucessfullExecution() {
+				dialog.dismiss();
+				setStatus(R.string.olsr_not_found, false);
+			}
+
+			@Override
+			public void onSucessfullExecution() {
+				dialog.dismiss();
+				setStatus(R.string.olsr_found, true);
+			}
+		});
 	}
 
 	public void deployOLSR(View v) {
-		new PlaceOLSR().execute(new CopyFromRawArg(getResources(), R.raw.olsrd, OLSRD_PATH));
+		new FileCopyFromResources().execute(getResources(), R.raw.olsrd, OLSRD_PATH, new GenericExecutionCallback() {
+
+			@Override
+			public void onUnsucessfullExecution() {
+				dialog.dismiss();
+				setStatus("Failed placing OLSR", false);
+			}
+
+			@Override
+			public void onSucessfullExecution() {
+				dialog.dismiss();
+				setStatus("Sucess placing OLSR", true);
+			}
+		});
 		dialog.show();
 	}
 
 	public void removeOLSR(View v) {
-		new RemoveOLSR().execute(OLSRD_PATH);
+		new FileRemover().execute(new String[] { OLSRD_PATH }, new GenericExecutionCallback() {
+
+			@Override
+			public void onUnsucessfullExecution() {
+				setStatus("Failed to remove file", false);
+				dialog.dismiss();
+			}
+
+			@Override
+			public void onSucessfullExecution() {
+				setStatus("Sucess to remove file", true);
+				dialog.dismiss();
+			}
+		});
 		dialog.show();
+	}
+
+	public void startOLSR(View v) {
+		dialog.show();
+		new AsyncTask<Void, Void, Device>() {
+
+			@Override
+			protected Device doInBackground(Void... params) {
+				return DeviceFactory.getDevice();
+			}
+
+			@Override
+			protected void onPostExecute(Device result) {
+				if (result == null) {
+					return;
+				}
+				String olsrConfig = OLSRGenerator.getOLSRConfig(result, new OLSRSetting());
+				// deploy olsrConfig
+				new OLSRConfigDeploy().execute(OLSRD_CONFIG_PATH, olsrConfig, new GenericExecutionCallback() {
+
+					@Override
+					public void onUnsucessfullExecution() {
+						setStatus("OLSR Config not deplot", false);
+					}
+
+					@Override
+					public void onSucessfullExecution() {
+						// Execute OLSR
+						new ExecuteOLSR().execute(OLSRD_PATH, OLSRD_CONFIG_PATH, new GenericExecutionCallback() {
+
+							@Override
+							public void onUnsucessfullExecution() {
+								dialog.dismiss();
+								setStatus("OLSR failed to start", false);
+							}
+
+							@Override
+							public void onSucessfullExecution() {
+								dialog.dismiss();
+								setStatus("OLSR started with success", true);
+							}
+						});
+					}
+				});
+			}
+
+		}.execute();
+
+	}
+
+	public void checkOLSRRunning(View v) {
+		dialog.show();
+		new OLSRRunningTest().execute(new GenericExecutionCallback() {
+
+			@Override
+			public void onUnsucessfullExecution() {
+				dialog.dismiss();
+				setStatus("OLSR isn't running", false);
+			}
+
+			@Override
+			public void onSucessfullExecution() {
+				dialog.dismiss();
+				setStatus("OLSR is running", true);
+			}
+		});
 	}
 
 	public void wpa_supplicant(View v) {
-		new Write_wpa_supplicant().execute(true);
 		dialog.show();
+		new GenerateWPA_supplicant().execute(false, new GenericExecutionCallback() {
+
+			@Override
+			public void onUnsucessfullExecution() {
+				setStatus("Failed to update wpa_supplicant", false);
+				dialog.dismiss();
+			}
+
+			@Override
+			public void onSucessfullExecution() {
+				setStatus("Sucess to update wpa_supplicant", true);
+				dialog.dismiss();
+			}
+		});
 	}
 
 	public void existsWPACli(View v) {
-		new wpa_cli_exists().execute(WPACLI_PATH);
+		new TestWpaCliExistence().execute(new String[] {WPACLI_PATH}, new GenericExecutionCallback() {
+
+			@Override
+			public void onUnsucessfullExecution() {
+				dialog.dismiss();
+				setStatus("Missing wpa_cli", false);
+			}
+
+			@Override
+			public void onSucessfullExecution() {
+				dialog.dismiss();
+				setStatus("Found wpa_cli", true);
+			}
+		});
 		dialog.show();
 	}
 
@@ -124,7 +264,6 @@ public class OLSR_Deployer extends ActionBarActivity {
 			InetAddress ip = IPGenerator.generateIP(result);
 			setStatus(ip != null ? ip.getHostAddress() : "", ip != null ? true : false);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -168,76 +307,26 @@ public class OLSR_Deployer extends ActionBarActivity {
 				setStatus("Sucessfull deployed wpa_cli", true);
 
 			}
-		}).execute(new CopyFromRawArg(getResources(), R.raw.wpa_cli, WPACLI_PATH));
+		}).execute(getResources(), R.raw.wpa_cli, WPACLI_PATH);
 		dialog.show();
 	}
 
 	public void removeWPACli(View v) {
-		new RemoveOLSR().execute(WPACLI_PATH);
 		dialog.show();
-	}
+		new FileRemover().execute(new String[] { WPACLI_PATH }, new GenericExecutionCallback() {
 
-	class ExistsOLSR extends TestOLSRExistence {
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			if (result) {
-				setStatus(R.string.olsr_found, true);
-			} else {
-				setStatus(R.string.olsr_not_found, false);
+			@Override
+			public void onUnsucessfullExecution() {
+				dialog.dismiss();
+				setStatus("Failed to remove file", false);
 			}
-			dialog.dismiss();
-		}
 
-	}
-
-	class PlaceOLSR extends FileCopy {
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			dialog.dismiss();
-			setStatus(result ? "Sucess placing OLSR" : "Failed placing OLSR", result);
-		}
-
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			if (values.length > 0) {
-				dialog.setProgress(values[0]);
+			@Override
+			public void onSucessfullExecution() {
+				dialog.dismiss();
+				setStatus("Sucess to remove file", true);
 			}
-		}
-
-	}
-
-	class RemoveOLSR extends FileRemover {
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			dialog.dismiss();
-			setStatus(result ? "Sucess to remove file" : "Failed to remove file", result);
-
-		}
-
-	}
-
-	class Write_wpa_supplicant extends GenerateWPA_supplicant {
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			dialog.dismiss();
-			setStatus(result ? "Sucess to update wpa_supplicant" : "Failed to update wpa_supplicant", result);
-
-		}
-
-	}
-
-	class wpa_cli_exists extends TestWpaCliExistence {
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			dialog.dismiss();
-			setStatus(result ? "Found wpa_cli" : "Missing wpa_cli", result);
-		}
-
+		});
 	}
 
 	private void setStatus(String value, boolean sucessfull) {

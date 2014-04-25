@@ -30,7 +30,7 @@ public class Utils {
 			int intVal = bytes[idx] & 0xff;
 			if (intVal < 0x10)
 				sbuf.append("0");
-			sbuf.append(Integer.toHexString(intVal).toUpperCase());
+			sbuf.append(Integer.toHexString(intVal).toUpperCase(Locale.US));
 		}
 		return sbuf.toString();
 	}
@@ -115,7 +115,7 @@ public class Utils {
 		}
 		try {
 			// this is so Linux hack
-			return loadFileAsString("/sys/class/net/" + interfaceName + "/address").toUpperCase().trim();
+			return loadFileAsString("/sys/class/net/" + interfaceName + "/address").toUpperCase(Locale.US).trim();
 		} catch (IOException ex) {
 			return null;
 		}
@@ -135,7 +135,7 @@ public class Utils {
 				List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
 				for (InetAddress addr : addrs) {
 					if (!addr.isLoopbackAddress()) {
-						String sAddr = addr.getHostAddress().toUpperCase();
+						String sAddr = addr.getHostAddress().toUpperCase(Locale.US);
 						boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
 						if (useIPv4) {
 							if (isIPv4)

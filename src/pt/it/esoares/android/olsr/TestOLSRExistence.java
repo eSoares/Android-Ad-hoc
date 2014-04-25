@@ -2,11 +2,15 @@ package pt.it.esoares.android.olsr;
 
 import android.os.AsyncTask;
 
+import pt.it.esoares.android.util.GenericExecutionCallback;
+
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
 
-public abstract class TestOLSRExistence extends AsyncTask<String, Void, Boolean> {
+public class TestOLSRExistence extends AsyncTask<String, Void, Boolean> {
+
+	private GenericExecutionCallback listener;
 
 	@Override
 	protected Boolean doInBackground(String... arg0) {
@@ -24,8 +28,14 @@ public abstract class TestOLSRExistence extends AsyncTask<String, Void, Boolean>
 				return true;
 			}
 		}
+		// TODO test if the file while can't be executed is there, make a proper callback for this
 		return false;
 
+	}
+
+	public void execute(String olsrPath, GenericExecutionCallback callback) {
+		this.listener = callback;
+		this.execute(olsrPath);
 	}
 
 	private boolean check(String command) {
@@ -37,5 +47,11 @@ public abstract class TestOLSRExistence extends AsyncTask<String, Void, Boolean>
 	}
 
 	@Override
-	abstract protected void onPostExecute(Boolean result);
+	protected void onPostExecute(Boolean result) {
+		if (result) {
+			listener.onSucessfullExecution();
+		} else {
+			listener.onUnsucessfullExecution();
+		}
+	}
 }
