@@ -3,6 +3,8 @@ package pt.it.esoares.android.wpa_supplicant;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import pt.it.esoares.android.devices.Device;
+import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.util.GenericExecutionCallback;
 
 import java.io.File;
@@ -11,7 +13,8 @@ import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell.SU;
 
-public class GenerateWPA_supplicant extends AsyncTask<Boolean, Void, Boolean> {
+public class GenerateWPA_supplicant extends
+		AsyncTask<pt.it.esoares.android.wpa_supplicant.GenerateWPA_supplicant.Data, Void, Boolean> {
 	private String command_toPlace = "cd /data/misc/wifi/";
 	private String overwrite_wpa = "cat %s > wpa_supplicant.conf";
 	private String temp_file_name = "random_name_here";
@@ -20,28 +23,20 @@ public class GenerateWPA_supplicant extends AsyncTask<Boolean, Void, Boolean> {
 	private GenericExecutionCallback listener;
 
 	@Override
-	protected Boolean doInBackground(Boolean... arg0) {
+	protected Boolean doInBackground(Data... arg0) {
 		if (arg0.length != 1) {
 			return false;
 		}
-		boolean useEncryption = arg0[0];
+		Device device = arg0[0].getDevice();
+		Network network = arg0[0].getNetwork();
 
 		StringBuilder config = new StringBuilder();
-		config.append("ctrl_interface=wlan0\n");
+		config.append("ctrl_interface=" + device.getInterfaceName() + "\n");
 		config.append("ap_scan=2\n");
 		config.append("update_config=1\n");
 		config.append("eapol_version=1\n");
 		config.append("network={\n");
-		config.append(" ssid=\"Ad-hoc\"\n");
-		config.append(" scan_ssid=1\n");
-		config.append(" frequency=2432\n");
-		config.append(" key_mgmt=NONE\n");
-		if (useEncryption) {
-			config.append(" wep_key0=\"abcde\"\n");
-			config.append(" wep_tx_keyidx=0\n");
-		}
-		config.append(" priority=1\n");
-		config.append(" mode=1\n");
+		config.append(network.toSupplicant());
 		config.append("}\n");
 
 		File f = null;
@@ -65,9 +60,9 @@ public class GenerateWPA_supplicant extends AsyncTask<Boolean, Void, Boolean> {
 		return true;
 	}
 
-	public void execute(boolean useEncryption, GenericExecutionCallback callback) {
+	public void execute(Device device, Network network, GenericExecutionCallback callback) {
 		this.listener = callback;
-		this.execute(useEncryption);
+		this.execute(new Data(network, device));
 	}
 
 	@Override
@@ -77,5 +72,24 @@ public class GenerateWPA_supplicant extends AsyncTask<Boolean, Void, Boolean> {
 		} else {
 			listener.onUnsucessfullExecution();
 		}
+	}
+
+	class Data {
+		private Network network;
+		private Device device;
+
+		Data(Network network, Device device) {
+			this.network = network;
+			this.device = device;
+		}
+
+		public Network getNetwork() {
+			return network;
+		}
+
+		public Device getDevice() {
+			return device;
+		}
+
 	}
 }
