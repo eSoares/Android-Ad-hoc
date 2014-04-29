@@ -28,7 +28,7 @@ class DeviceSamsung implements Device {
 			return false;
 		}
 		if (result.get(0).equals("1")) {
-			getInterfaceName();
+			_getInterfaceName();
 			return true;
 		}
 		return false;
@@ -40,14 +40,14 @@ class DeviceSamsung implements Device {
 	}
 
 	@Override
-	public String interfaceName() {
+	public String getInterfaceName() {
 		if(interfaceName==null){
-			getInterfaceName();
+			_getInterfaceName();
 		}
 		return interfaceName;
 	}
 	
-	private void getInterfaceName(){
+	private void _getInterfaceName(){
 		List<String> result = SU.run(INTERFACE_NAME);
 		for (String res : result) {
 			if (res.contains("wlan0")) {

@@ -30,5 +30,5 @@ public interface Device {
 	 * Gets the network interface name
 	 * @return the network interface name
 	 */
-	public String interfaceName();
+	public String getInterfaceName();
 }
