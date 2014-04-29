@@ -48,6 +48,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 	private String OLSRD_PATH;
 	private String OLSRD_CONFIG_PATH;
 	private String WPACLI_PATH;
+	private Device device;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,24 @@ public class OLSR_Deployer extends ActionBarActivity {
 		WPACLI_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "wpa_cli";
 		Log.d("OLSR DEPLOYER", "Generated path: " + OLSRD_PATH);
 		// status= (TextView) findViewById(R.id.txt_status);
+		loadDevice();
+	}
 
+	private void loadDevice() {
+		new AsyncTask<Void, Void, Device>() {
+
+			@Override
+			protected Device doInBackground(Void... params) {
+				return DeviceFactory.getDevice();
+			}
+
+			@Override
+			protected void onPostExecute(Device result) {
+				device = result;
+				super.onPostExecute(result);
+			}
+
+		}.execute();
 	}
 
 	@Override
@@ -157,51 +175,38 @@ public class OLSR_Deployer extends ActionBarActivity {
 	}
 
 	public void startOLSR(View v) {
+		if(device==null){
+			return;
+		}
 		dialog.show();
-		new AsyncTask<Void, Void, Device>() {
+		String olsrConfig = OLSRGenerator.getOLSRConfig(device, new OLSRSetting());
+		// deploy olsrConfig
+		new OLSRConfigDeploy().execute(OLSRD_CONFIG_PATH, olsrConfig, new GenericExecutionCallback() {
 
 			@Override
-			protected Device doInBackground(Void... params) {
-				return DeviceFactory.getDevice();
+			public void onUnsucessfullExecution() {
+				setStatus("OLSR Config not deplot", false);
 			}
 
 			@Override
-			protected void onPostExecute(Device result) {
-				if (result == null) {
-					return;
-				}
-				String olsrConfig = OLSRGenerator.getOLSRConfig(result, new OLSRSetting());
-				// deploy olsrConfig
-				new OLSRConfigDeploy().execute(OLSRD_CONFIG_PATH, olsrConfig, new GenericExecutionCallback() {
+			public void onSucessfullExecution() {
+				// Execute OLSR
+				new ExecuteOLSR().execute(OLSRD_PATH, OLSRD_CONFIG_PATH, new GenericExecutionCallback() {
 
 					@Override
 					public void onUnsucessfullExecution() {
-						setStatus("OLSR Config not deplot", false);
+						dialog.dismiss();
+						setStatus("OLSR failed to start", false);
 					}
 
 					@Override
 					public void onSucessfullExecution() {
-						// Execute OLSR
-						new ExecuteOLSR().execute(OLSRD_PATH, OLSRD_CONFIG_PATH, new GenericExecutionCallback() {
-
-							@Override
-							public void onUnsucessfullExecution() {
-								dialog.dismiss();
-								setStatus("OLSR failed to start", false);
-							}
-
-							@Override
-							public void onSucessfullExecution() {
-								dialog.dismiss();
-								setStatus("OLSR started with success", true);
-							}
-						});
+						dialog.dismiss();
+						setStatus("OLSR started with success", true);
 					}
 				});
 			}
-
-		}.execute();
-
+		});
 	}
 
 	public void checkOLSRRunning(View v) {
@@ -224,24 +229,31 @@ public class OLSR_Deployer extends ActionBarActivity {
 
 	public void wpa_supplicant(View v) {
 		dialog.show();
-		new GenerateWPA_supplicant().execute(false, new GenericExecutionCallback() {
+		if (device == null) {
+			// TODO
+		}
+		try {
+			new GenerateWPA_supplicant().execute(device, new Network("Ad-Hoc"), new GenericExecutionCallback() {
 
-			@Override
-			public void onUnsucessfullExecution() {
-				setStatus("Failed to update wpa_supplicant", false);
-				dialog.dismiss();
-			}
+				@Override
+				public void onUnsucessfullExecution() {
+					setStatus("Failed to update wpa_supplicant", false);
+					dialog.dismiss();
+				}
 
-			@Override
-			public void onSucessfullExecution() {
-				setStatus("Sucess to update wpa_supplicant", true);
-				dialog.dismiss();
-			}
-		});
+				@Override
+				public void onSucessfullExecution() {
+					setStatus("Sucess to update wpa_supplicant", true);
+					dialog.dismiss();
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void existsWPACli(View v) {
-		new TestWpaCliExistence().execute(new String[] {WPACLI_PATH}, new GenericExecutionCallback() {
+		new TestWpaCliExistence().execute(new String[] { WPACLI_PATH }, new GenericExecutionCallback() {
 
 			@Override
 			public void onUnsucessfullExecution() {
