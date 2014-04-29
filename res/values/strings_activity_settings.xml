@@ -1,0 +1,42 @@
+<resources>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+
+    <!-- Network settings -->
+    <string name="pref_header_network">Network</string>
+    <string name="pref_network_name_title">Network name</string>
+    <string name="pref_use_wep_checkbock">Use WEP</string>
+    <string name="pref_wep_password">WEP Passsword</string>
+    <string name="pref_channel_use">Channel to use</string>
+
+    <string-array name="pref_frequency_channel_list">
+        <item>Channel 1</item>
+        <item>Channel 2</item>
+        <item>Channel 3</item>
+        <item>Channel 4</item>
+        <item>Channel 5</item>
+        <item>Channel 6</item>
+    </string-array>
+    <string-array name="pref_frequency_list">
+        <item>2412</item>
+        <item>2417</item>
+        <item>2422</item>
+        <item>2427</item>
+        <item>2432</item>
+        <item>2437</item>
+    </string-array>
+
+    <!-- Example settings for OLSR -->
+    <string name="pref_header_olsr">OLSR</string>
+    <string name="pref_title_use_olsr">Use OLSR</string>
+    <!-- <string name="pref_title_use_txtinfo_plugin">Use TXTInfo Plugin</string> -->
+
+    <!-- Example settings for IP -->
+    <string name="pref_header_ip">IP Address</string>
+    <string name="pref_title_use_static_ip">Static IP</string>
+    <string name="pref_title_ip_address">Static IP Address</string>
+
+</resources>
