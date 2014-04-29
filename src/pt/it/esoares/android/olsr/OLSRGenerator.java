@@ -24,7 +24,7 @@ public class OLSRGenerator {
 		}
 
 		// Interface
-		result.append("Interface \"" + device.interfaceName() + "\"\n");
+		result.append("Interface \"" + device.getInterfaceName() + "\"\n");
 		result.append("{\n	 Ip4Broadcast 255.255.255.255\n");
 		result.append("	 Mode \"mesh\"\n}\n");
 
