@@ -1,5 +1,6 @@
 package pt.it.esoares.android.devices;
 
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 
 public class Network implements Parcelable {
 	public static final int DEFAULT_FREQUENCY = 2432; // channel 5
+	private static final String DEFAULT_NAME = "Ad-hoc";
 
 	private static final int[] CHANNELS = { 2412, 2417, 2422, 2427, 2432, 2437, 2442, 2447, 2452, 2457, 2462 }; // only to channel 11
 
@@ -208,6 +210,22 @@ public class Network implements Parcelable {
 		if (wepKey != null && wepKey.equals(comp.wepKey)) {
 		}
 		return comp.name.equals(name) && comp.frequency == frequency;
+	}
+
+	public static Network getFromPreferences(SharedPreferences prefs) {
+		boolean useWep = prefs.getBoolean("use_wep_checkbox", false);
+		String networkName = prefs.getString("network_name_text", DEFAULT_NAME);
+		String wepKey = null;
+		if (useWep) {
+			wepKey = prefs.getString("wep_password_text", null);
+		}
+		int frequency = Integer.valueOf(prefs.getString("channel_list", String.valueOf(DEFAULT_FREQUENCY)));
+		try {
+			return new Network(networkName, wepKey, frequency);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
