@@ -2,7 +2,7 @@
 
     <!--
          A 'parent' preference, which enables/disables child preferences (below)
-         when checked/unchecked.
+         when checked/unchecked.
     -->
     <CheckBoxPreference
         android:defaultValue="false"
@@ -13,6 +13,17 @@
     <EditTextPreference
         android:dependency="use_static_ip_pref"
         android:key="ip_address"
+        android:inputType="phone"
         android:title="@string/pref_title_ip_address" />
+    <EditTextPreference
+        android:dependency="use_static_ip_pref"
+        android:inputType="number"
+        android:key="ip_mask"
+        android:title="@string/pref_title_ip_mask" />
+    <EditTextPreference
+        android:dependency="use_static_ip_pref"
+        android:inputType="phone"
+        android:key="ip_address_gateway"
+        android:title="@string/pref_title_ip_address_gateway" />
 
 </PreferenceScreen>

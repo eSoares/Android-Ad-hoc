@@ -125,6 +125,8 @@ public class SettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference("channel_list"));
 
 		bindPreferenceSummaryToValue(findPreference("ip_address"));
+		bindPreferenceSummaryToValue(findPreference("ip_mask"));
+		bindPreferenceSummaryToValue(findPreference("ip_address_gateway"));
 
 		// Preference wep_checkbox = findPreference("use_wep_checkbox");
 		// final Preference wepPassword = findPreference("wep_password_text");
