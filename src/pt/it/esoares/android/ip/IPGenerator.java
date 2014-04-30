@@ -11,6 +11,8 @@ public class IPGenerator {
 	public static final String NETWORK_MASK = "169.254.0.0";
 	public static final int NETWORK_MASK_SIZE = 16;
 	public static final String RESERVED_ADDRESS = "169.254.0.1";
+	public static final String DNS_SERVER = "8.8.8.8";
+	
 
 	/**
 	 * Generates a IP Address based on Link-Local Address Selection from RFC 3927
@@ -33,7 +35,7 @@ public class IPGenerator {
 		return (Inet4Address) Inet4Address.getByName(ip);
 	}
 
-	public static String getMacAddress() {
+	public static String getMacAddress() { //TODO use device.getInterface()
 		String result = Utils.getMACAddress("wlan0");
 		if (result == null || "".equals(result)) {
 			result = Utils.getMACAddress("eth0");
