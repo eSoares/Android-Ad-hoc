@@ -9,13 +9,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-
 import pt.it.esoares.android.devices.Network;
+import pt.it.esoares.android.ip.IPInfo;
 import pt.it.esoares.android.olsrdeployer.R;
 
 public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
@@ -33,7 +34,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 	ViewPager mViewPager;
 
 	private static Network network;
-	private String ipAdddress;
+	private IPInfo ipInfo;
 
 	private SearchNetworksFragment searchFragment;
 	private InfoFragment infoFragment;
@@ -41,7 +42,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_adhoc);
 		if (network == null) {
 			try {
@@ -50,13 +51,30 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 				e.printStackTrace();
 			}
 		}
+//		loadSettings();
 		setupUI();
 	}
 
-	
+	//TODO: Fix fragments communication : http://android-er.blogspot.pt/2012/06/communication-between-fragments-in.html
+
+	private void loadSettings() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		changeNetwork(Network.getFromPreferences(prefs));
+
+	}
+
 	public void changeNetwork(Network newNetwork) {
 		network = newNetwork;
-		infoFragment.setNetwork(network);
+		if (infoFragment != null) {
+			infoFragment.setNetwork(network);
+		}
+	}
+
+	public void changeIP(IPInfo newIP) {
+		this.ipInfo = newIP;
+		if (infoFragment != null) {
+			infoFragment.setIP(ipInfo);
+		}
 	}
 
 	private void setupUI() {
@@ -82,6 +100,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			}
 		});
 
+		
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -109,7 +128,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			Intent i=new Intent(this, SettingsActivity.class);
+			Intent i = new Intent(this, SettingsActivity.class);
 			startActivity(i);
 			return true;
 		}
@@ -145,7 +164,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class below).
 			if (position == 0)
-				return InfoFragment.newInstance(position, network, ipAdddress);
+				return InfoFragment.newInstance(position, network, ipInfo);
 			else
 				return SearchNetworksFragment.newInstance(position);
 		}

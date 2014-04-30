@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import pt.it.esoares.android.devices.Network;
+import pt.it.esoares.android.ip.IPInfo;
 import pt.it.esoares.android.olsrdeployer.R;
 
 /**
@@ -19,21 +20,23 @@ public class InfoFragment extends Fragment {
 	 */
 	private static final String ARG_SECTION_NUMBER = "section_number";
 	private static final String ARG_IP_ADDRESS = "ip_address";
+	private static final String ARG_NETWORK = "network";
 
 	private static Adhoc activity;
 
-	private static Network network;
+	private Network network;
+	private IPInfo ipInfo;
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
 	 */
-	public static InfoFragment newInstance(int sectionNumber, Network networkInfo, String ipAddress) {
+	public static InfoFragment newInstance(int sectionNumber, Network networkInfo, IPInfo ipInfo) {
 		InfoFragment fragment = new InfoFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-		args.putString(ARG_IP_ADDRESS, ipAddress);
+		args.putParcelable(ARG_IP_ADDRESS, ipInfo);
+		args.putParcelable(ARG_NETWORK, networkInfo);
 		fragment.setArguments(args);
-		fragment.network=networkInfo;
 		return fragment;
 	}
 
@@ -43,13 +46,11 @@ public class InfoFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_adhoc, container, false);
-		Bundle arguments = getArguments();
+		Bundle arguments = getArguments() != null ? getArguments() : savedInstanceState;
 		if (arguments != null) {
 			refreshNetworkUI(rootView);
-			String ip = arguments.getString(ARG_IP_ADDRESS);
-			if (ip != null) {
-				((TextView) rootView.findViewById(R.id.txt_IP)).setText(ip);
-			}
+			setIP((IPInfo) arguments.getParcelable(ARG_IP_ADDRESS), rootView);
+			setNetwork((Network) arguments.getParcelable(ARG_NETWORK), rootView);
 		}
 		return rootView;
 	}
@@ -57,12 +58,17 @@ public class InfoFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		refreshNetworkUI(getView());
+		refreshNetworkUI(null);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
 	}
 
 	public void refreshNetworkUI(View v) {
-		View view = v == null ? getView() : v;
-		if (view == null) {
+		View view = getViewRoot(v);
+		if (view == null || network == null) {
 			return;
 		}
 		((TextView) view.findViewById(R.id.txt_Network_Name)).setText(network.getNetworkName());
@@ -76,9 +82,30 @@ public class InfoFragment extends Fragment {
 		((TextView) getView().findViewById(R.id.txt_IP)).setText(ipAddress);
 	}
 
-	public void setNetwork(Network network) {
+	private void setNetwork(Network network, View rootView) {
 		this.network = network;
-		refreshNetworkUI(getView());
+		refreshNetworkUI(rootView);
+
+	}
+
+	public void setNetwork(Network network) {
+		setNetwork(network, getViewRoot(null));
+	}
+
+	private void setIP(IPInfo parcelable, View rootView) {
+		this.ipInfo = ipInfo;
+		if (ipInfo != null) {
+			((TextView) rootView.findViewById(R.id.txt_IP)).setText(ipInfo.getIpAddress());
+		}
+	}
+
+	public void setIP(IPInfo ipInfo) {
+		View v = getViewRoot(null);
+		setIP(ipInfo, v);
+	}
+
+	private View getViewRoot(View v) {
+		return v == null ? getView() : v;
 	}
 
 }
