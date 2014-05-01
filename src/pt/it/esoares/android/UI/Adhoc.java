@@ -34,15 +34,18 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 	ViewPager mViewPager;
 
 	private static Network network;
-	private IPInfo ipInfo;
 
+	private IPInfo ipInfo;
 	private SearchNetworksFragment searchFragment;
 	private InfoFragment infoFragment;
+	private String infoFragmentTAG;
+
+	
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_adhoc);
 		if (network == null) {
 			try {
@@ -51,11 +54,10 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 				e.printStackTrace();
 			}
 		}
-//		loadSettings();
+		// loadSettings();
 		setupUI();
 	}
 
-	//TODO: Fix fragments communication : http://android-er.blogspot.pt/2012/06/communication-between-fragments-in.html
 
 	private void loadSettings() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -65,11 +67,19 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 
 	public void changeNetwork(Network newNetwork) {
 		network = newNetwork;
-		if (infoFragment != null) {
-			infoFragment.setNetwork(network);
-		}
+		((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).setNetwork(network);
 	}
 
+	public Network getNetwork() {
+		return network;
+	}
+	public IPInfo getIP() {
+		return ipInfo;
+	}
+	
+	public void setInfoFragmentTAG(String TAG) {
+		this.infoFragmentTAG = TAG;
+	}
 	public void changeIP(IPInfo newIP) {
 		this.ipInfo = newIP;
 		if (infoFragment != null) {
@@ -100,7 +110,6 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			}
 		});
 
-		
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -164,7 +173,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class below).
 			if (position == 0)
-				return InfoFragment.newInstance(position, network, ipInfo);
+				return InfoFragment.newInstance(position);
 			else
 				return SearchNetworksFragment.newInstance(position);
 		}

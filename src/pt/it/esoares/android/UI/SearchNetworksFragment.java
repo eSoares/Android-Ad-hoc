@@ -28,7 +28,7 @@ import pt.it.esoares.android.wpa_supplicant.ScanNetworkListener;
 import pt.it.esoares.android.wpa_supplicant.ScanNetworksException;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Fragment to search networks
  */
 public class SearchNetworksFragment extends ListFragment {
 	/**
@@ -52,7 +52,6 @@ public class SearchNetworksFragment extends ListFragment {
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
 		fragment.setArguments(args);
-		// fragment.networksArround=networks;
 		return fragment;
 	}
 
@@ -67,6 +66,7 @@ public class SearchNetworksFragment extends ListFragment {
 		inflater.inflate(R.menu.search_networks, menu);
 		refresh = menu.findItem(R.id.menu_search_progress);
 		MenuItemCompat.setShowAsAction(refresh, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+		scanNetworks();
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -138,7 +138,6 @@ public class SearchNetworksFragment extends ListFragment {
 	}
 
 	void scanNetworks() {
-		// setProgressBarIndeterminateVisibility(true);
 		scanNetworksStarted();
 		new ScanExistingNetworks(new ScanNetworkListener() {
 
@@ -149,18 +148,11 @@ public class SearchNetworksFragment extends ListFragment {
 
 			@Override
 			public void onEndedWithError(ScanNetworksException scanNetworksException) {
-				// setProgressBarIndeterminateVisibility(false);
+				scanNetworksFinish();
 			}
 
 			@Override
 			public void onEnd() {
-				try {
-					addNetwork(new Network("Test"));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				// setProgressBarIndeterminateVisibility(false);
 				scanNetworksFinish();
 
 			}

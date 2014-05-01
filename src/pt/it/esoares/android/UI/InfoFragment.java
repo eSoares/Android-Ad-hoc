@@ -12,30 +12,32 @@ import pt.it.esoares.android.ip.IPInfo;
 import pt.it.esoares.android.olsrdeployer.R;
 
 /**
- * A placeholder fragment containing a simple view.
+ * The Fragment to show information of the network and start it!
  */
 public class InfoFragment extends Fragment {
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
 	private static final String ARG_SECTION_NUMBER = "section_number";
-	private static final String ARG_IP_ADDRESS = "ip_address";
-	private static final String ARG_NETWORK = "network";
 
 	private static Adhoc activity;
 
 	private Network network;
 	private IPInfo ipInfo;
+	private TextView networkName;
+	private TextView frequencyView;
+	private TextView networkNameView;
+	private TextView protectionView;
+	private TextView passwordView;
+	private TextView ipView;
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
 	 */
-	public static InfoFragment newInstance(int sectionNumber, Network networkInfo, IPInfo ipInfo) {
+	public static InfoFragment newInstance(int sectionNumber) {
 		InfoFragment fragment = new InfoFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-		args.putParcelable(ARG_IP_ADDRESS, ipInfo);
-		args.putParcelable(ARG_NETWORK, networkInfo);
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -46,66 +48,52 @@ public class InfoFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_adhoc, container, false);
+		setupUI(rootView);
+		activity.setInfoFragmentTAG(getTag());
 		Bundle arguments = getArguments() != null ? getArguments() : savedInstanceState;
 		if (arguments != null) {
-			refreshNetworkUI(rootView);
-			setIP((IPInfo) arguments.getParcelable(ARG_IP_ADDRESS), rootView);
-			setNetwork((Network) arguments.getParcelable(ARG_NETWORK), rootView);
+			setIP(activity.getIP());
+			setNetwork(activity.getNetwork());
+			
 		}
 		return rootView;
 	}
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		refreshNetworkUI(null);
+	
+
+	private void setupUI(View rootView) {
+		networkNameView=((TextView) rootView.findViewById(R.id.txt_Network_Name));
+		frequencyView=((TextView) rootView.findViewById(R.id.txt_Frequency));
+		protectionView=((TextView) rootView.findViewById(R.id.txt_Protection));
+		passwordView=((TextView) rootView.findViewById(R.id.txt_Password));
+		ipView=((TextView) rootView.findViewById(R.id.txt_IP));
+		activity=(Adhoc) getActivity();
 	}
 
-	@Override
-	public void onPause() {
-		super.onPause();
-	}
-
-	public void refreshNetworkUI(View v) {
-		View view = getViewRoot(v);
-		if (view == null || network == null) {
-			return;
-		}
-		((TextView) view.findViewById(R.id.txt_Network_Name)).setText(network.getNetworkName());
-		((TextView) view.findViewById(R.id.txt_Frequency)).setText(String.valueOf(network.getFrequency()));
-		((TextView) view.findViewById(R.id.txt_Protection)).setText(network.useWEP() ? R.string.txt_protection_wep
+	public void refreshNetworkUI() {
+		networkNameView.setText(network.getNetworkName());
+		frequencyView.setText(String.valueOf(network.getFrequency()));
+		protectionView.setText(network.useWEP() ? R.string.txt_protection_wep
 				: R.string.txt_protection_none);
-		((TextView) view.findViewById(R.id.txt_Password)).setText(network.useWEP() ? network.getWepKey() : "None");
+		passwordView.setText(network.useWEP() ? network.getWepKey() : "None");
 	}
 
 	public void setIPAddress(String ipAddress) {
 		((TextView) getView().findViewById(R.id.txt_IP)).setText(ipAddress);
 	}
 
-	private void setNetwork(Network network, View rootView) {
-		this.network = network;
-		refreshNetworkUI(rootView);
-
-	}
 
 	public void setNetwork(Network network) {
-		setNetwork(network, getViewRoot(null));
+		this.network = network;
+		refreshNetworkUI();
 	}
 
-	private void setIP(IPInfo parcelable, View rootView) {
-		this.ipInfo = ipInfo;
-		if (ipInfo != null) {
-			((TextView) rootView.findViewById(R.id.txt_IP)).setText(ipInfo.getIpAddress());
-		}
-	}
 
 	public void setIP(IPInfo ipInfo) {
-		View v = getViewRoot(null);
-		setIP(ipInfo, v);
-	}
-
-	private View getViewRoot(View v) {
-		return v == null ? getView() : v;
+		this.ipInfo = ipInfo;
+		if (ipInfo != null) {
+			ipView.setText(ipInfo.getIpAddress());
+		}
 	}
 
 }

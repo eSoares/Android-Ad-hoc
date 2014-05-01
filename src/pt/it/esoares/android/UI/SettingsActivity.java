@@ -3,28 +3,18 @@ package pt.it.esoares.android.ui;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
 import pt.it.esoares.android.olsrdeployer.R;
-import pt.it.esoares.android.olsrdeployer.R.string;
-import pt.it.esoares.android.olsrdeployer.R.xml;
-
 import java.util.List;
 
 /**
@@ -99,8 +89,6 @@ public class SettingsActivity extends PreferenceActivity {
 
 		// Add 'Network' preferences.
 		PreferenceCategory fakeHeader = new PreferenceCategory(this);
-//		fakeHeader.setTitle(R.string.pref_header_network);
-//		getPreferenceScreen().addPreference(fakeHeader);
 		addPreferencesFromResource(R.xml.pref_network);
 
 		// Add 'IP' preferences, and a corresponding header.
