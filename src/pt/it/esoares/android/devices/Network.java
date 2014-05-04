@@ -1,6 +1,7 @@
 package pt.it.esoares.android.devices;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -220,12 +221,27 @@ public class Network implements Parcelable {
 			wepKey = prefs.getString("wep_password_text", null);
 		}
 		int frequency = Integer.valueOf(prefs.getString("channel_list", String.valueOf(DEFAULT_FREQUENCY)));
+		Network network = null;
 		try {
-			return new Network(networkName, wepKey, frequency);
+			network = new Network(networkName, wepKey, frequency);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		if (prefs.getBoolean("first_time", true)) {
+			Editor editor = prefs.edit();
+			editor.putBoolean("first_time", false);
+			network.saveToPreferences(editor);
+		}
+		return network;
 	}
 
+	public void saveToPreferences(Editor editor) {
+		editor.putBoolean("use_wep_checkbox", useWEP());
+		if (useWEP()) {
+			editor.putString("wep_password_text", getWepKey());
+		}
+		editor.putString("channel_list", String.valueOf(getFrequency()));
+		editor.putString("network_name_text", getNetworkName());
+		editor.commit();
+	}
 }

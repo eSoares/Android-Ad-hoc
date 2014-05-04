@@ -2,11 +2,13 @@ package pt.it.esoares.android.ip;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import pt.it.esoares.android.devices.Network;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 public class IPInfo implements Parcelable {
@@ -15,13 +17,15 @@ public class IPInfo implements Parcelable {
 	private int mask;
 	private String gateway;
 	private String dnsServer;
+	private boolean static_ip;
 
-	public IPInfo(String ipAddress, int mask, String gateway, String dnsServer) {
+	public IPInfo(String ipAddress, int mask, String gateway, String dnsServer, boolean b) {
 		super();
 		this.ipAddress = ipAddress;
 		this.mask = mask;
 		this.gateway = gateway;
 		this.dnsServer = dnsServer;
+		this.static_ip = b;
 	}
 
 	private IPInfo(Parcel parcel) {
@@ -66,27 +70,6 @@ public class IPInfo implements Parcelable {
 		this.dnsServer = dnsServer;
 	}
 
-	public static IPInfo getFromPreferences(SharedPreferences prefs, Context context) {
-		boolean useStaticIP = prefs.getBoolean("use_static_ip_pref", false);
-		String ip = null;
-		if (useStaticIP) {
-			ip = prefs.getString("ip_address", null);
-		}
-		if (ip == null) {// use generated IP
-			Utils.changeWifiState(context, true);
-			try {
-				ip = IPGenerator.generateIP(IPGenerator.getMacAddress()).getHostAddress();
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			}
-			return new IPInfo(ip, IPGenerator.NETWORK_MASK_SIZE, IPGenerator.RESERVED_ADDRESS, IPGenerator.DNS_SERVER);
-		} else {
-			int mask = Integer.valueOf(prefs.getString("ip_mask", String.valueOf(IPGenerator.NETWORK_MASK_SIZE)));
-			String gateway = prefs.getString("ip_address_gateway", IPGenerator.RESERVED_ADDRESS); // this can be trouble
-			return new IPInfo(ip, mask, gateway, IPGenerator.DNS_SERVER);
-		}
-	}
-
 	@Override
 	public int describeContents() {
 		return 0;
@@ -111,4 +94,42 @@ public class IPInfo implements Parcelable {
 		}
 
 	};
+
+	public static IPInfo getFromPreferences(SharedPreferences prefs) throws IOException {
+		boolean static_ip = prefs.getBoolean("use_static_ip_pref", false);
+		String ip_address = null;
+		int mask = 0;
+		String gateway = null;
+		IPInfo ip;
+		if (static_ip) {
+			ip_address = prefs.getString("ip_address", null);
+			if (ip_address == null) {
+				ip_address = IPGenerator.generateIP(prefs.getString("mac_address", "00:00")).getHostAddress();
+			}
+			mask = Integer.valueOf(prefs.getString("ip_mask", String.valueOf(IPGenerator.NETWORK_MASK_SIZE)));
+			gateway = prefs.getString("ip_address_gateway", IPGenerator.RESERVED_ADDRESS);
+			ip = new IPInfo(ip_address, mask, gateway, IPGenerator.DNS_SERVER, true);
+
+		} else {
+			ip_address = IPGenerator.generateIP(prefs.getString("mac_address", "00:00")).getHostAddress();
+			mask = IPGenerator.NETWORK_MASK_SIZE;
+			gateway = IPGenerator.RESERVED_ADDRESS;
+			ip = new IPInfo(ip_address, mask, gateway, IPGenerator.DNS_SERVER, false);
+			ip.saveToPreferences(prefs.edit());
+		}
+		return ip;
+
+	}
+
+	public void saveToPreferences(Editor editor) {
+		editor.putBoolean("use_static_ip_pref", useStaticIP());
+		editor.putString("ip_address", getIpAddress());
+		editor.putString("ip_mask", String.valueOf(getMask()));
+		editor.putString("ip_address_gateway", getGateway());
+		editor.commit();
+	}
+
+	private boolean useStaticIP() {
+		return this.static_ip;
+	}
 }

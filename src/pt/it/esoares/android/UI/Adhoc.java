@@ -1,5 +1,6 @@
 package pt.it.esoares.android.ui;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import android.support.v7.app.ActionBarActivity;
@@ -15,8 +16,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import pt.it.esoares.android.devices.Network;
+import pt.it.esoares.android.ip.IPGenerator;
 import pt.it.esoares.android.ip.IPInfo;
+import pt.it.esoares.android.ip.Utils;
 import pt.it.esoares.android.olsrdeployer.R;
 
 public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
@@ -36,55 +40,60 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 	private static Network network;
 
 	private IPInfo ipInfo;
-	private SearchNetworksFragment searchFragment;
-	private InfoFragment infoFragment;
 	private String infoFragmentTAG;
-
-	
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_adhoc);
-		if (network == null) {
-			try {
-				network = new Network("Ad-hoc");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		// loadSettings();
+		loadSettings();
 		setupUI();
 	}
 
+	@Override
+	protected void onResume() {
+		loadSettings();
+		super.onResume();
+	}
 
 	private void loadSettings() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		changeNetwork(Network.getFromPreferences(prefs));
+		Utils.changeWifiState(this, true);
+		prefs.edit().putString("mac_address", IPGenerator.getMacAddress()).commit();
+
+		try {
+			changeIP(IPInfo.getFromPreferences(prefs));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
 	public void changeNetwork(Network newNetwork) {
 		network = newNetwork;
-		((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).setNetwork(network);
+		if (infoFragmentTAG != null) {
+			((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).setNetwork(network);
+		}
+	}
+
+	public void changeIP(IPInfo newIP) {
+		this.ipInfo = newIP;
+		if (infoFragmentTAG != null) {
+			((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).setIP(ipInfo);
+		}
 	}
 
 	public Network getNetwork() {
 		return network;
 	}
+
 	public IPInfo getIP() {
 		return ipInfo;
 	}
-	
+
 	public void setInfoFragmentTAG(String TAG) {
 		this.infoFragmentTAG = TAG;
-	}
-	public void changeIP(IPInfo newIP) {
-		this.ipInfo = newIP;
-		if (infoFragment != null) {
-			infoFragment.setIP(ipInfo);
-		}
 	}
 
 	private void setupUI() {
@@ -118,9 +127,6 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			// this tab is selected.
 			actionBar.addTab(actionBar.newTab().setText(mSectionsPagerAdapter.getPageTitle(i)).setTabListener(this));
 		}
-
-		infoFragment = (InfoFragment) mSectionsPagerAdapter.getItem(0);
-		searchFragment = (SearchNetworksFragment) mSectionsPagerAdapter.getItem(1);
 	}
 
 	@Override
