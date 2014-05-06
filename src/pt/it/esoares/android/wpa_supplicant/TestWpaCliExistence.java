@@ -17,14 +17,14 @@ public class TestWpaCliExistence extends AsyncTask<String, Void, Boolean> {
 		if (!Shell.SU.available()) {
 			return false;
 		}
-		if (check("wpa_cli"/* quit" */)) {
+		if (check("wpa_cli quit" )) {
 			return true;
 		}
 		if (arg0.length < 1) {
 			return false;
 		}
 		for (String location : arg0) {
-			if (check(location/* +" quit" */)) {
+			if (check(location +" quit")) {
 				return true;
 			}
 		}
