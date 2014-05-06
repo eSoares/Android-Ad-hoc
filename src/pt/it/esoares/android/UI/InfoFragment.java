@@ -1,6 +1,5 @@
 package pt.it.esoares.android.ui;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;

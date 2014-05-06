@@ -15,10 +15,9 @@ import eu.chainfire.libsuperuser.Shell.SU;
 
 public class GenerateWPA_supplicant extends
 		AsyncTask<pt.it.esoares.android.wpa_supplicant.GenerateWPA_supplicant.Data, Void, Boolean> {
-	private String command_toPlace = "cd /data/misc/wifi/";
-	private String overwrite_wpa = "cat %s > wpa_supplicant.conf";
+	private String command_toPlace = "cd /data/misc/wifi/"; //TODO use device info
+	private String overwrite_wpa = "cat %s > wpa_supplicant.conf"; //TODO fix name
 	private String temp_file_name = "random_name_here";
-	private String bk_wpa_supplicant = "cp wpa_supplicant.conf wpa_supplicant.conf.bk";
 
 	private GenericExecutionCallback listener;
 

@@ -40,6 +40,6 @@
     <string name="pref_title_use_static_ip">Static IP</string>
     <string name="pref_title_ip_address">Static IP Address</string>
     <string name="pref_title_ip_address_gateway">Gateway</string>
-    <string name="pref_title_ip_mask">Network perfix lenght</string>
+    <string name="pref_title_ip_mask">Network perfix length</string>
 
 </resources>

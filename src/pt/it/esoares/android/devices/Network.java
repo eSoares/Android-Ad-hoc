@@ -230,6 +230,7 @@ public class Network implements Parcelable {
 		if (prefs.getBoolean("first_time", true)) {
 			Editor editor = prefs.edit();
 			editor.putBoolean("first_time", false);
+			editor.commit();
 			network.saveToPreferences(editor);
 		}
 		return network;

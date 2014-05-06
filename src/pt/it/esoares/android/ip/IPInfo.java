@@ -1,16 +1,13 @@
 package pt.it.esoares.android.ip;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.ui.Setup;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 public class IPInfo implements Parcelable {
 
