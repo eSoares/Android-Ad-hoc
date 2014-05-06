@@ -7,6 +7,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import pt.it.esoares.android.devices.Network;
+import pt.it.esoares.android.ui.Setup;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -104,14 +105,14 @@ public class IPInfo implements Parcelable {
 		if (static_ip) {
 			ip_address = prefs.getString("ip_address", null);
 			if (ip_address == null) {
-				ip_address = IPGenerator.generateIP(prefs.getString("mac_address", "00:00")).getHostAddress();
+				ip_address = IPGenerator.generateIP(prefs.getString(Setup.MAC_ADDRESS, "00:00")).getHostAddress();
 			}
 			mask = Integer.valueOf(prefs.getString("ip_mask", String.valueOf(IPGenerator.NETWORK_MASK_SIZE)));
 			gateway = prefs.getString("ip_address_gateway", IPGenerator.RESERVED_ADDRESS);
 			ip = new IPInfo(ip_address, mask, gateway, IPGenerator.DNS_SERVER, true);
 
 		} else {
-			ip_address = IPGenerator.generateIP(prefs.getString("mac_address", "00:00")).getHostAddress();
+			ip_address = IPGenerator.generateIP(prefs.getString(Setup.MAC_ADDRESS, "00:00")).getHostAddress();
 			mask = IPGenerator.NETWORK_MASK_SIZE;
 			gateway = IPGenerator.RESERVED_ADDRESS;
 			ip = new IPInfo(ip_address, mask, gateway, IPGenerator.DNS_SERVER, false);

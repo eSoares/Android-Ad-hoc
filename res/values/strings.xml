@@ -22,6 +22,7 @@
     <string name="title_search_networks">Surrounding Networks</string>
     <string name="button_start_state">Start</string>
     <string name="button_stop_state">Stop</string>
+    <string name="button_connecting_state">Connecting</string>
     <string name="txt_connection_state">Connected State:</string>
     <string name="txt_connection_disconnected">DISCONNECTED</string>
     <string name="txt_connection_connected">CONNECTED</string>

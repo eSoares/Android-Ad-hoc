@@ -14,9 +14,8 @@ public class WpaCliDeployer
 	public static final int STATUS_CODE_NOT_EXPECIFIED = 0;
 	private WpaCliDeployListener listener;
 
-	public WpaCliDeployer(WpaCliDeployListener listeneer) {
+	public WpaCliDeployer() {
 		super();
-		this.listener = listeneer;
 	}
 
 	@Override
@@ -56,7 +55,8 @@ public class WpaCliDeployer
 	}
 
 	
-	public void execute(Resources resources, int resourceID, String privateAppFolderLocation) {
+	public void execute(Resources resources, int resourceID, String privateAppFolderLocation, WpaCliDeployListener listener) {
+		this.listener=listener;
 		Data raw = new Data(resources, resourceID, privateAppFolderLocation);
 		this.execute(raw);
 	}

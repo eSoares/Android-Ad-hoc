@@ -1,10 +1,12 @@
 package pt.it.esoares.android.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import pt.it.esoares.android.devices.Network;
@@ -29,6 +31,7 @@ public class InfoFragment extends Fragment {
 	private TextView protectionView;
 	private TextView passwordView;
 	private TextView ipView;
+	private Button buttonStartStop;
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
@@ -53,7 +56,7 @@ public class InfoFragment extends Fragment {
 		if (arguments != null) {
 			setIP(activity.getIP());
 			setNetwork(activity.getNetwork());
-
+			changeConectingState(activity.connecting, activity.connected);
 		}
 		return rootView;
 	}
@@ -64,7 +67,9 @@ public class InfoFragment extends Fragment {
 		protectionView = ((TextView) rootView.findViewById(R.id.txt_Protection));
 		passwordView = ((TextView) rootView.findViewById(R.id.txt_Password));
 		ipView = ((TextView) rootView.findViewById(R.id.txt_IP));
+		buttonStartStop=(Button) rootView.findViewById(R.id.start_stop_button);
 		activity = (Adhoc) getActivity();
+
 	}
 
 	public void refreshNetworkUI() {
@@ -86,4 +91,20 @@ public class InfoFragment extends Fragment {
 		}
 	}
 
+
+	public void changeConectingState(boolean connecting, boolean connected){
+		if(connecting){
+			buttonStartStop.setEnabled(false);
+			buttonStartStop.setText(R.string.button_connecting_state);
+		}else if(connected){
+			buttonStartStop.setEnabled(false);
+			buttonStartStop.setText(R.string.button_stop_state);
+		}else{
+			buttonStartStop.setEnabled(true);
+			buttonStartStop.setText(R.string.button_start_state);
+		}
+		
+	}
+
+	
 }

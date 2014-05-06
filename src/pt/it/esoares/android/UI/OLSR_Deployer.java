@@ -175,7 +175,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 	}
 
 	public void startOLSR(View v) {
-		if(device==null){
+		if (device == null) {
 			return;
 		}
 		dialog.show();
@@ -301,7 +301,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 	}
 
 	public void deployWPACli(View v) {
-		new WpaCliDeployer(new WpaCliDeployListener() {
+		new WpaCliDeployer().execute(getResources(), R.raw.wpa_cli, WPACLI_PATH, new WpaCliDeployListener() {
 
 			@Override
 			public void onError(WpaCliDeployException e) {
@@ -319,7 +319,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 				setStatus("Sucessfull deployed wpa_cli", true);
 
 			}
-		}).execute(getResources(), R.raw.wpa_cli, WPACLI_PATH);
+		});
 		dialog.show();
 	}
 

@@ -16,11 +16,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.view.View;
 import pt.it.esoares.android.devices.Network;
-import pt.it.esoares.android.ip.IPGenerator;
 import pt.it.esoares.android.ip.IPInfo;
-import pt.it.esoares.android.ip.Utils;
 import pt.it.esoares.android.olsrdeployer.R;
 
 public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
@@ -42,12 +40,33 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 	private IPInfo ipInfo;
 	private String infoFragmentTAG;
 
+	static final String STATE_CONNECTED = "state network connected";
+	static final String STATE_CONNECTING = "state network connecting";
+
+	boolean connected = false;
+	boolean connecting = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_adhoc);
 		loadSettings();
 		setupUI();
+		restoreState(savedInstanceState);
+	}
+
+	private void restoreState(Bundle savedInstanceState) {
+		if (savedInstanceState == null) {
+			return;
+		} else {
+			connected = savedInstanceState.getBoolean(STATE_CONNECTED, false);
+			connecting = savedInstanceState.getBoolean(STATE_CONNECTING, false);
+			if (infoFragmentTAG != null) {
+				((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).changeConectingState(
+						connecting, connected);
+
+			}
+		}
 	}
 
 	@Override
@@ -56,14 +75,23 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		super.onResume();
 	}
 
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putBoolean(STATE_CONNECTED, connected);
+		outState.putBoolean(STATE_CONNECTING, connecting);
+		super.onSaveInstanceState(outState);
+	}
+
 	private void loadSettings() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if(!prefs.getBoolean(Setup.SETUP_DONE, false)){
+			Intent i=new Intent(this, Setup.class);
+			startActivity(i);
+		}
 		changeNetwork(Network.getFromPreferences(prefs));
-		Utils.changeWifiState(this, true);
-		prefs.edit().putString("mac_address", IPGenerator.getMacAddress()).commit();
-
+		
 		try {
-			changeIP(IPInfo.getFromPreferences(prefs));
+			changeIPInformation(IPInfo.getFromPreferences(prefs));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -77,7 +105,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		}
 	}
 
-	public void changeIP(IPInfo newIP) {
+	public void changeIPInformation(IPInfo newIP) {
 		this.ipInfo = newIP;
 		if (infoFragmentTAG != null) {
 			((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).setIP(ipInfo);
@@ -96,7 +124,16 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		this.infoFragmentTAG = TAG;
 	}
 
+	public void onStartStop(View v) {
+		connecting = true;
+		((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).changeConectingState(
+				connecting, connected);
+
+		// connected=true;
+	}
+
 	private void setupUI() {
+
 		// Set up the action bar.
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -200,6 +237,10 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			}
 			return null;
 		}
+	}
+
+	enum State {
+		Disconnect, Connecting, Connected
 	}
 
 }
