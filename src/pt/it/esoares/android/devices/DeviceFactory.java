@@ -17,6 +17,27 @@ public class DeviceFactory {
 						}
 					}
 				}
+				break;
+			}
+		}
+		return device;
+	}
+
+	public static Device getDevice(String uniqID) {
+		if (device != null) {
+			return device;
+		}
+		Device[] devices = { new DeviceSamsung(), new DeviceDefault() };
+		for (Device dev : devices) {
+			if (dev.getClassUniqIdentifier().equals(uniqID)) {
+				if (device == null) {
+					synchronized (DeviceFactory.class) {
+						if (device == null) {
+							device = dev;
+						}
+					}
+				}
+				break;
 			}
 		}
 		return device;

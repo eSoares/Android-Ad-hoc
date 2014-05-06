@@ -9,6 +9,7 @@ class DeviceSamsung implements Device {
 	private static final String SUPPLICANT_NAME = "bcm_supp.conf";
 	private static final String TEST_EXISTENCE = "if [ -e /data/wifi/bcm_supp.conf ]; then echo 1; else echo 0; fi";
 	private static final String INTERFACE_NAME = "ip link show";
+	private static final String IDENTIFIER="identifier samsung";
 	private String interfaceName;
 	
 	@Override
@@ -58,6 +59,11 @@ class DeviceSamsung implements Device {
 			}
 		}
 		
+	}
+
+	@Override
+	public String getClassUniqIdentifier() {
+		return IDENTIFIER;
 	}
 
 }

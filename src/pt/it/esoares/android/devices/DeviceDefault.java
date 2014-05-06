@@ -9,6 +9,7 @@ class DeviceDefault implements Device {
 	private static final String SUPPLICANT_NAME = "wpa_supplicant.conf";
 	private static final String TEST_EXISTENCE = "if [ -e /data/misc/wifi/wpa_supplicant.conf ]; then echo 1; else echo 0; fi";
 	private static final String INTERFACE_NAME = "ip link show";
+	private static final String IDENTIFIER="identifier default";
 	private String interfaceName;
 
 	@Override
@@ -57,5 +58,10 @@ class DeviceDefault implements Device {
 				interfaceName = "eth0";
 			}
 		}
+	}
+
+	@Override
+	public String getClassUniqIdentifier() {
+		return IDENTIFIER;
 	}
 }
