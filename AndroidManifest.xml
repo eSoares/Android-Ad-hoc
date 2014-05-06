@@ -47,6 +47,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="pt.it.esoares.android.ui.Adhoc" />
         </activity>
+        <activity
+            android:name="pt.it.esoares.android.ui.Setup"
+            android:label="@string/title_activity_setup" >
+        </activity>
     </application>
 
 </manifest>

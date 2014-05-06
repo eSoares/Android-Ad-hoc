@@ -33,5 +33,6 @@
     <string name="txt_password">Password:</string>
     <string name="txt_ip">IP:</string>
     <string name="actionbar_search_networks">Search</string>
+    <string name="title_activity_setup">Setup</string>
 
 </resources>
