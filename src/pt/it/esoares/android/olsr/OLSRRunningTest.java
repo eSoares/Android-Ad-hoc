@@ -39,15 +39,10 @@ public class OLSRRunningTest extends AsyncTask<Void, Void, Boolean> {
 	public static boolean isOLSRRunning() {
 		List<String> results = SU.run("ps");
 		for (String line : results) {
-			if (line.contains("olsrd")) {
+			if (line.contains("/olsrd")) {
 				return true;
 			}
 		}
-		//
-		// List<String> results = SU.run("ps | grep olsr");
-		// if (results.size() > 0) {
-		// return true;
-		// }
 		return false;
 	}
 }

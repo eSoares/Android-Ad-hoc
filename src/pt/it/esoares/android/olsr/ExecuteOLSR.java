@@ -16,10 +16,10 @@ public class ExecuteOLSR extends AsyncTask<String, Void, Boolean> {
 		}
 		String olsrPath = params[0];
 		String olsrConfigPath = params[1];
-		SU.run(olsrPath + " -f " + olsrConfigPath);
+		SU.run(olsrPath + " -f " + olsrConfigPath +" -d 0");
 		// Verifies that olsr is running
 		try {
-			Thread.sleep(1000 * 5);// 5 seconds
+			Thread.sleep(100 * 5);// 5 seconds
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
