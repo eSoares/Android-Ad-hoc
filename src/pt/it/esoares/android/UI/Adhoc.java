@@ -11,15 +11,23 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import pt.it.esoares.android.devices.Device;
+import pt.it.esoares.android.devices.DeviceFactory;
 import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.ip.IPInfo;
 import pt.it.esoares.android.olsrdeployer.R;
+import pt.it.esoares.android.util.GenericExecutionCallback;
+import pt.it.esoares.android.util.StartAdHocNetwork;
+import pt.it.esoares.android.util.StopAdHocNetwork;
 
 public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 
@@ -36,12 +44,17 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 	ViewPager mViewPager;
 
 	private static Network network;
-
+	boolean useOLSR;
 	private IPInfo ipInfo;
+	private Device device;
+
 	private String infoFragmentTAG;
 
 	static final String STATE_CONNECTED = "state network connected";
 	static final String STATE_CONNECTING = "state network connecting";
+	static final String USE_OLSR = "use olsr";
+
+	static final String DEVICE = "device";
 
 	boolean connected = false;
 	boolean connecting = false;
@@ -59,6 +72,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		if (savedInstanceState == null) {
 			return;
 		} else {
+			device = DeviceFactory.getDevice(savedInstanceState.getString(DEVICE));
 			connected = savedInstanceState.getBoolean(STATE_CONNECTED, false);
 			connecting = savedInstanceState.getBoolean(STATE_CONNECTING, false);
 			if (infoFragmentTAG != null) {
@@ -79,22 +93,23 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putBoolean(STATE_CONNECTED, connected);
 		outState.putBoolean(STATE_CONNECTING, connecting);
+		outState.putString(DEVICE, device==null?null:device.getClassUniqIdentifier());
 		super.onSaveInstanceState(outState);
 	}
 
 	private void loadSettings() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		if(!prefs.getBoolean(Setup.SETUP_DONE, false)){
-			Intent i=new Intent(this, Setup.class);
+		if (!prefs.getBoolean(Setup.SETUP_DONE, false)) {
+			Intent i = new Intent(this, Setup.class);
 			startActivity(i);
 		}
 		changeNetwork(Network.getFromPreferences(prefs));
-		
 		try {
 			changeIPInformation(IPInfo.getFromPreferences(prefs));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		useOLSR = prefs.getBoolean("use_olsr", true);
 
 	}
 
@@ -128,8 +143,45 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		connecting = true;
 		((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).changeConectingState(
 				connecting, connected);
+		if (!connected) {
+			// connects
+			new StartNetwork().execute(new GenericExecutionCallback() {
 
-		// connected=true;
+				@Override
+				public void onUnsucessfullExecution() {
+					connecting = false;
+					connected = false;
+					((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG))
+							.changeConectingState(connecting, connected);
+					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+				}
+
+				@Override
+				public void onSucessfullExecution() {
+					connecting = false;
+					connected = true;
+					((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG))
+							.changeConectingState(connecting, connected);
+				}
+			});
+		} else {
+			// disconnect
+			new StopAdHocNetwork(device, useOLSR, new GenericExecutionCallback() {
+
+				@Override
+				public void onUnsucessfullExecution() {
+					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+				}
+
+				@Override
+				public void onSucessfullExecution() {
+					connecting = false;
+					connected = false;
+					((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG))
+							.changeConectingState(connecting, connected);
+				}
+			}, this);
+		}
 	}
 
 	private void setupUI() {
@@ -239,8 +291,30 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		}
 	}
 
-	enum State {
-		Disconnect, Connecting, Connected
-	}
+	class StartNetwork extends AsyncTask<Void, Void, Device> {
 
+		private GenericExecutionCallback callback = null;
+
+		@Override
+		protected Device doInBackground(Void... params) {
+			return DeviceFactory.getDevice();
+
+		}
+
+		@Override
+		protected void onPostExecute(Device result) {
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
+			String olsrPath = prefs.getString(Setup.OLSR_PATH, null);
+			device = result;
+
+			new StartAdHocNetwork(result, network, ipInfo, olsrConfigPath, olsrPath, useOLSR, callback,
+					getApplicationContext());
+			super.onPostExecute(result);
+		}
+
+		public void execute(GenericExecutionCallback callback) {
+			this.callback = callback;
+		}
+	}
 }

@@ -24,6 +24,9 @@ public class DeviceFactory {
 	}
 
 	public static Device getDevice(String uniqID) {
+		if(uniqID==null){
+			return null;
+		}
 		if (device != null) {
 			return device;
 		}

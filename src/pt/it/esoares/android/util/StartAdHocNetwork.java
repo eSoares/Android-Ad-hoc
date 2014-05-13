@@ -28,6 +28,21 @@ public class StartAdHocNetwork {
 	GenericExecutionCallback callback;
 	Context context;
 
+	
+	
+	public StartAdHocNetwork(Device device, Network network, IPInfo ipInfo, String olsrConfigPath,
+			String olsrExecutionPath, Boolean useOLSR, GenericExecutionCallback callback, Context context) {
+		super();
+		this.device = device;
+		this.network = network;
+		this.ipInfo = ipInfo;
+		this.olsrConfigPath = olsrConfigPath;
+		this.olsrExecutionPath = olsrExecutionPath;
+		this.useOLSR = useOLSR;
+		this.callback = callback;
+		this.context = context;
+	}
+
 	public void startNetwork() {
 		// first backup current WPA Supplicant
 		backupWPA_Supplicant();
