@@ -164,6 +164,10 @@ public class Utils {
 	 */
 	public static void changeWifiState(Context context, boolean on) {
 		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-		wifiManager.setWifiEnabled(true);
+		wifiManager.setWifiEnabled(on);
+		try {
+			Thread.sleep(1 * 1000);// waits a second before returning to changes become effective
+		} catch (InterruptedException e) {
+		}
 	}
 }

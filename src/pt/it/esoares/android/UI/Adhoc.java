@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -91,6 +92,11 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		Editor editor = prefs.edit();
+		editor.putBoolean(STATE_CONNECTED, connected);
+		editor.putBoolean(STATE_CONNECTING, connecting);
+		editor.commit();
 		outState.putBoolean(STATE_CONNECTED, connected);
 		outState.putBoolean(STATE_CONNECTING, connecting);
 		outState.putString(DEVICE, device==null?null:device.getClassUniqIdentifier());
@@ -110,7 +116,13 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			e.printStackTrace();
 		}
 		useOLSR = prefs.getBoolean("use_olsr", true);
+		connected = prefs.getBoolean(STATE_CONNECTED, false);
+		connecting = prefs.getBoolean(STATE_CONNECTING, false);
+		if (infoFragmentTAG != null) {
+			((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).changeConectingState(
+					connecting, connected);
 
+		}
 	}
 
 	public void changeNetwork(Network newNetwork) {
@@ -180,7 +192,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 					((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG))
 							.changeConectingState(connecting, connected);
 				}
-			}, this);
+			}, this).stopNetwork();
 		}
 	}
 
@@ -309,12 +321,13 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			device = result;
 
 			new StartAdHocNetwork(result, network, ipInfo, olsrConfigPath, olsrPath, useOLSR, callback,
-					getApplicationContext());
+					getApplicationContext()).startNetwork();
 			super.onPostExecute(result);
 		}
 
 		public void execute(GenericExecutionCallback callback) {
 			this.callback = callback;
+			this.execute();
 		}
 	}
 }

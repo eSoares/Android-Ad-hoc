@@ -76,7 +76,7 @@ public class StartAdHocNetwork {
 
 			@Override
 			public void onSucessfullExecution() {
-				Utils.changeWifiState(context, false);
+				Utils.changeWifiState(context, true);
 				// set ip
 				if (!setIP()) {
 					return; // returns in case of error

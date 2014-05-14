@@ -21,7 +21,7 @@ public class StopAdHocNetwork {
 		this.context = context;
 	}
 
-	public void startNetwork() {
+	public void stopNetwork() {
 		// first restore current WPA Supplicant
 		restoreWPA_Supplicant();
 	}

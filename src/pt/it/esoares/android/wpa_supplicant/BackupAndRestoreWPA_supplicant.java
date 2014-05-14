@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import pt.it.esoares.android.devices.Device;
+import pt.it.esoares.android.devices.DeviceFactory;
 import pt.it.esoares.android.util.GenericExecutionCallback;
 
 import java.util.List;
@@ -25,6 +26,9 @@ public class BackupAndRestoreWPA_supplicant extends
 			return false;
 		}
 		Device device = arg0[0].getDevice();
+		if(device==null){
+			device=DeviceFactory.getDevice();
+		}
 		if (arg0[0].getAction() == Action.BACKUP) {
 			// backup
 			List<String> result = SU.run(new String[] { command_toPlace + device.supplicantLocation(),

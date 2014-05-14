@@ -96,7 +96,7 @@ public class InfoFragment extends Fragment {
 			buttonStartStop.setEnabled(false);
 			buttonStartStop.setText(R.string.button_connecting_state);
 		}else if(connected){
-			buttonStartStop.setEnabled(false);
+			buttonStartStop.setEnabled(true);
 			buttonStartStop.setText(R.string.button_stop_state);
 		}else{
 			buttonStartStop.setEnabled(true);

@@ -17,7 +17,7 @@ public class OLSRKiller extends AsyncTask<Void, Void, Boolean> {
 
 	@Override
 	protected Boolean doInBackground(Void... arg0) {
-		int id = getProcessID("olsrd");
+		int id = getProcessID("/olsrd");
 		SU.run("kill -9 " + String.valueOf(id));
 		if (getProcessID("/olsrd") != 0) {
 			return false;
