@@ -9,7 +9,9 @@
     tools:context="pt.it.esoares.android.olsrdeployer.Setup$PlaceholderFragment" >
 
     <ProgressBar
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

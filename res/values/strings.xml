@@ -32,7 +32,7 @@
     <string name="txt_protection_none">None</string>
     <string name="txt_protection_wep">WEP</string>
     <string name="txt_password">Password:</string>
-    <string name="txt_ip">IP:</string>
+    <string name="txt_ip">IP Address:</string>
     <string name="actionbar_search_networks">Search</string>
     <string name="title_activity_setup">Setup</string>
 
