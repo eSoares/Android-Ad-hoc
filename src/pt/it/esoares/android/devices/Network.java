@@ -15,7 +15,7 @@ public class Network implements Parcelable {
 	private static final int[] CHANNELS = { 2412, 2417, 2422, 2427, 2432, 2437, 2442, 2447, 2452, 2457, 2462 }; // only to channel 11
 
 	private final static Pattern regex = Pattern
-			.compile("(\\w{2}:\\w{2}:\\w{2}:\\w{2}:\\w{2}:\\w{2})\\s+(\\d+)\\s+-(\\d+)\\s*\\[.*\\]\\s*(.+)");
+			.compile("(\\w{2}:\\w{2}:\\w{2}:\\w{2}:\\w{2}:\\w{2})[\\s|\\t]*(\\d+)[\\s|\\t]+-?(\\d+)[\\s|\\t]*\\[.*\\][\\s|\\t]*(.+)");
 
 	private String name;
 	private String wepKey;
@@ -142,6 +142,8 @@ public class Network implements Parcelable {
 		// Example
 		// "bssid / frequency / signal level / flags / ssid"
 		// "1e:d5:e6:a8:ca:bf	2432	-36	[IBSS]	Ad-hoc"
+		// in some devices (like the boston) was found this behaviour
+		// a6:ca:26:57:65:73	2432	216	[IBSS]	Ad-hoc
 		Matcher matcher = regex.matcher(line);
 		if (matcher.matches()) {
 			return new Network(matcher.group(4), Integer.parseInt(matcher.group(2)),

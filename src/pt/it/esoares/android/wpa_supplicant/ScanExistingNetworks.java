@@ -1,6 +1,7 @@
 package pt.it.esoares.android.wpa_supplicant;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
 import java.util.List;
@@ -23,8 +24,15 @@ public class ScanExistingNetworks extends
 			return new Result(new ScanNetworksException("Wrong parameter size"));
 		}
 		String wpa_cli_location = params[0]; // TODO allow more than one place to test
-		String[] commandsToRun = { wpa_cli_location + " -p /data/misc/wifi/sockets -i wlan0 SCAN",
-				wpa_cli_location + " -p /data/misc/wifi/sockets -i wlan0 SCAN_RESULTS" };
+		String[] commandsToRun = null;
+		if (Build.VERSION_CODES.GINGERBREAD_MR1 >= Build.VERSION.SDK_INT) {
+			commandsToRun = new String[] { wpa_cli_location + " -i wlan0 SCAN",
+					wpa_cli_location + " -i wlan0 SCAN_RESULTS" };
+		} else {
+			commandsToRun = new String[] { wpa_cli_location + " -p /data/misc/wifi/sockets -i wlan0 SCAN",
+					wpa_cli_location + " -p /data/misc/wifi/sockets -i wlan0 SCAN_RESULTS" };
+
+		}
 		List<String> results = Shell.SU.run(commandsToRun);
 		if (results == null) {
 			return new Result(new ScanNetworksException("Error running the commands"));

@@ -17,9 +17,6 @@ public class TestOLSRExistence extends AsyncTask<String, Void, Boolean> {
 		if (!Shell.SU.available()) {
 			return false;
 		}
-		if (check("olsrd")) {
-			return true;
-		}
 		if (arg0.length < 1) {
 			return false;
 		}

@@ -166,7 +166,7 @@ public class Utils {
 		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 		wifiManager.setWifiEnabled(on);
 		try {
-			Thread.sleep(1 * 1000);// waits a second before returning to changes become effective
+			Thread.sleep(5 * 1000);// waits 5 seconds before returning to changes become effective
 		} catch (InterruptedException e) {
 		}
 	}
