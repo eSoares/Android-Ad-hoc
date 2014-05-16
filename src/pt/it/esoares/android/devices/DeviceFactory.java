@@ -1,13 +1,15 @@
 package pt.it.esoares.android.devices;
 
+import android.content.Context;
+
 public class DeviceFactory {
 	private static Device device;
 
-	public static Device getDevice() {
+	public static Device getDevice(Context context) {
 		if (device != null) {
 			return device;
 		}
-		Device[] devices = { new DeviceSamsung(), new DeviceDefault() };
+		Device[] devices = { new DeviceSamsung(context), new DeviceDefault(context) };
 		for (Device dev : devices) {
 			if (dev.isThisDevice()) {
 				if (device == null) {
@@ -23,14 +25,14 @@ public class DeviceFactory {
 		return device;
 	}
 
-	public static Device getDevice(String uniqID) {
+	public static Device getDevice(Context context, String uniqID) {
 		if(uniqID==null){
 			return null;
 		}
 		if (device != null) {
 			return device;
 		}
-		Device[] devices = { new DeviceSamsung(), new DeviceDefault() };
+		Device[] devices = { new DeviceSamsung(context), new DeviceDefault(context) };
 		for (Device dev : devices) {
 			if (dev.getClassUniqIdentifier().equals(uniqID)) {
 				if (device == null) {

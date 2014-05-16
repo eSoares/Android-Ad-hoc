@@ -3,6 +3,7 @@ package pt.it.esoares.android.ui;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -68,11 +69,11 @@ public class OLSR_Deployer extends ActionBarActivity {
 	}
 
 	private void loadDevice() {
-		new AsyncTask<Void, Void, Device>() {
+		new AsyncTask<Context, Void, Device>() {
 
 			@Override
-			protected Device doInBackground(Void... params) {
-				return DeviceFactory.getDevice();
+			protected Device doInBackground(Context... params) {
+				return DeviceFactory.getDevice(params[0]);
 			}
 
 			@Override
@@ -81,7 +82,7 @@ public class OLSR_Deployer extends ActionBarActivity {
 				super.onPostExecute(result);
 			}
 
-		}.execute();
+		}.execute(this);
 	}
 
 	@Override

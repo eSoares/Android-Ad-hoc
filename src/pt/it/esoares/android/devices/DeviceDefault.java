@@ -1,5 +1,9 @@
 package pt.it.esoares.android.devices;
 
+import android.content.Context;
+
+import pt.it.esoares.android.ip.Utils;
+
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell.SU;
@@ -9,8 +13,13 @@ class DeviceDefault implements Device {
 	private static final String SUPPLICANT_NAME = "wpa_supplicant.conf";
 	private static final String TEST_EXISTENCE = "if [ -e /data/misc/wifi/wpa_supplicant.conf ]; then echo 1; else echo 0; fi";
 	private static final String INTERFACE_NAME = "ip link show";
-	private static final String IDENTIFIER="identifier default";
+	private static final String IDENTIFIER = "identifier default";
 	private String interfaceName;
+	private Context context;
+
+	public DeviceDefault(Context context) {
+		this.context = context;
+	}
 
 	@Override
 	public String supplicantLocation() {
@@ -49,6 +58,7 @@ class DeviceDefault implements Device {
 	}
 
 	public void _getInterfaceName() {
+		Utils.changeWifiState(context, true);
 		List<String> result = SU.run(INTERFACE_NAME);
 		for (String res : result) {
 			if (res.contains("wlan0")) {

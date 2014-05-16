@@ -28,8 +28,6 @@ public class StartAdHocNetwork {
 	GenericExecutionCallback callback;
 	Context context;
 
-	
-	
 	public StartAdHocNetwork(Device device, Network network, IPInfo ipInfo, String olsrConfigPath,
 			String olsrExecutionPath, Boolean useOLSR, GenericExecutionCallback callback, Context context) {
 		super();
@@ -61,7 +59,7 @@ public class StartAdHocNetwork {
 				// deploy wpa supplicant
 				deployWPA_Supplicant();
 			}
-		});
+		}, context);
 	}
 
 	private void deployWPA_Supplicant() {

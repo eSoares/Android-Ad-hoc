@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -73,7 +74,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		if (savedInstanceState == null) {
 			return;
 		} else {
-			device = DeviceFactory.getDevice(savedInstanceState.getString(DEVICE));
+			device = DeviceFactory.getDevice(this, savedInstanceState.getString(DEVICE));
 			connected = savedInstanceState.getBoolean(STATE_CONNECTED, false);
 			connecting = savedInstanceState.getBoolean(STATE_CONNECTING, false);
 			if (infoFragmentTAG != null) {
@@ -99,7 +100,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		editor.commit();
 		outState.putBoolean(STATE_CONNECTED, connected);
 		outState.putBoolean(STATE_CONNECTING, connecting);
-		outState.putString(DEVICE, device==null?null:device.getClassUniqIdentifier());
+		outState.putString(DEVICE, device == null ? null : device.getClassUniqIdentifier());
 		super.onSaveInstanceState(outState);
 	}
 
@@ -175,7 +176,8 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 					((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG))
 							.changeConectingState(connecting, connected);
 				}
-			});
+
+			}, this);
 		} else {
 			// disconnect
 			new StopAdHocNetwork(device, useOLSR, new GenericExecutionCallback() {
@@ -303,13 +305,13 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		}
 	}
 
-	class StartNetwork extends AsyncTask<Void, Void, Device> {
+	class StartNetwork extends AsyncTask<Context, Void, Device> {
 
 		private GenericExecutionCallback callback = null;
 
 		@Override
-		protected Device doInBackground(Void... params) {
-			return DeviceFactory.getDevice();
+		protected Device doInBackground(Context... params) {
+			return DeviceFactory.getDevice(params[0]);
 
 		}
 
@@ -325,9 +327,9 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			super.onPostExecute(result);
 		}
 
-		public void execute(GenericExecutionCallback callback) {
+		public void execute(GenericExecutionCallback callback, Context context) {
 			this.callback = callback;
-			this.execute();
+			this.execute(context);
 		}
 	}
 }

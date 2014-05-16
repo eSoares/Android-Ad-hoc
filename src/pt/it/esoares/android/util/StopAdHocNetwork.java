@@ -43,7 +43,7 @@ public class StopAdHocNetwork {
 					callback.onSucessfullExecution();
 				}
 			}
-		});
+		}, context);
 	}
 
 	private void killOLSR() {

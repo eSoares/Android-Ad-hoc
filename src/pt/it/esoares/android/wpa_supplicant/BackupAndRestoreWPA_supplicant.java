@@ -1,5 +1,6 @@
 package pt.it.esoares.android.wpa_supplicant;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -26,8 +27,9 @@ public class BackupAndRestoreWPA_supplicant extends
 			return false;
 		}
 		Device device = arg0[0].getDevice();
+		Context context=arg0[0].getContext();
 		if(device==null){
-			device=DeviceFactory.getDevice();
+			device=DeviceFactory.getDevice(context);
 		}
 		if (arg0[0].getAction() == Action.BACKUP) {
 			// backup
@@ -50,14 +52,14 @@ public class BackupAndRestoreWPA_supplicant extends
 		return true;
 	}
 
-	public void backup(Device device, GenericExecutionCallback callback) {
+	public void backup(Device device, GenericExecutionCallback callback, Context context) {
 		this.listener = callback;
-		this.execute(new Data(Action.BACKUP, device));
+		this.execute(new Data(Action.BACKUP, device, context));
 	}
 
-	public void restore(Device device, GenericExecutionCallback callback) {
+	public void restore(Device device, GenericExecutionCallback callback, Context context) {
 		this.listener = callback;
-		this.execute(new Data(Action.RESTORE, device));
+		this.execute(new Data(Action.RESTORE, device, context));
 	}
 
 	@Override
@@ -72,8 +74,9 @@ public class BackupAndRestoreWPA_supplicant extends
 	class Data {
 		private Action action;
 		private Device device;
+		private Context context;
 
-		Data(Action action, Device device) {
+		Data(Action action, Device device, Context context) {
 			this.action = action;
 			this.device = device;
 		}
@@ -84,6 +87,10 @@ public class BackupAndRestoreWPA_supplicant extends
 
 		public Device getDevice() {
 			return device;
+		}
+		
+		public Context getContext(){
+			return context;
 		}
 
 	}

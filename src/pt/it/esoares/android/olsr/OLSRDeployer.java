@@ -1,5 +1,6 @@
 package pt.it.esoares.android.olsr;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 
@@ -41,7 +42,8 @@ public class OLSRDeployer
 		}
 		// TODO: test the OLSR installation
 		// then the olsr config
-		String olsr_config = OLSRGenerator.getOLSRConfig(DeviceFactory.getDevice(), new OLSRSetting());
+		String olsr_config = OLSRGenerator.getOLSRConfig(DeviceFactory.getDevice(params[0].getContext()),
+				new OLSRSetting());
 		try {
 			deployOLSRConfig(olsr.getDestination(), olsr_config);
 		} catch (IOException e) {
@@ -78,8 +80,8 @@ public class OLSRDeployer
 		listener.onDeployStatusUpdate(values[0], values.length > 1 ? values[1] : STATUS_CODE_NOT_EXPECIFIED);
 	}
 
-	public void run(Resources resources, String privateAppFolderLocation) {
-		Data raw = new Data(resources, R.raw.olsrd, privateAppFolderLocation);
+	public void run(Resources resources, String privateAppFolderLocation, Context context) {
+		Data raw = new Data(resources, R.raw.olsrd, privateAppFolderLocation, context);
 		this.execute(raw);
 	}
 
@@ -106,9 +108,14 @@ public class OLSRDeployer
 		private Resources resource;
 		private int ID;
 		private String destination;
+		private Context context;
 
 		public Resources getResource() {
 			return resource;
+		}
+
+		public Context getContext() {
+			return context;
 		}
 
 		public int getID() {
@@ -119,11 +126,12 @@ public class OLSRDeployer
 			return destination;
 		}
 
-		public Data(Resources resource, int iD, String destination) {
+		public Data(Resources resource, int iD, String destination, Context context) {
 			super();
 			this.resource = resource;
-			ID = iD;
+			this.ID = iD;
 			this.destination = destination;
+			this.context = context;
 		}
 
 	}
