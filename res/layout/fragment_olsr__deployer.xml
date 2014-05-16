@@ -1,43 +1,103 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="pt.it.esoares.android.UI.OLSR_Deployer$PlaceholderFragment" >
+    tools:context="pt.it.esoares.android.ui.OLSR_Deployer$PlaceholderFragment" >
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="existsOLSR"
-        android:text="@string/test_olsr_existence" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/txt_status"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:scrollbarStyle="outsideOverlay" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="existsOLSR"
+                android:text="@string/test_olsr_existence" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="deployOLSR"
+                android:text="@string/deploy_olsr" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="removeOLSR"
+                android:text="@string/remove_olsr" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="startOLSR"
+                android:text="@string/start_olsr" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="checkOLSRRunning"
+                android:text="@string/check_olsr_running" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="wpa_supplicant"
+                android:text="@string/deploy_wpa_supplicant" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="existsWPACli"
+                android:text="@string/test_wpacli_existence" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="deployWPACli"
+                android:text="@string/deploy_wpacli" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="removeWPACli"
+                android:text="@string/remove_wpacli" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="scanExistingNetworks"
+                android:text="@string/scan_networks" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="generateIPAddress"
+                android:text="@string/generateIPAddress" />
+        </LinearLayout>
+    </ScrollView>
 
     <TextView
-        android:id="@+id/txt_status_olsr"
+        android:id="@+id/txt_status"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/empty"
+        android:gravity="center_vertical"
         android:maxLines="1"
-        android:text=" " />
+        android:minHeight="40dp"
+        android:paddingLeft="10dp"
+        android:text="@string/empty"
+        android:textColor="@android:color/black" />
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="deployOLSR"
-        android:text="@string/deploy_olsr" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="removeOLSR"
-        android:text="@string/remove_olsr" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="wpa_supplicant"
-        android:text="@string/deploy_wpa_supplicant" />
-
-</LinearLayout>
+</RelativeLayout>

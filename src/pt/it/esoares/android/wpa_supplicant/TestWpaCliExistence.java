@@ -1,4 +1,4 @@
-package pt.it.esoares.android.olsr;
+package pt.it.esoares.android.wpa_supplicant;
 
 import android.os.AsyncTask;
 
@@ -8,7 +8,7 @@ import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
 
-public class TestOLSRExistence extends AsyncTask<String, Void, Boolean> {
+public class TestWpaCliExistence extends AsyncTask<String, Void, Boolean> {
 
 	private GenericExecutionCallback listener;
 
@@ -17,27 +17,33 @@ public class TestOLSRExistence extends AsyncTask<String, Void, Boolean> {
 		if (!Shell.SU.available()) {
 			return false;
 		}
+		if (check("wpa_cli quit" )) {
+			return true;
+		}
 		if (arg0.length < 1) {
 			return false;
 		}
 		for (String location : arg0) {
-			if (check(location)) {
+			if (check(location +" quit")) {
 				return true;
 			}
 		}
-		// TODO test if the file while can't be executed is there, make a proper callback for this
 		return false;
 
 	}
 
-	public void execute(String olsrPath, GenericExecutionCallback callback) {
+	public void execute(String[] wpaCliPath, GenericExecutionCallback callback) {
 		this.listener = callback;
-		this.execute(olsrPath);
+		this.execute(wpaCliPath);
 	}
 
 	private boolean check(String command) {
+//		String[] s = { command, "quit" };
 		List<String> result = Shell.SU.run(command);
-		if (result.size() > 3) {
+		if (result == null) {
+			return false;
+		}
+		if (result.size() > 0) {
 			return true;
 		}
 		return false;

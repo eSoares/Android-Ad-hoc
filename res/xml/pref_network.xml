@@ -1,0 +1,42 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/pref_header_network" >
+
+    <EditTextPreference
+        android:inputType="textCapWords"
+        android:key="network_name_text"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_network_name_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="use_wep_checkbox"
+        android:title="@string/pref_use_wep_checkbock" />
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue=""
+        android:dependency="use_wep_checkbox"
+        android:inputType="textCapWords"
+        android:key="wep_password_text"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_wep_password" />
+
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    <ListPreference
+        android:defaultValue="2432"
+        android:entries="@array/pref_frequency_channel_list"
+        android:entryValues="@array/pref_frequency_list"
+        android:key="channel_list"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_channel_use" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -4,7 +4,6 @@ public class OLSRSetting {
 	private String pluginTXTInfoLocation;
 	
 	public OLSRSetting() {
-		
 	}
 
 	public OLSRSetting(String pluginTXTInfoLocation) {

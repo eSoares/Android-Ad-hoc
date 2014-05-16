@@ -4,7 +4,9 @@ import android.os.AsyncTask;
 
 import eu.chainfire.libsuperuser.Shell.SU;
 
-public abstract class FileRemover extends AsyncTask<String, Void, Boolean> {
+public class FileRemover extends AsyncTask<String, Void, Boolean> {
+
+	private GenericExecutionCallback listener;
 
 	@Override
 	protected Boolean doInBackground(String... params) {
@@ -12,12 +14,26 @@ public abstract class FileRemover extends AsyncTask<String, Void, Boolean> {
 			return false;
 		}
 		for (String file : params) {
-			SU.run("rm " + file);
+			removeFile(file);
 		}
 		return true;
 	}
 
-	@Override
-	protected abstract void onPostExecute(Boolean result);
+	public void execute(String[] filesPathToRemove, GenericExecutionCallback callback) {
+		this.listener = callback;
+		this.execute(filesPathToRemove);
+	}
 
+	@Override
+	protected void onPostExecute(Boolean result) {
+		if (result) {
+			listener.onSucessfullExecution();
+		} else {
+			listener.onUnsucessfullExecution();
+		}
+	}
+
+	public static void removeFile(String filePath) {
+		SU.run("rm " + filePath);
+	}
 }

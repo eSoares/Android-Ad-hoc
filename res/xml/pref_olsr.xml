@@ -1,0 +1,11 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- Use OLSR -->
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="use_olsr"
+        android:title="@string/pref_title_use_olsr" />
+
+	
+
+</PreferenceScreen>
