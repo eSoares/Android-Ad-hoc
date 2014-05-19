@@ -16,6 +16,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,9 +27,12 @@ import pt.it.esoares.android.devices.Device;
 import pt.it.esoares.android.devices.DeviceFactory;
 import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.ip.IPInfo;
+import pt.it.esoares.android.olsr.OLSRKiller;
+import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.util.GenericExecutionCallback;
 import pt.it.esoares.android.util.StartAdHocNetwork;
+import pt.it.esoares.android.util.StartOLSR;
 import pt.it.esoares.android.util.StopAdHocNetwork;
 
 public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
@@ -52,14 +56,18 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 
 	private String infoFragmentTAG;
 
-	static final String STATE_CONNECTED = "state network connected";
+	static final String STATE_OLSR = "state olsr connected";
+	public static final String STATE_CONNECTED = "state network connected";
 	static final String STATE_CONNECTING = "state network connecting";
-	static final String USE_OLSR = "use olsr";
+	public static final String USE_OLSR = "use olsr";
 
 	static final String DEVICE = "device";
 
 	boolean connected = false;
 	boolean connecting = false;
+	boolean olsr_connected = false;
+
+	private Menu menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,15 +101,20 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		Editor editor = prefs.edit();
-		editor.putBoolean(STATE_CONNECTED, connected);
-		editor.putBoolean(STATE_CONNECTING, connecting);
-		editor.commit();
+		saveStartState();
 		outState.putBoolean(STATE_CONNECTED, connected);
 		outState.putBoolean(STATE_CONNECTING, connecting);
 		outState.putString(DEVICE, device == null ? null : device.getClassUniqIdentifier());
 		super.onSaveInstanceState(outState);
+	}
+
+	private void saveStartState() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		Editor editor = prefs.edit();
+		editor.putBoolean(STATE_CONNECTED, connected);
+		editor.putBoolean(STATE_CONNECTING, connecting);
+		editor.putBoolean(STATE_OLSR, olsr_connected);
+		editor.commit();
 	}
 
 	private void loadSettings() {
@@ -118,10 +131,14 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		}
 		useOLSR = prefs.getBoolean("use_olsr", true);
 		connected = prefs.getBoolean(STATE_CONNECTED, false);
-		connecting = prefs.getBoolean(STATE_CONNECTING, false);
+		olsr_connected = prefs.getBoolean(STATE_OLSR, false);
+		// connecting = prefs.getBoolean(STATE_CONNECTING, false);
+		connecting = false;
 		if (infoFragmentTAG != null) {
-			((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).changeConectingState(
-					connecting, connected);
+			InfoFragment fragment = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG));
+			if (fragment != null) {
+				fragment.changeConectingState(connecting, connected);
+			}
 
 		}
 	}
@@ -154,8 +171,11 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 
 	public void onStartStop(View v) {
 		connecting = true;
-		((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).changeConectingState(
-				connecting, connected);
+		InfoFragment frament = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG));
+		if (frament != null) {
+			frament.changeConectingState(connecting, connected);
+		}
+		saveStartState();
 		if (!connected) {
 			// connects
 			new StartNetwork().execute(new GenericExecutionCallback() {
@@ -164,17 +184,25 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 				public void onUnsucessfullExecution() {
 					connecting = false;
 					connected = false;
-					((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG))
-							.changeConectingState(connecting, connected);
+					InfoFragment frament = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(
+							infoFragmentTAG));
+					if (frament != null) {
+						frament.changeConectingState(connecting, connected);
+					}
 					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+					saveStartState();
 				}
 
 				@Override
 				public void onSucessfullExecution() {
 					connecting = false;
 					connected = true;
-					((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG))
-							.changeConectingState(connecting, connected);
+					InfoFragment frament = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(
+							infoFragmentTAG));
+					if (frament != null) {
+						frament.changeConectingState(connecting, connected);
+					}
+					saveStartState();
 				}
 
 			}, this);
@@ -191,11 +219,60 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 				public void onSucessfullExecution() {
 					connecting = false;
 					connected = false;
-					((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG))
-							.changeConectingState(connecting, connected);
+					InfoFragment frament = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(
+							infoFragmentTAG));
+					if (frament != null) {
+						frament.changeConectingState(connecting, connected);
+					}
+					saveStartState();
 				}
 			}, this).stopNetwork();
 		}
+	}
+
+	private void startStopOLSR() {
+		if (!olsr_connected) {
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
+			String olsrPath = prefs.getString(Setup.OLSR_PATH, null);
+			new StartOLSR(olsrConfigPath, olsrPath, new GenericExecutionCallback() {
+
+				@Override
+				public void onUnsucessfullExecution() {
+					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+				}
+
+				@Override
+				public void onSucessfullExecution() {
+					olsr_connected = true;
+					updateMenu(true);
+				}
+			}).startOlsr(this, new OLSRSetting());
+		} else {
+			new OLSRKiller().execute(new GenericExecutionCallback() {
+
+				@Override
+				public void onUnsucessfullExecution() {
+					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+				}
+
+				@Override
+				public void onSucessfullExecution() {
+					olsr_connected = false;
+					updateMenu(olsr_connected);
+				}
+			});
+		}
+	}
+
+	protected void updateMenu(boolean olsr_connected) {
+		// MenuItem startStopMenuItem = menu.findItem(R.id.startOLSR);
+		// startStopMenuItem.setTitle(olsr_connected ? R.string.menu_stopOLSR : R.string.menu_startStopOLSR);
+		// save setting
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		Editor editor = prefs.edit();
+		editor.putBoolean(STATE_OLSR, olsr_connected);
+		editor.commit();
 	}
 
 	private void setupUI() {
@@ -236,6 +313,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.adhoc, menu);
+		this.menu = menu;
 		return true;
 	}
 
@@ -250,6 +328,10 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			startActivity(i);
 			return true;
 		}
+		// else if (id == R.id.startOLSR) {
+		// startStopOLSR();
+		// return true;
+		// }
 		return super.onOptionsItemSelected(item);
 	}
 

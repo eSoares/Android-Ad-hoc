@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
 import pt.it.esoares.android.olsrdeployer.R;
+
 import java.util.List;
 
 /**
@@ -31,6 +32,8 @@ public class SettingsActivity extends PreferenceActivity {
 	 * shown as a master/detail two-pane view on tablets. When true, a single pane is shown on tablets.
 	 */
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
+
+	final Context ctx = this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +105,27 @@ public class SettingsActivity extends PreferenceActivity {
 		fakeHeader.setTitle(R.string.pref_header_olsr);
 		getPreferenceScreen().addPreference(fakeHeader);
 		addPreferencesFromResource(R.xml.pref_olsr);
+
+		// Add 'About' preferences, and a corresponding header.
+//		fakeHeader = new PreferenceCategory(this);
+//		fakeHeader.setTitle(R.string.pref_title_about);
+//		getPreferenceScreen().addPreference(fakeHeader);
+//		addPreferencesFromResource(R.xml.pref_about);
+
+//		Preference button = (Preference) findPreference("button_license");
+//		button.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+//
+//			@Override
+//			public boolean onPreferenceClick(Preference preference) {
+//				// show license dialog
+//				// Fragment dialog = DialogFragment.instantiate(getBaseContext(), "");
+//				Dialog dialog = new Dialog(ctx);
+//				dialog.setTitle("Licenses");
+//				dialog.setContentView(R.layout.dialog_licences);
+//				dialog.show();
+//				return true;
+//			}
+//		});
 
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated

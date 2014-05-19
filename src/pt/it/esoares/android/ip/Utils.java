@@ -163,6 +163,9 @@ public class Utils {
 	 *            true=turns WIFI on, false=turns off WIFI
 	 */
 	public static void changeWifiState(Context context, boolean on) {
+		if (context == null) {
+			return;
+		}
 		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 		wifiManager.setWifiEnabled(on);
 		try {
