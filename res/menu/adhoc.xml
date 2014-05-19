@@ -9,4 +9,13 @@
         android:title="@string/action_settings"
         app:showAsAction="never"/>
 
+    <!--
+      <item 
+        android:id="@+id/startOLSR"
+        android:orderInCategory="101"
+        android:title="@string/menu_startStopOLSR"
+        app:showAsAction="never"
+        />
+    -->
+
 </menu>

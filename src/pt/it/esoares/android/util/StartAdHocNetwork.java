@@ -1,6 +1,7 @@
 package pt.it.esoares.android.util;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -104,19 +105,16 @@ public class StartAdHocNetwork {
 	}
 
 	private void setupOLSR() {
-		String olsrConfig = OLSRGenerator.getOLSRConfig(device, new OLSRSetting());
-		// deploy olsrConfig
-		new OLSRConfigDeploy().execute(olsrConfigPath, olsrConfig, new GenericExecutionCallback() {
+		new AsyncTask<OLSRSetting, Void, String>() {
 
 			@Override
-			public void onUnsucessfullExecution() {
-				callback.onUnsucessfullExecution();
+			protected String doInBackground(OLSRSetting... params) {
+				return OLSRGenerator.getOLSRConfig(device, params.length != 0 ? params[0] : new OLSRSetting());
 			}
 
-			@Override
-			public void onSucessfullExecution() {
-				// Execute OLSR
-				new ExecuteOLSR().execute(olsrExecutionPath, olsrConfigPath, new GenericExecutionCallback() {
+			protected void onPostExecute(String result) {
+				// deploy olsrConfig
+				new OLSRConfigDeploy().execute(olsrConfigPath, result, new GenericExecutionCallback() {
 
 					@Override
 					public void onUnsucessfullExecution() {
@@ -125,10 +123,24 @@ public class StartAdHocNetwork {
 
 					@Override
 					public void onSucessfullExecution() {
-						callback.onSucessfullExecution();
+						// Execute OLSR
+						new ExecuteOLSR().execute(olsrExecutionPath, olsrConfigPath, new GenericExecutionCallback() {
+
+							@Override
+							public void onUnsucessfullExecution() {
+								callback.onUnsucessfullExecution();
+							}
+
+							@Override
+							public void onSucessfullExecution() {
+								callback.onSucessfullExecution();
+							}
+						});
 					}
 				});
-			}
-		});
+
+			};
+
+		}.execute(new OLSRSetting());
 	}
 }
