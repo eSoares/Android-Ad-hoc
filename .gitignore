@@ -1,5 +1,5 @@
 ###Android###
- 
+
 # built application files
 *.apk
 *.ap_
@@ -23,11 +23,18 @@ local.properties
 
 
 ###Java###
- 
+
 *.class
 
 # Package Files #
 *.war
 *.ear
 
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea/
 
+app/build/
+.gradle/
