@@ -22,4 +22,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.android.support:gridlayout-v7:21.0.+'
     compile files('libs/ipManager.jar')
+    compile 'eu.chainfire:libsuperuser:1.0.0.+'
 }
