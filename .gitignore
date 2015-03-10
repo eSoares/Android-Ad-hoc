@@ -21,11 +21,6 @@ local.properties
 .classpath
 .project
 
-
-###Java###
-
-*.class
-
 # Package Files #
 *.war
 *.ear
@@ -36,5 +31,10 @@ local.properties
 *.iws
 .idea/
 
-app/build/
+# Gradle files
 .gradle/
+build/
+/*/build/
+
+### Android Patch ###
+gen-external-apklibs
