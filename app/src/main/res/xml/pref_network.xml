@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/pref_header_network" >
+    <PreferenceCategory android:title="@string/pref_header_network">
 
     <EditTextPreference
         android:inputType="textCapWords"

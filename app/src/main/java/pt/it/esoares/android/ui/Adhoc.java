@@ -3,7 +3,7 @@ package pt.it.esoares.android.ui;
 import java.io.IOException;
 import java.util.Locale;
 
-import android.support.v7.app.ActionBarActivity;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,8 +16,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +35,7 @@ import pt.it.esoares.android.util.StartAdHocNetwork;
 import pt.it.esoares.android.util.StartOLSR;
 import pt.it.esoares.android.util.StopAdHocNetwork;
 
-public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
+public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
@@ -324,7 +324,12 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			Intent i = new Intent(this, SettingsActivity.class);
+            Intent i;
+            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB) {
+                 i = new Intent(this, DeprecatedSettingsActivity.class);
+            }else{
+                i=new Intent(this, SettingsActivity.class);
+            }
 			startActivity(i);
 			return true;
 		}
