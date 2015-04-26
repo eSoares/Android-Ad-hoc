@@ -37,5 +37,6 @@
     <string name="title_activity_setup">Setup</string>
     <string name="menu_startStopOLSR">Start OLSR</string>
     <string name="menu_stopOLSR">Stop OLSR</string>
+    <string name="pref_header_about">About</string>
 
 </resources>

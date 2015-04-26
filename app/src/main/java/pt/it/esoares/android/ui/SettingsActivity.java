@@ -11,6 +11,8 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import de.psdev.licensesdialog.LicensesDialog;
+import de.psdev.licensesdialog.LicensesDialogFragment;
 import pt.it.esoares.android.olsrdeployer.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -96,7 +98,14 @@ public class SettingsActivity extends AppCompatActivity {
             bindPreferenceSummaryToValue(findPreference("wep_password_text"));
             bindPreferenceSummaryToValue(findPreference("channel_list"));
             addPreferencesFromResource(R.xml.pref_olsr);
-//            addPreferencesFromResource(R.xml.pref_about);
+            addPreferencesFromResource(R.xml.pref_about);
+            findPreference("button_license").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    new LicensesDialog.Builder(getActivity()).setNotices(R.raw.notices).build().show();
+                    return true;
+                }
+            });
         }
     }
 }

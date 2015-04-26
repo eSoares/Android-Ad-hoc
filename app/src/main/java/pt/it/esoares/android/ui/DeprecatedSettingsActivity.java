@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import de.psdev.licensesdialog.LicensesDialog;
 import pt.it.esoares.android.olsrdeployer.R;
 
 /**
@@ -139,7 +140,14 @@ public class DeprecatedSettingsActivity extends PreferenceActivity {
         bindPreferenceSummaryToValue(findPreference("ip_address"));
         bindPreferenceSummaryToValue(findPreference("ip_mask"));
         bindPreferenceSummaryToValue(findPreference("ip_address_gateway"));
-
+        addPreferencesFromResource(R.xml.pref_about);
+        findPreference("button_license").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                new LicensesDialog.Builder(getBaseContext()).setNotices(R.raw.notices).build().show();
+                return true;
+            }
+        });
         // Preference wep_checkbox = findPreference("use_wep_checkbox");
         // final Preference wepPassword = findPreference("wep_password_text");
         //
