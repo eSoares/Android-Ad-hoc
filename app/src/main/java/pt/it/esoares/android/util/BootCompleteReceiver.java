@@ -11,6 +11,7 @@ import pt.it.esoares.android.olsr.OLSRRunningTest;
 import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.ui.Adhoc;
 import pt.it.esoares.android.ui.Setup;
+import pt.it.esoares.android.util.tasks.StartNetwork;
 import pt.it.esoares.android.util.tasks.StartOLSR;
 
 public class BootCompleteReceiver extends BroadcastReceiver {
@@ -31,25 +32,23 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 				}
 			};
 
-			if (prefs.getBoolean(Adhoc.STATE_CONNECTED, false)) {
-				new OLSRRunningTest().execute(new GenericExecutionCallback() {
+			new StartNetwork(arg0.getApplicationContext()).execute(new GenericExecutionCallback() {
 
-					@Override
-					public void onUnsucessfullExecution() {
-						// start OLSR
-						String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
-						String olsrPath = prefs.getString(Setup.OLSR_PATH, null);
-						new StartOLSR(olsrConfigPath, olsrPath, emptyCallback).startOlsr(context, new OLSRSetting());
-						;
-					}
+				@Override
+				public void onUnsucessfullExecution() {
+//					 start OLSR
+					String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
+					String olsrPath = prefs.getString(Setup.OLSR_PATH, null);
+					new StartOLSR(olsrConfigPath, olsrPath, emptyCallback).startOlsr(context, new OLSRSetting());
+				}
 
-					@Override
-					public void onSucessfullExecution() {
-					}
-				});
-			} else {
-				new OLSRKiller().execute(emptyCallback);
-			}
+				@Override
+				public void onSucessfullExecution() {
+				}
+			}, arg0);
+//			} else {
+//				new OLSRKiller().execute(emptyCallback);
+//			}
 		}
 	}
 }
