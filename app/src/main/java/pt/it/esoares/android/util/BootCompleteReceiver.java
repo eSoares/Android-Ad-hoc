@@ -11,6 +11,7 @@ import pt.it.esoares.android.olsr.OLSRRunningTest;
 import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.ui.Adhoc;
 import pt.it.esoares.android.ui.Setup;
+import pt.it.esoares.android.util.tasks.StartOLSR;
 
 public class BootCompleteReceiver extends BroadcastReceiver {
 

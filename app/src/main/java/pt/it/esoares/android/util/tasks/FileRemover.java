@@ -1,8 +1,9 @@
-package pt.it.esoares.android.util;
+package pt.it.esoares.android.util.tasks;
 
 import android.os.AsyncTask;
 
 import eu.chainfire.libsuperuser.Shell.SU;
+import pt.it.esoares.android.util.GenericExecutionCallback;
 
 public class FileRemover extends AsyncTask<String, Void, Boolean> {
 

@@ -1,4 +1,4 @@
-package pt.it.esoares.android.util;
+package pt.it.esoares.android.util.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -14,6 +14,7 @@ import pt.it.esoares.android.olsr.ExecuteOLSR;
 import pt.it.esoares.android.olsr.OLSRConfigDeploy;
 import pt.it.esoares.android.olsr.OLSRGenerator;
 import pt.it.esoares.android.olsr.OLSRSetting;
+import pt.it.esoares.android.util.GenericExecutionCallback;
 import pt.it.esoares.android.wpa_supplicant.BackupAndRestoreWPA_supplicant;
 import pt.it.esoares.android.wpa_supplicant.GenerateWPA_supplicant;
 import pt.it.porto.esoares.android.network.ip.IPManager;

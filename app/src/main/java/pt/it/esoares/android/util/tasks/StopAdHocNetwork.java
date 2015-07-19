@@ -1,10 +1,11 @@
-package pt.it.esoares.android.util;
+package pt.it.esoares.android.util.tasks;
 
 import android.content.Context;
 
 import pt.it.esoares.android.devices.Device;
 import pt.it.esoares.android.ip.Utils;
 import pt.it.esoares.android.olsr.OLSRKiller;
+import pt.it.esoares.android.util.GenericExecutionCallback;
 import pt.it.esoares.android.wpa_supplicant.BackupAndRestoreWPA_supplicant;
 
 public class StopAdHocNetwork {

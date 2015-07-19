@@ -1,6 +1,5 @@
 package pt.it.esoares.android.ui;
 
-import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -27,8 +26,8 @@ import pt.it.esoares.android.olsr.OLSRRunningTest;
 import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.olsr.TestOLSRExistence;
 import pt.it.esoares.android.olsrdeployer.R;
-import pt.it.esoares.android.util.FileCopyFromResources;
-import pt.it.esoares.android.util.FileRemover;
+import pt.it.esoares.android.util.tasks.FileCopyFromResources;
+import pt.it.esoares.android.util.tasks.FileRemover;
 import pt.it.esoares.android.util.GenericExecutionCallback;
 import pt.it.esoares.android.wpa_supplicant.GenerateWPA_supplicant;
 import pt.it.esoares.android.wpa_supplicant.ScanExistingNetworks;

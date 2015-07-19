@@ -31,9 +31,9 @@ import pt.it.esoares.android.olsr.OLSRKiller;
 import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.util.GenericExecutionCallback;
-import pt.it.esoares.android.util.StartAdHocNetwork;
 import pt.it.esoares.android.util.StartOLSR;
-import pt.it.esoares.android.util.StopAdHocNetwork;
+import pt.it.esoares.android.util.tasks.StartOLSR;
+import pt.it.esoares.android.util.tasks.StopAdHocNetwork;
 
 public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 
