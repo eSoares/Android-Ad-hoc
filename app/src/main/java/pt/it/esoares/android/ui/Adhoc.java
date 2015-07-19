@@ -9,11 +9,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
@@ -27,11 +25,12 @@ import pt.it.esoares.android.devices.Device;
 import pt.it.esoares.android.devices.DeviceFactory;
 import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.ip.IPInfo;
+import pt.it.esoares.android.ip.Utils;
 import pt.it.esoares.android.olsr.OLSRKiller;
 import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.util.GenericExecutionCallback;
-import pt.it.esoares.android.util.StartOLSR;
+import pt.it.esoares.android.util.tasks.StartNetwork;
 import pt.it.esoares.android.util.tasks.StartOLSR;
 import pt.it.esoares.android.util.tasks.StopAdHocNetwork;
 
@@ -178,7 +177,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 		saveStartState();
 		if (!connected) {
 			// connects
-			new StartNetwork().execute(new GenericExecutionCallback() {
+			new StartNetwork(this.getApplicationContext()).execute(new GenericExecutionCallback() {
 
 				@Override
 				public void onUnsucessfullExecution() {
@@ -324,12 +323,12 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-            Intent i;
-            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB) {
-                 i = new Intent(this, DeprecatedSettingsActivity.class);
-            }else{
-                i=new Intent(this, SettingsActivity.class);
-            }
+			Intent i;
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+				i = new Intent(this, DeprecatedSettingsActivity.class);
+			} else {
+				i = new Intent(this, SettingsActivity.class);
+			}
 			startActivity(i);
 			return true;
 		}
@@ -383,40 +382,13 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
 			switch (position) {
-			case 0:
-				return getString(R.string.title_info).toUpperCase(l);
-			case 1:
-				return getString(R.string.title_search_networks).toUpperCase(l);
+				case 0:
+					return getString(R.string.title_info).toUpperCase(l);
+				case 1:
+					return getString(R.string.title_search_networks).toUpperCase(l);
 			}
 			return null;
 		}
 	}
 
-	class StartNetwork extends AsyncTask<Context, Void, Device> {
-
-		private GenericExecutionCallback callback = null;
-
-		@Override
-		protected Device doInBackground(Context... params) {
-			return DeviceFactory.getDevice(params[0]);
-
-		}
-
-		@Override
-		protected void onPostExecute(Device result) {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
-			String olsrPath = prefs.getString(Setup.OLSR_PATH, null);
-			device = result;
-
-			new StartAdHocNetwork(result, network, ipInfo, olsrConfigPath, olsrPath, useOLSR, callback,
-					getApplicationContext()).startNetwork();
-			super.onPostExecute(result);
-		}
-
-		public void execute(GenericExecutionCallback callback, Context context) {
-			this.callback = callback;
-			this.execute(context);
-		}
-	}
 }
