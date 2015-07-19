@@ -224,6 +224,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 						frament.changeConectingState(connecting, connected);
 					}
 					saveStartState();
+					Utils.changeWifiState(getApplicationContext(), true);
 				}
 			}, this).stopNetwork();
 		}
