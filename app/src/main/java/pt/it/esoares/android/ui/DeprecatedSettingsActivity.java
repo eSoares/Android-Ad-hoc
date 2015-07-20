@@ -140,6 +140,7 @@ public class DeprecatedSettingsActivity extends PreferenceActivity {
         bindPreferenceSummaryToValue(findPreference("ip_address"));
         bindPreferenceSummaryToValue(findPreference("ip_mask"));
         bindPreferenceSummaryToValue(findPreference("ip_address_gateway"));
+        addPreferencesFromResource(R.xml.pref_extras);
         addPreferencesFromResource(R.xml.pref_about);
         findPreference("button_license").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

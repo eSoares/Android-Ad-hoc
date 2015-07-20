@@ -98,14 +98,15 @@ public class SettingsActivity extends AppCompatActivity {
             bindPreferenceSummaryToValue(findPreference("wep_password_text"));
             bindPreferenceSummaryToValue(findPreference("channel_list"));
             addPreferencesFromResource(R.xml.pref_olsr);
-            addPreferencesFromResource(R.xml.pref_about);
-            findPreference("button_license").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    new LicensesDialog.Builder(getActivity()).setNotices(R.raw.notices).build().show();
-                    return true;
-                }
-            });
-        }
-    }
+			addPreferencesFromResource(R.xml.pref_extras);
+			addPreferencesFromResource(R.xml.pref_about);
+			findPreference("button_license").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					new LicensesDialog.Builder(getActivity()).setNotices(R.raw.notices).build().show();
+					return true;
+				}
+			});
+		}
+	}
 }
