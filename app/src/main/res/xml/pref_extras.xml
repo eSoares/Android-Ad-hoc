@@ -7,9 +7,9 @@
 
         <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
         <EditTextPreference
+            android:defaultValue="@string/pref_default_battery_filename"
             android:dependency="log_battery"
             android:inputType="text"
-            android:defaultValue="@string/pref_default_battery_filename"
             android:key="log_battery_file_name"
             android:title="@string/pref_title_log_battery_filename"/>
         <CheckBoxPreference
