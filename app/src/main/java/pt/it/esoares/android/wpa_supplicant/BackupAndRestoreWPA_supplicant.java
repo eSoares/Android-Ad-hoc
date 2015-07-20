@@ -19,6 +19,7 @@ public class BackupAndRestoreWPA_supplicant extends
 	private String overwrite_wpa = "cat %s > %s";
 	private String bk_file_name = "%s.bk";
 	private String bk_wpa_supplicant = "cp %s %s.bk";
+	private String clean_backup = "rm %s.bk";
 	private String bk_wpa_supplicant_exits = "if [ -e %s.bk ]; then echo 1; else echo 0; fi";
 
 	private GenericExecutionCallback listener;
@@ -45,7 +46,7 @@ public class BackupAndRestoreWPA_supplicant extends
 			List<String> result = SU.run(new String[]{
 					command_toPlace + device.supplicantLocation(),
 					String.format(overwrite_wpa, String.format(bk_file_name, device.supplicantName()),
-							device.supplicantName())});
+							device.supplicantName()), String.format(clean_backup, device.supplicantName())});
 			for (String r : result) {
 				Log.d(TAG, r);
 			}
