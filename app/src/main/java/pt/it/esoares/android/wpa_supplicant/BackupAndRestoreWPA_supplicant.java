@@ -47,8 +47,10 @@ public class BackupAndRestoreWPA_supplicant extends
 					command_toPlace + device.supplicantLocation(),
 					String.format(overwrite_wpa, String.format(bk_file_name, device.supplicantName()),
 							device.supplicantName()), String.format(clean_backup, device.supplicantName())});
-			for (String r : result) {
-				Log.d(TAG, r);
+			if(result!=null) {
+				for (String r : result) {
+					Log.d(TAG, r);
+				}
 			}
 
 		}

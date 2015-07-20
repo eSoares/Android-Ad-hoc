@@ -21,39 +21,25 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 	public void onReceive(Context arg0, Intent arg1) {
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(arg0);
 		final Context context = arg0;
-		if (prefs.getBoolean(Adhoc.USE_OLSR, true)) {
-			final GenericExecutionCallback emptyCallback = new GenericExecutionCallback() {
 
-				@Override
-				public void onUnsucessfullExecution() {
-				}
+		new StartNetwork(arg0.getApplicationContext()).execute(new GenericExecutionCallback() {
 
-				@Override
-				public void onSucessfullExecution() {
-				}
-			};
-
-			new StartNetwork(arg0.getApplicationContext()).execute(new GenericExecutionCallback() {
-
-				@Override
-				public void onUnsucessfullExecution() {
+			@Override
+			public void onSucessfullExecution() {
+				if (prefs.getBoolean(Adhoc.USE_OLSR, true)) {
 //					 start OLSR
 					String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
 					String olsrPath = prefs.getString(Setup.OLSR_PATH, null);
-					new StartOLSR(olsrConfigPath, olsrPath, emptyCallback).startOlsr(context, new OLSRSetting());
+					new StartOLSR(olsrConfigPath, olsrPath, GenericExecutionCallback.getEmptyCallback()).startOlsr(context, new OLSRSetting());
 				}
+			}
 
-				@Override
-				public void onSucessfullExecution() {
-				}
-			}, arg0);
+			@Override
+			public void onUnsucessfullExecution() {
+			}
+		}, arg0);
 
-			BatteryUpdateReceiver batteryLog = new BatteryUpdateReceiver();
-			arg0.getApplicationContext().registerReceiver(batteryLog, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
-//			} else {
-//				new OLSRKiller().execute(emptyCallback);
-//			}
-		}
+		BatteryUpdateReceiver batteryLog = new BatteryUpdateReceiver();
+		arg0.getApplicationContext().registerReceiver(batteryLog, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 	}
 }
