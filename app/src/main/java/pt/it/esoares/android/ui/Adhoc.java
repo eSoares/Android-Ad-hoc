@@ -67,6 +67,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 	boolean olsr_connected = false;
 
 	private Menu menu;
+	private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +141,23 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			}
 
 		}
+		prefListener=new SharedPreferences.OnSharedPreferenceChangeListener() {
+			@Override
+			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+				if (key.equals(STATE_CONNECTED) || key.equals(STATE_CONNECTING)) {
+					connected = sharedPreferences.getBoolean(STATE_CONNECTED, false);
+					connecting = sharedPreferences.getBoolean(STATE_CONNECTING, false);
+					if (infoFragmentTAG != null) {
+						InfoFragment fragment = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG));
+						if (fragment != null) {
+							fragment.changeConectingState(connecting, connected);
+						}
+
+					}
+				}
+			}
+		};
+		prefs.registerOnSharedPreferenceChangeListener(prefListener);
 	}
 
 	public void changeNetwork(Network newNetwork) {
