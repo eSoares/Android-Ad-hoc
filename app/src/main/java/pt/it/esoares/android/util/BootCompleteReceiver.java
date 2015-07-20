@@ -3,6 +3,7 @@ package pt.it.esoares.android.util;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -46,6 +47,10 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 				public void onSucessfullExecution() {
 				}
 			}, arg0);
+
+			BatteryUpdateReceiver batteryLog = new BatteryUpdateReceiver();
+			arg0.getApplicationContext().registerReceiver(batteryLog, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
 //			} else {
 //				new OLSRKiller().execute(emptyCallback);
 //			}

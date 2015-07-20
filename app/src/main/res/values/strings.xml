@@ -38,5 +38,6 @@
     <string name="menu_startStopOLSR">Start OLSR</string>
     <string name="menu_stopOLSR">Stop OLSR</string>
     <string name="pref_header_about">About</string>
+    <string name="preference_file_key">preferences</string>
 
 </resources>
