@@ -55,9 +55,9 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 
 	private String infoFragmentTAG;
 
-	static final String STATE_OLSR = "state olsr connected";
+	public static final String STATE_OLSR = "state olsr connected";
 	public static final String STATE_CONNECTED = "state network connected";
-	static final String STATE_CONNECTING = "state network connecting";
+	public static final String STATE_CONNECTING = "state network connecting";
 	public static final String USE_OLSR = "use olsr";
 
 	static final String DEVICE = "device";
