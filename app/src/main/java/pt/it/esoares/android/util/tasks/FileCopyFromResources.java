@@ -1,9 +1,10 @@
-package pt.it.esoares.android.util;
+package pt.it.esoares.android.util.tasks;
 
 import android.content.res.Resources;
 import android.os.AsyncTask;
 
 import eu.chainfire.libsuperuser.Shell.SU;
+import pt.it.esoares.android.util.GenericExecutionCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,7 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class FileCopyFromResources extends
-		AsyncTask<pt.it.esoares.android.util.FileCopyFromResources.Data, Integer, Boolean> {
+		AsyncTask<FileCopyFromResources.Data, Integer, Boolean> {
 
 	private GenericExecutionCallback listener;
 

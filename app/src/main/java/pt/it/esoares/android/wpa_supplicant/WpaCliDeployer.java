@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import java.io.File;
 import java.io.IOException;
 
-import pt.it.esoares.android.util.FileCopyFromResources;
+import pt.it.esoares.android.util.tasks.FileCopyFromResources;
 
 public class WpaCliDeployer
 		extends

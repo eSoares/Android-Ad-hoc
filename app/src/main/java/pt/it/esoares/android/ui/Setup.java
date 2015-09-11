@@ -1,12 +1,12 @@
 package pt.it.esoares.android.ui;
 
-import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,14 +20,14 @@ import pt.it.esoares.android.ip.IPGenerator;
 import pt.it.esoares.android.ip.Utils;
 import pt.it.esoares.android.olsr.TestOLSRExistence;
 import pt.it.esoares.android.olsrdeployer.R;
-import pt.it.esoares.android.util.FileCopyFromResources;
+import pt.it.esoares.android.util.tasks.FileCopyFromResources;
 import pt.it.esoares.android.util.GenericExecutionCallback;
 import pt.it.esoares.android.wpa_supplicant.TestWpaCliExistence;
 import pt.it.esoares.android.wpa_supplicant.WpaCliDeployException;
 import pt.it.esoares.android.wpa_supplicant.WpaCliDeployListener;
 import pt.it.esoares.android.wpa_supplicant.WpaCliDeployer;
 
-public class Setup extends ActionBarActivity {
+public class Setup extends AppCompatActivity {
 
 	public final static String MAC_ADDRESS = "mac address";
 	public final static String FILES_PATH = "files path";

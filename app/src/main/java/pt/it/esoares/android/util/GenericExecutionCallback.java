@@ -1,9 +1,20 @@
 package pt.it.esoares.android.util;
 
-public interface GenericExecutionCallback {
+public abstract class GenericExecutionCallback {
 
-	void onSucessfullExecution();
+	public abstract void onSucessfullExecution();
 
-	void onUnsucessfullExecution();
+	public abstract void onUnsucessfullExecution();
 
+	public static GenericExecutionCallback getEmptyCallback() {
+		return new GenericExecutionCallback() {
+			@Override
+			public void onSucessfullExecution() {
+			}
+
+			@Override
+			public void onUnsucessfullExecution() {
+			}
+		};
+	}
 }

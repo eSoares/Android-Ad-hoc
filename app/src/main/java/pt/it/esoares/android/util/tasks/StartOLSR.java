@@ -1,4 +1,4 @@
-package pt.it.esoares.android.util;
+package pt.it.esoares.android.util.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -9,6 +9,7 @@ import pt.it.esoares.android.olsr.ExecuteOLSR;
 import pt.it.esoares.android.olsr.OLSRConfigDeploy;
 import pt.it.esoares.android.olsr.OLSRGenerator;
 import pt.it.esoares.android.olsr.OLSRSetting;
+import pt.it.esoares.android.util.GenericExecutionCallback;
 
 public class StartOLSR {
 	private String olsrConfigPath;

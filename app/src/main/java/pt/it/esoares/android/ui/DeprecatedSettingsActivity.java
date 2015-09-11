@@ -1,42 +1,88 @@
 package pt.it.esoares.android.ui;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import de.psdev.licensesdialog.LicensesDialog;
-import de.psdev.licensesdialog.LicensesDialogFragment;
 import pt.it.esoares.android.olsrdeployer.R;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class SettingsActivity extends AppCompatActivity {
-	private static final String SETTINGS_FRAGMENT_TAG = "settings fragment";
+public class DeprecatedSettingsActivity extends PreferenceActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		setContentView(R.layout.activity_settings);
-		if (getFragmentManager().findFragmentByTag(SETTINGS_FRAGMENT_TAG) == null) {
-			getFragmentManager().beginTransaction().add(R.id.frame_settings, new SettingsFragment(), SETTINGS_FRAGMENT_TAG).commit();
-		}
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if (id == android.R.id.home) {
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			//
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			// TODO: If Settings has multiple levels, Up should navigate up
+			// that hierarchy.
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+
+		setupSimplePreferencesScreen();
+	}
+
+	/**
+	 * Shows the simplified settings UI if the device configuration if the device configuration dictates that a simplified, single-pane UI
+	 * should be shown.
+	 */
+	private void setupSimplePreferencesScreen() {
+		// In the simplified UI, fragments are not used at all and we instead
+		// use the older PreferenceActivity APIs.
+
+		// Add 'Network' preferences.
+		addPreferencesFromResource(R.xml.pref_network);
+
+		// Add 'IP' preferences, and a corresponding header.
+		addPreferencesFromResource(R.xml.pref_ip);
+
+		// Add 'OLSR' preferences, and a corresponding header.
+		addPreferencesFromResource(R.xml.pref_olsr);
+
+
+		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
+		// their values. When their values change, their summaries are updated
+		// to reflect the new value, per the Android Design guidelines.
+
+		// Network
+		bindPreferenceSummaryToValue(findPreference("network_name_text"));
+		bindPreferenceSummaryToValue(findPreference("wep_password_text"));
+		bindPreferenceSummaryToValue(findPreference("channel_list"));
+
+		bindPreferenceSummaryToValue(findPreference("ip_address"));
+		bindPreferenceSummaryToValue(findPreference("ip_mask"));
+		bindPreferenceSummaryToValue(findPreference("ip_address_gateway"));
+		addPreferencesFromResource(R.xml.pref_extras);
+		addPreferencesFromResource(R.xml.pref_about);
+		findPreference("button_license").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				new LicensesDialog.Builder(getBaseContext()).setNotices(R.raw.notices).build().show();
+				return true;
+			}
+		});
 	}
 
 
@@ -81,32 +127,5 @@ public class SettingsActivity extends AppCompatActivity {
 		// current value.
 		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager
 				.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
-	}
-
-
-	public static class SettingsFragment extends PreferenceFragment {
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.pref_ip);
-			bindPreferenceSummaryToValue(findPreference("ip_address"));
-			bindPreferenceSummaryToValue(findPreference("ip_mask"));
-			bindPreferenceSummaryToValue(findPreference("ip_address_gateway"));
-
-			addPreferencesFromResource(R.xml.pref_network);
-			bindPreferenceSummaryToValue(findPreference("network_name_text"));
-			bindPreferenceSummaryToValue(findPreference("wep_password_text"));
-			bindPreferenceSummaryToValue(findPreference("channel_list"));
-			addPreferencesFromResource(R.xml.pref_olsr);
-			addPreferencesFromResource(R.xml.pref_extras);
-			addPreferencesFromResource(R.xml.pref_about);
-			findPreference("button_license").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					new LicensesDialog.Builder(getActivity()).setNotices(R.raw.notices).build().show();
-					return true;
-				}
-			});
-		}
 	}
 }

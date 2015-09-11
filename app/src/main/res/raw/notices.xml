@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<notices>
+    <notice>
+        <name>libsuperuser</name>
+        <url>https://github.com/Chainfire/libsuperuser/</url>
+        <copyright>Copyright (C) 2012-2014 Jorrit "Chainfire" Jongma</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Support Library</name>
+        <url />
+        <copyright>Copyright (C) 2011 The Android Open Source Project</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>AppCompat</name>
+        <url />
+        <copyright>Copyright (C) 2011 The Android Open Source Project</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>GridLayout</name>
+        <url />
+        <copyright>Copyright (C) 2011 The Android Open Source Project</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>OLSR</name>
+        <url>http://www.olsr.org/</url>
+        <copyright>Copyright (c) 2004, Thomas Lopatic (thomas@lopatic.de)</copyright>
+        <license>BSD 3-Clause License</license>
+    </notice>
+    <notice>
+        <name>LicensesDialog</name>
+        <url>https://github.com/PSDev/LicensesDialog/</url>
+        <copyright>Copyright 2013 Philip Schiffer</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+</notices>

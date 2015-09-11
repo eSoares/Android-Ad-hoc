@@ -3,21 +3,19 @@ package pt.it.esoares.android.ui;
 import java.io.IOException;
 import java.util.Locale;
 
-import android.support.v7.app.ActionBarActivity;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,15 +25,16 @@ import pt.it.esoares.android.devices.Device;
 import pt.it.esoares.android.devices.DeviceFactory;
 import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.ip.IPInfo;
+import pt.it.esoares.android.ip.Utils;
 import pt.it.esoares.android.olsr.OLSRKiller;
 import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.util.GenericExecutionCallback;
-import pt.it.esoares.android.util.StartAdHocNetwork;
-import pt.it.esoares.android.util.StartOLSR;
-import pt.it.esoares.android.util.StopAdHocNetwork;
+import pt.it.esoares.android.util.tasks.StartNetwork;
+import pt.it.esoares.android.util.tasks.StartOLSR;
+import pt.it.esoares.android.util.tasks.StopAdHocNetwork;
 
-public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
+public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
@@ -56,9 +55,9 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 
 	private String infoFragmentTAG;
 
-	static final String STATE_OLSR = "state olsr connected";
+	public static final String STATE_OLSR = "state olsr connected";
 	public static final String STATE_CONNECTED = "state network connected";
-	static final String STATE_CONNECTING = "state network connecting";
+	public static final String STATE_CONNECTING = "state network connecting";
 	public static final String USE_OLSR = "use olsr";
 
 	static final String DEVICE = "device";
@@ -68,6 +67,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 	boolean olsr_connected = false;
 
 	private Menu menu;
+	private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +141,23 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 			}
 
 		}
+		prefListener=new SharedPreferences.OnSharedPreferenceChangeListener() {
+			@Override
+			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+				if (key.equals(STATE_CONNECTED) || key.equals(STATE_CONNECTING)) {
+					connected = sharedPreferences.getBoolean(STATE_CONNECTED, false);
+					connecting = sharedPreferences.getBoolean(STATE_CONNECTING, false);
+					if (infoFragmentTAG != null) {
+						InfoFragment fragment = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG));
+						if (fragment != null) {
+							fragment.changeConectingState(connecting, connected);
+						}
+
+					}
+				}
+			}
+		};
+		prefs.registerOnSharedPreferenceChangeListener(prefListener);
 	}
 
 	public void changeNetwork(Network newNetwork) {
@@ -178,7 +195,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		saveStartState();
 		if (!connected) {
 			// connects
-			new StartNetwork().execute(new GenericExecutionCallback() {
+			new StartNetwork(this.getApplicationContext()).execute(new GenericExecutionCallback() {
 
 				@Override
 				public void onUnsucessfullExecution() {
@@ -225,6 +242,7 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 						frament.changeConectingState(connecting, connected);
 					}
 					saveStartState();
+					Utils.changeWifiState(getApplicationContext(), true);
 				}
 			}, this).stopNetwork();
 		}
@@ -324,7 +342,12 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			Intent i = new Intent(this, SettingsActivity.class);
+			Intent i;
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+				i = new Intent(this, DeprecatedSettingsActivity.class);
+			} else {
+				i = new Intent(this, SettingsActivity.class);
+			}
 			startActivity(i);
 			return true;
 		}
@@ -378,40 +401,13 @@ public class Adhoc extends ActionBarActivity implements ActionBar.TabListener {
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
 			switch (position) {
-			case 0:
-				return getString(R.string.title_info).toUpperCase(l);
-			case 1:
-				return getString(R.string.title_search_networks).toUpperCase(l);
+				case 0:
+					return getString(R.string.title_info).toUpperCase(l);
+				case 1:
+					return getString(R.string.title_search_networks).toUpperCase(l);
 			}
 			return null;
 		}
 	}
 
-	class StartNetwork extends AsyncTask<Context, Void, Device> {
-
-		private GenericExecutionCallback callback = null;
-
-		@Override
-		protected Device doInBackground(Context... params) {
-			return DeviceFactory.getDevice(params[0]);
-
-		}
-
-		@Override
-		protected void onPostExecute(Device result) {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
-			String olsrPath = prefs.getString(Setup.OLSR_PATH, null);
-			device = result;
-
-			new StartAdHocNetwork(result, network, ipInfo, olsrConfigPath, olsrPath, useOLSR, callback,
-					getApplicationContext()).startNetwork();
-			super.onPostExecute(result);
-		}
-
-		public void execute(GenericExecutionCallback callback, Context context) {
-			this.callback = callback;
-			this.execute(context);
-		}
-	}
 }
