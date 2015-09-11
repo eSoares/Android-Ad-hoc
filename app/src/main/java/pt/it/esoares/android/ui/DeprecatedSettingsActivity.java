@@ -1,299 +1,131 @@
 package pt.it.esoares.android.ui;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
-import java.util.List;
-
 import de.psdev.licensesdialog.LicensesDialog;
 import pt.it.esoares.android.olsrdeployer.R;
 
-/**
- * A {@link PreferenceActivity} that presents a set of application settings. On handset devices, settings are presented as a single list. On
- * tablets, settings are split by category, with category headers shown to the left of the list of settings.
- * <p/>
- * See <a href="http://developer.android.com/design/patterns/settings.html"> Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings API Guide</a> for more information on developing a Settings
- * UI.
- */
 public class DeprecatedSettingsActivity extends PreferenceActivity {
-    /**
-     * Determines whether to always show the simplified settings UI, where settings are presented in a single list. When false, settings are
-     * shown as a master/detail two-pane view on tablets. When true, a single pane is shown on tablets.
-     */
-    private static final boolean ALWAYS_SIMPLE_PREFS = false;
 
-    final Context ctx = this;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setupActionBar();
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if (id == android.R.id.home) {
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			//
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			// TODO: If Settings has multiple levels, Up should navigate up
+			// that hierarchy.
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setupActionBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            // Show the Up button in the action bar.
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. Use NavUtils to allow users
-            // to navigate up one level in the application structure. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            // TODO: If Settings has multiple levels, Up should navigate up
-            // that hierarchy.
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+		setupSimplePreferencesScreen();
+	}
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
+	/**
+	 * Shows the simplified settings UI if the device configuration if the device configuration dictates that a simplified, single-pane UI
+	 * should be shown.
+	 */
+	private void setupSimplePreferencesScreen() {
+		// In the simplified UI, fragments are not used at all and we instead
+		// use the older PreferenceActivity APIs.
 
-        setupSimplePreferencesScreen();
-    }
+		// Add 'Network' preferences.
+		addPreferencesFromResource(R.xml.pref_network);
 
-    /**
-     * Shows the simplified settings UI if the device configuration if the device configuration dictates that a simplified, single-pane UI
-     * should be shown.
-     */
-    private void setupSimplePreferencesScreen() {
-        if (!isSimplePreferences(this)) {
-            return;
-        }
+		// Add 'IP' preferences, and a corresponding header.
+		addPreferencesFromResource(R.xml.pref_ip);
 
-        // In the simplified UI, fragments are not used at all and we instead
-        // use the older PreferenceActivity APIs.
+		// Add 'OLSR' preferences, and a corresponding header.
+		addPreferencesFromResource(R.xml.pref_olsr);
 
-        // Add 'Network' preferences.
-        PreferenceCategory fakeHeader = new PreferenceCategory(this);
-        addPreferencesFromResource(R.xml.pref_network);
 
-        // Add 'IP' preferences, and a corresponding header.
-        fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_ip);
-        getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_ip);
+		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
+		// their values. When their values change, their summaries are updated
+		// to reflect the new value, per the Android Design guidelines.
 
-        // Add 'OLSR' preferences, and a corresponding header.
-        fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_olsr);
-        getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_olsr);
+		// Network
+		bindPreferenceSummaryToValue(findPreference("network_name_text"));
+		bindPreferenceSummaryToValue(findPreference("wep_password_text"));
+		bindPreferenceSummaryToValue(findPreference("channel_list"));
 
-        // Add 'About' preferences, and a corresponding header.
-//		fakeHeader = new PreferenceCategory(this);
-//		fakeHeader.setTitle(R.string.pref_title_about);
-//		getPreferenceScreen().addPreference(fakeHeader);
-//		addPreferencesFromResource(R.xml.pref_about);
+		bindPreferenceSummaryToValue(findPreference("ip_address"));
+		bindPreferenceSummaryToValue(findPreference("ip_mask"));
+		bindPreferenceSummaryToValue(findPreference("ip_address_gateway"));
+		addPreferencesFromResource(R.xml.pref_extras);
+		addPreferencesFromResource(R.xml.pref_about);
+		findPreference("button_license").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				new LicensesDialog.Builder(getBaseContext()).setNotices(R.raw.notices).build().show();
+				return true;
+			}
+		});
+	}
 
-//		Preference button = (Preference) findPreference("button_license");
-//		button.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-//
-//			@Override
-//			public boolean onPreferenceClick(Preference preference) {
-//				// show license dialog
-//				// Fragment dialog = DialogFragment.instantiate(getBaseContext(), "");
-//				Dialog dialog = new Dialog(ctx);
-//				dialog.setTitle("Licenses");
-//				dialog.setContentView(R.layout.dialog_licences);
-//				dialog.show();
-//				return true;
-//			}
-//		});
 
-        // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
-        // their values. When their values change, their summaries are updated
-        // to reflect the new value, per the Android Design guidelines.
+	/**
+	 * A preference value change listener that updates the preference's summary to reflect its new value.
+	 */
+	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+		@Override
+		public boolean onPreferenceChange(Preference preference, Object value) {
+			String stringValue = value.toString();
 
-        // Network
-        bindPreferenceSummaryToValue(findPreference("network_name_text"));
-        bindPreferenceSummaryToValue(findPreference("wep_password_text"));
-        bindPreferenceSummaryToValue(findPreference("channel_list"));
+			if (preference instanceof ListPreference) {
+				// For list preferences, look up the correct display value in
+				// the preference's 'entries' list.
+				ListPreference listPreference = (ListPreference) preference;
+				int index = listPreference.findIndexOfValue(stringValue);
 
-        bindPreferenceSummaryToValue(findPreference("ip_address"));
-        bindPreferenceSummaryToValue(findPreference("ip_mask"));
-        bindPreferenceSummaryToValue(findPreference("ip_address_gateway"));
-        addPreferencesFromResource(R.xml.pref_about);
-        findPreference("button_license").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                new LicensesDialog.Builder(getBaseContext()).setNotices(R.raw.notices).build().show();
-                return true;
-            }
-        });
-        // Preference wep_checkbox = findPreference("use_wep_checkbox");
-        // final Preference wepPassword = findPreference("wep_password_text");
-        //
-        // wep_checkbox.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-        //
-        // @Override
-        // public boolean onPreferenceChange(Preference preference, Object newValue) {
-        // wepPassword.setEnabled((Boolean) newValue);
-        // return true;
-        // }
-        // });
-        // wepPassword.setEnabled(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(wep_checkbox.getKey(),
-        // false));
-    }
+				// Set the summary to reflect the new value.
+				preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean onIsMultiPane() {
-        return isXLargeTablet(this) && !isSimplePreferences(this);
-    }
+			} else {
+				// For all other preferences, set the summary to the value's
+				// simple string representation.
+				preference.setSummary(stringValue);
+			}
+			return true;
+		}
+	};
 
-    /**
-     * Helper method to determine if the device has an extra-large screen. For example, 10" tablets are extra-large.
-     */
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
+	/**
+	 * Binds a preference's summary to its value. More specifically, when the preference's value is changed, its summary (line of text below
+	 * the preference title) is updated to reflect the value. The summary is also immediately updated upon calling this method. The exact
+	 * display format is dependent on the type of preference.
+	 *
+	 * @see #sBindPreferenceSummaryToValueListener
+	 */
+	private static void bindPreferenceSummaryToValue(Preference preference) {
+		// Set the listener to watch for value changes.
+		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
-    /**
-     * Determines whether the simplified settings UI should be shown. This is true if this is forced via {@link #ALWAYS_SIMPLE_PREFS}, or
-     * the device doesn't have newer APIs like {@link PreferenceFragment}, or the device doesn't have an extra-large screen. In these cases,
-     * a single-pane "simplified" settings UI should be shown.
-     */
-    private static boolean isSimplePreferences(Context context) {
-        return ALWAYS_SIMPLE_PREFS || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB || !isXLargeTablet(context);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void onBuildHeaders(List<Header> target) {
-        if (!isSimplePreferences(this)) {
-            loadHeadersFromResource(R.xml.pref_headers, target);
-        }
-    }
-
-    /**
-     * A preference value change listener that updates the preference's summary to reflect its new value.
-     */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
-
-            if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
-
-                // Set the summary to reflect the new value.
-                preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
-
-            } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.setSummary(stringValue);
-            }
-            return true;
-        }
-    };
-
-    /**
-     * Binds a preference's summary to its value. More specifically, when the preference's value is changed, its summary (line of text below
-     * the preference title) is updated to reflect the value. The summary is also immediately updated upon calling this method. The exact
-     * display format is dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager
-                .getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
-    }
-
-    /**
-     * This fragment shows general preferences only. It is used when the activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NetworkPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_network);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("network_name_text"));
-            bindPreferenceSummaryToValue(findPreference("wep_password_text"));
-            bindPreferenceSummaryToValue(findPreference("channel_list"));
-        }
-    }
-
-    /**
-     * This fragment shows notification preferences only. It is used when the activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class IPPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_ip);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-        }
-    }
-
-    /**
-     * This fragment shows data and sync preferences only. It is used when the activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class OLSRPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_olsr);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
-        }
-    }
+		// Trigger the listener immediately with the preference's
+		// current value.
+		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager
+				.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
+	}
 }

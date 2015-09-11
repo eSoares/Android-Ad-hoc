@@ -55,9 +55,9 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 
 	private String infoFragmentTAG;
 
-	static final String STATE_OLSR = "state olsr connected";
+	public static final String STATE_OLSR = "state olsr connected";
 	public static final String STATE_CONNECTED = "state network connected";
-	static final String STATE_CONNECTING = "state network connecting";
+	public static final String STATE_CONNECTING = "state network connecting";
 	public static final String USE_OLSR = "use olsr";
 
 	static final String DEVICE = "device";
@@ -67,6 +67,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 	boolean olsr_connected = false;
 
 	private Menu menu;
+	private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +141,23 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			}
 
 		}
+		prefListener=new SharedPreferences.OnSharedPreferenceChangeListener() {
+			@Override
+			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+				if (key.equals(STATE_CONNECTED) || key.equals(STATE_CONNECTING)) {
+					connected = sharedPreferences.getBoolean(STATE_CONNECTED, false);
+					connecting = sharedPreferences.getBoolean(STATE_CONNECTING, false);
+					if (infoFragmentTAG != null) {
+						InfoFragment fragment = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG));
+						if (fragment != null) {
+							fragment.changeConectingState(connecting, connected);
+						}
+
+					}
+				}
+			}
+		};
+		prefs.registerOnSharedPreferenceChangeListener(prefListener);
 	}
 
 	public void changeNetwork(Network newNetwork) {

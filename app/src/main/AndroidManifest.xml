@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pt.it.esoares.android.olsrdeployer"
-    android:versionCode="2"
-    android:versionName="2.1">
+<manifest package="pt.it.esoares.android.olsrdeployer"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          android:versionCode="2"
+          android:versionName="2.2">
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="21"/>
 
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
 
     <!-- Necessary for Android after gingerbread < -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <!-- Necessary for Android pre Honeycomb -->
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -29,9 +30,9 @@
             android:name="pt.it.esoares.android.ui.Adhoc"
             android:label="@string/title_activity_adhoc">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <!--
@@ -52,7 +53,7 @@
             android:parentActivityName="pt.it.esoares.android.ui.Adhoc">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pt.it.esoares.android.ui.Adhoc" />
+                android:value="pt.it.esoares.android.ui.Adhoc"/>
         </activity>
 
         <activity
@@ -61,7 +62,7 @@
             android:parentActivityName="pt.it.esoares.android.ui.Adhoc">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pt.it.esoares.android.ui.Adhoc" />
+                android:value="pt.it.esoares.android.ui.Adhoc"/>
         </activity>
         <activity
             android:name="pt.it.esoares.android.ui.Setup"
@@ -73,6 +74,13 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="pt.it.esoares.android.util.BatteryUpdateReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BATTERY_CHANGED"/>
             </intent-filter>
         </receiver>
     </application>
