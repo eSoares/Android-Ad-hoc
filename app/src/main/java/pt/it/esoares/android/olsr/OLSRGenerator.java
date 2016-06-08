@@ -17,14 +17,14 @@ public class OLSRGenerator {
 		
 		// plugin
 		if (setting.useTXTInfo()) {
-			result.append("LoadPlugin \"" + setting.pluginTXTInfoLocation() + "\"\n");
+			result.append("LoadPlugin \"").append(setting.pluginTXTInfoLocation()).append("\"\n");
 			result.append("{\n");
 			result.append("	PlParam \"Accept\" \"127.0.0.1\"");
 			result.append("}\n");
 		}
 
 		// Interface
-		result.append("Interface \"" + device.getInterfaceName() + "\"\n");
+		result.append("Interface \"").append(device.getInterfaceName()).append("\"\n");
 		result.append("{\n	 Ip4Broadcast 255.255.255.255\n");
 		result.append("	 Mode \"mesh\"\n}\n");
 

@@ -34,17 +34,17 @@ public class OLSRConfigDeploy extends AsyncTask<String, Void, Boolean> {
 	@Override
 	protected void onPostExecute(Boolean result) {
 		if (result) {
-			callback.onSucessfullExecution();
+			callback.onSuccessfulExecution();
 		} else {
-			callback.onUnsucessfullExecution();
+			callback.onUnsuccessfulExecution();
 		}
 		super.onPostExecute(result);
 	}
 
 	public void execute(String olsrConfigPath, String config, GenericExecutionCallback callback) {
 		this.callback = callback;
-		String[] coisas = { olsrConfigPath, config };
-		this.execute(coisas);
+		String[] params = { olsrConfigPath, config };
+		this.execute(params);
 	}
 
 }

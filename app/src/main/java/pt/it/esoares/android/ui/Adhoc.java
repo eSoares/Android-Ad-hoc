@@ -86,7 +86,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			connected = savedInstanceState.getBoolean(STATE_CONNECTED, false);
 			connecting = savedInstanceState.getBoolean(STATE_CONNECTING, false);
 			if (infoFragmentTAG != null) {
-				((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).changeConectingState(
+				((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG)).changeConnectingState(
 						connecting, connected);
 
 			}
@@ -137,7 +137,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 		if (infoFragmentTAG != null) {
 			InfoFragment fragment = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG));
 			if (fragment != null) {
-				fragment.changeConectingState(connecting, connected);
+				fragment.changeConnectingState(connecting, connected);
 			}
 
 		}
@@ -150,7 +150,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 					if (infoFragmentTAG != null) {
 						InfoFragment fragment = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG));
 						if (fragment != null) {
-							fragment.changeConectingState(connecting, connected);
+							fragment.changeConnectingState(connecting, connected);
 						}
 
 					}
@@ -188,9 +188,9 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 
 	public void onStartStop(View v) {
 		connecting = true;
-		InfoFragment frament = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG));
-		if (frament != null) {
-			frament.changeConectingState(connecting, connected);
+		InfoFragment fragment = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(infoFragmentTAG));
+		if (fragment != null) {
+			fragment.changeConnectingState(connecting, connected);
 		}
 		saveStartState();
 		if (!connected) {
@@ -198,26 +198,26 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			new StartNetwork(this.getApplicationContext()).execute(new GenericExecutionCallback() {
 
 				@Override
-				public void onUnsucessfullExecution() {
+				public void onUnsuccessfulExecution() {
 					connecting = false;
 					connected = false;
-					InfoFragment frament = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(
+					InfoFragment fragment = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(
 							infoFragmentTAG));
-					if (frament != null) {
-						frament.changeConectingState(connecting, connected);
+					if (fragment != null) {
+						fragment.changeConnectingState(connecting, connected);
 					}
 					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
 					saveStartState();
 				}
 
 				@Override
-				public void onSucessfullExecution() {
+				public void onSuccessfulExecution() {
 					connecting = false;
 					connected = true;
-					InfoFragment frament = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(
+					InfoFragment fragment = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(
 							infoFragmentTAG));
-					if (frament != null) {
-						frament.changeConectingState(connecting, connected);
+					if (fragment != null) {
+						fragment.changeConnectingState(connecting, connected);
 					}
 					saveStartState();
 				}
@@ -228,18 +228,18 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			new StopAdHocNetwork(device, useOLSR, new GenericExecutionCallback() {
 
 				@Override
-				public void onUnsucessfullExecution() {
+				public void onUnsuccessfulExecution() {
 					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
 				}
 
 				@Override
-				public void onSucessfullExecution() {
+				public void onSuccessfulExecution() {
 					connecting = false;
 					connected = false;
-					InfoFragment frament = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(
+					InfoFragment fragment = ((InfoFragment) getSupportFragmentManager().findFragmentByTag(
 							infoFragmentTAG));
-					if (frament != null) {
-						frament.changeConectingState(connecting, connected);
+					if (fragment != null) {
+						fragment.changeConnectingState(connecting, connected);
 					}
 					saveStartState();
 					Utils.changeWifiState(getApplicationContext(), true);
@@ -256,12 +256,12 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			new StartOLSR(olsrConfigPath, olsrPath, new GenericExecutionCallback() {
 
 				@Override
-				public void onUnsucessfullExecution() {
+				public void onUnsuccessfulExecution() {
 					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
 				}
 
 				@Override
-				public void onSucessfullExecution() {
+				public void onSuccessfulExecution() {
 					olsr_connected = true;
 					updateMenu(true);
 				}
@@ -270,12 +270,12 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			new OLSRKiller().execute(new GenericExecutionCallback() {
 
 				@Override
-				public void onUnsucessfullExecution() {
+				public void onUnsuccessfulExecution() {
 					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
 				}
 
 				@Override
-				public void onSucessfullExecution() {
+				public void onSuccessfulExecution() {
 					olsr_connected = false;
 					updateMenu(olsr_connected);
 				}

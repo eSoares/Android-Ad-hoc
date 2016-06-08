@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="pt.it.esoares.android.olsrdeployer.Adhoc$PlaceholderFragment" >
+    tools:context="pt.it.esoares.android.ui.InfoFragment" >
 
     <android.support.v7.widget.GridLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,6 +22,7 @@
             android:id="@+id/txt_networkname"
             grid:layout_gravity="end"
             android:paddingRight="@dimen/padding_grid"
+            android:paddingLeft="@dimen/padding_grid"
             android:text="@string/txt_network_name"
             android:textStyle="bold" />
 
@@ -32,6 +33,7 @@
         <TextView
             grid:layout_gravity="end"
             android:paddingRight="@dimen/padding_grid"
+            android:paddingLeft="@dimen/padding_grid"
             android:text="@string/txt_frequency"
             android:textStyle="bold" />
 
@@ -42,6 +44,7 @@
         <TextView
             grid:layout_gravity="end"
             android:paddingRight="@dimen/padding_grid"
+            android:paddingLeft="@dimen/padding_grid"
             android:text="@string/txt_protection"
             android:textStyle="bold" />
 
@@ -52,6 +55,7 @@
         <TextView
             grid:layout_gravity="end"
             android:paddingRight="@dimen/padding_grid"
+            android:paddingLeft="@dimen/padding_grid"
             android:text="@string/txt_password"
             android:textStyle="bold" />
 
@@ -63,6 +67,7 @@
         <TextView
             grid:layout_gravity="end"
             android:paddingRight="@dimen/padding_grid"
+            android:paddingLeft="@dimen/padding_grid"
             android:text="@string/txt_ip"
             android:textStyle="bold" />
 

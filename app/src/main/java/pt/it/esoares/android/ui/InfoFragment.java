@@ -55,7 +55,7 @@ public class InfoFragment extends Fragment {
 		if (arguments != null) {
 			setIP(activity.getIP());
 			setNetwork(activity.getNetwork());
-			changeConectingState(activity.connecting, activity.connected);
+			changeConnectingState(activity.connecting, activity.connected);
 		}
 		return rootView;
 	}
@@ -91,7 +91,7 @@ public class InfoFragment extends Fragment {
 	}
 
 
-	public void changeConectingState(boolean connecting, boolean connected){
+	public void changeConnectingState(boolean connecting, boolean connected){
 		if(connecting){
 			buttonStartStop.setEnabled(false);
 			buttonStartStop.setText(R.string.button_connecting_state);

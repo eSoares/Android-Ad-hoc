@@ -29,9 +29,9 @@ public class ExecuteOLSR extends AsyncTask<String, Void, Boolean> {
 	@Override
 	protected void onPostExecute(Boolean result) {
 		if (result) {
-			callback.onSucessfullExecution();
+			callback.onSuccessfulExecution();
 		} else {
-			callback.onUnsucessfullExecution();
+			callback.onUnsuccessfulExecution();
 		}
 		super.onPostExecute(result);
 	}

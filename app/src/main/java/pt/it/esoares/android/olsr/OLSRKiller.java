@@ -44,7 +44,7 @@ public class OLSRKiller extends AsyncTask<Void, Void, Boolean> {
 
 	private static int[] getProcessesIDs(String string) {
 		List<String> results = SU.run("ps");
-		List<Integer> result = new ArrayList<Integer>(2);
+		List<Integer> result = new ArrayList<>(2);
 		for (String res : results) {
 			if (res.contains(string)) {
 				Matcher matcher = regex.matcher(res);
@@ -64,9 +64,9 @@ public class OLSRKiller extends AsyncTask<Void, Void, Boolean> {
 	@Override
 	protected void onPostExecute(Boolean result) {
 		if (result) {
-			listener.onSucessfullExecution();
+			listener.onSuccessfulExecution();
 		} else {
-			listener.onUnsucessfullExecution();
+			listener.onUnsuccessfulExecution();
 		}
 		super.onPostExecute(result);
 	}

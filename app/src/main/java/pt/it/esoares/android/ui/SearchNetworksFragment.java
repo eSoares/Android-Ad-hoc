@@ -42,7 +42,7 @@ public class SearchNetworksFragment extends ListFragment {
 
 	private Adhoc activity;
 
-	private ArrayList<Network> networksArround = new ArrayList<>();
+	private ArrayList<Network> networksAround = new ArrayList<>();
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
@@ -85,12 +85,12 @@ public class SearchNetworksFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		activity = (Adhoc) getActivity();
-		adapter = new ArrayAdapter<Network>(getActivity(), android.R.layout.simple_list_item_1, networksArround);
+		adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, networksAround);
 		setListAdapter(adapter);
 	}
 
 	public void addNetwork(Network network) {
-		if (!networksArround.contains(network)) {
+		if (!networksAround.contains(network)) {
 			adapter.add(network);
 			adapter.notifyDataSetChanged();
 		}
@@ -126,13 +126,13 @@ public class SearchNetworksFragment extends ListFragment {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				if (which == AlertDialog.BUTTON_POSITIVE) {
-					activity.changeNetwork(networksArround.get(pox));
+					activity.changeNetwork(networksAround.get(pox));
 					activity.mViewPager.setCurrentItem(0);
 				}
 			}
 		};
-		Builder dialog = new AlertDialog.Builder(getActivity()).setTitle("Connecto to this network?")
-				.setNegativeButton("No", resultListener).setPositiveButton("Yes", resultListener);
+		Builder dialog = new AlertDialog.Builder(getActivity()).setTitle("Connect to this network?")
+				.setNegativeButton(android.R.string.no, resultListener).setPositiveButton(android.R.string.yes, resultListener);
 		dialog.create().show();
 		super.onListItemClick(l, v, position, id);
 	}
@@ -157,7 +157,6 @@ public class SearchNetworksFragment extends ListFragment {
 
 			}
 		}).run();
-		;
 	}
 
 }

@@ -7,22 +7,22 @@ public interface Device {
 	 * 
 	 * @return the location as a full qualified name
 	 */
-	public String supplicantLocation();
+	String supplicantLocation();
 
 	/**
 	 * The wpa_supplicant name, in some devices is different
 	 * 
 	 * @return The wpa_supplicant name
 	 */
-	public String supplicantName();
+	String supplicantName();
 
 	/**
-	 * return the full qualified location of the supplicant file, should be equall to {@link #supplicantLocation()}+
+	 * return the full qualified location of the supplicant file, should be equal to {@link #supplicantLocation()}+
 	 * {@link #supplicantName()}
 	 * 
 	 * @return
 	 */
-	public String supplicantFullQualifiedLocation();
+	String supplicantFullQualifiedLocation();
 
 	/**
 	 * Tests if this device is the current where the code is running
@@ -36,12 +36,12 @@ public interface Device {
 	 * 
 	 * @return the network interface name
 	 */
-	public String getInterfaceName();
+	String getInterfaceName();
 
 	/**
 	 * Returns a unique identifier that can be used in the DeviceFactory to return a new instance of the class later on the live cycle;
 	 * 
 	 * @return
 	 */
-	public String getClassUniqIdentifier();
+	String getClassUniqIdentifier();
 }

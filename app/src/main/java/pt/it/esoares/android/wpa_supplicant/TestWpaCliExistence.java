@@ -52,9 +52,9 @@ public class TestWpaCliExistence extends AsyncTask<String, Void, Boolean> {
 	@Override
 	protected void onPostExecute(Boolean result) {
 		if (result) {
-			listener.onSucessfullExecution();
+			listener.onSuccessfulExecution();
 		} else {
-			listener.onUnsucessfullExecution();
+			listener.onUnsuccessfulExecution();
 		}
 	}
 }

@@ -52,12 +52,12 @@ public class StartAdHocNetwork {
 		new BackupAndRestoreWPA_supplicant().backup(device, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
-				callback.onUnsucessfullExecution();
+			public void onUnsuccessfulExecution() {
+				callback.onUnsuccessfulExecution();
 			}
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				// deploy wpa supplicant
 				deployWPA_Supplicant();
 			}
@@ -70,12 +70,12 @@ public class StartAdHocNetwork {
 		new GenerateWPA_supplicant().execute(device, network, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
-				callback.onUnsucessfullExecution();
+			public void onUnsuccessfulExecution() {
+				callback.onUnsuccessfulExecution();
 			}
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				Utils.changeWifiState(context, true);
 				// set ip
 				if (!setIP()) {
@@ -84,7 +84,7 @@ public class StartAdHocNetwork {
 					if (useOLSR) {
 						setupOLSR();
 					} else {
-						callback.onSucessfullExecution();
+						callback.onSuccessfulExecution();
 					}
 				}
 			}
@@ -99,7 +99,7 @@ public class StartAdHocNetwork {
 					InetAddress.getByName(ipInfo.getGateway()), InetAddress.getByName(ipInfo.getDnsServer()));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
-			callback.onUnsucessfullExecution();
+			callback.onUnsuccessfulExecution();
 			return false;
 		}
 		return true;
@@ -118,29 +118,29 @@ public class StartAdHocNetwork {
 				new OLSRConfigDeploy().execute(olsrConfigPath, result, new GenericExecutionCallback() {
 
 					@Override
-					public void onUnsucessfullExecution() {
-						callback.onUnsucessfullExecution();
+					public void onUnsuccessfulExecution() {
+						callback.onUnsuccessfulExecution();
 					}
 
 					@Override
-					public void onSucessfullExecution() {
+					public void onSuccessfulExecution() {
 						// Execute OLSR
 						new ExecuteOLSR().execute(olsrExecutionPath, olsrConfigPath, new GenericExecutionCallback() {
 
 							@Override
-							public void onUnsucessfullExecution() {
-								callback.onUnsucessfullExecution();
+							public void onUnsuccessfulExecution() {
+								callback.onUnsuccessfulExecution();
 							}
 
 							@Override
-							public void onSucessfullExecution() {
-								callback.onSucessfullExecution();
+							public void onSuccessfulExecution() {
+								callback.onSuccessfulExecution();
 							}
 						});
 					}
 				});
 
-			};
+			}
 
 		}.execute(new OLSRSetting());
 	}

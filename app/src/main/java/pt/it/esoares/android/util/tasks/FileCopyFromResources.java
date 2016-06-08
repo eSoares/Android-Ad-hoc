@@ -42,9 +42,9 @@ public class FileCopyFromResources extends
 	@Override
 	protected void onPostExecute(Boolean result) {
 		if (result) {
-			listener.onSucessfullExecution();
+			listener.onSuccessfulExecution();
 		} else {
-			listener.onUnsucessfullExecution();
+			listener.onUnsuccessfulExecution();
 		}
 	}
 

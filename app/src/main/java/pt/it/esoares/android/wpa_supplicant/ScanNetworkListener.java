@@ -4,10 +4,10 @@ import pt.it.esoares.android.devices.Network;
 
 public interface ScanNetworkListener {
 
-	public void onNetworkFound(Network network);
+	void onNetworkFound(Network network);
 
-	public void onEndedWithError(ScanNetworksException scanNetworksException);
+	void onEndedWithError(ScanNetworksException scanNetworksException);
 
-	public void onEnd();
+	void onEnd();
 
 }

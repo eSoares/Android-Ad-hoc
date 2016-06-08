@@ -7,8 +7,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import pt.it.esoares.android.olsr.OLSRKiller;
-import pt.it.esoares.android.olsr.OLSRRunningTest;
 import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.ui.Adhoc;
 import pt.it.esoares.android.ui.Setup;
@@ -25,7 +23,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 		new StartNetwork(arg0.getApplicationContext()).execute(new GenericExecutionCallback() {
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				if (prefs.getBoolean(Adhoc.USE_OLSR, true)) {
 //					 start OLSR
 					String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
@@ -35,7 +33,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 			}
 
 			@Override
-			public void onUnsucessfullExecution() {
+			public void onUnsuccessfulExecution() {
 			}
 		}, arg0);
 

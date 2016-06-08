@@ -32,16 +32,16 @@ public class StopAdHocNetwork {
 		new BackupAndRestoreWPA_supplicant().restore(device, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
-				callback.onUnsucessfullExecution();
+			public void onUnsuccessfulExecution() {
+				callback.onUnsuccessfulExecution();
 			}
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				if (useOLSR) {
 					killOLSR();
 				} else {
-					callback.onSucessfullExecution();
+					callback.onSuccessfulExecution();
 				}
 			}
 		}, context);
@@ -51,13 +51,13 @@ public class StopAdHocNetwork {
 		new OLSRKiller().execute(new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
-				callback.onUnsucessfullExecution();
+			public void onUnsuccessfulExecution() {
+				callback.onUnsuccessfulExecution();
 			}
 
 			@Override
-			public void onSucessfullExecution() {
-				callback.onSucessfullExecution();
+			public void onSuccessfulExecution() {
+				callback.onSuccessfulExecution();
 			}
 		});
 	}

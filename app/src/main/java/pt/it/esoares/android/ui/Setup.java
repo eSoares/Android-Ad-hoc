@@ -86,21 +86,21 @@ public class Setup extends AppCompatActivity {
 		new TestOLSRExistence().execute(olsrPath, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
+			public void onUnsuccessfulExecution() {
 				// deploy it
 				new FileCopyFromResources().execute(getResources(), R.raw.olsrd, olsrPath,
 						new GenericExecutionCallback() {
 
 							@Override
-							public void onUnsucessfullExecution() {
-								Log.e(TAG, "ERROR setuping up OLSR");
+							public void onUnsuccessfulExecution() {
+								Log.e(TAG, "ERROR at setup up OLSR");
 								setupOLSR = true;
 								updateUI();
 							}
 
 							@Override
-							public void onSucessfullExecution() {
-								Log.d(TAG, "sucessfull setting up OLSR");
+							public void onSuccessfulExecution() {
+								Log.d(TAG, "successful setting up OLSR");
 								setupOLSR = true;
 								updateUI();
 							}
@@ -108,8 +108,8 @@ public class Setup extends AppCompatActivity {
 			}
 
 			@Override
-			public void onSucessfullExecution() {
-				Log.d(TAG, "sucessfull setting up OLSR");
+			public void onSuccessfulExecution() {
+				Log.d(TAG, "successful setting up OLSR");
 				setupOLSR = true;
 				updateUI();
 			}
@@ -121,13 +121,13 @@ public class Setup extends AppCompatActivity {
 		new TestWpaCliExistence().execute(new String[] { wpaCliPath }, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
+			public void onUnsuccessfulExecution() {
 				setupWPACli = true;
 				updateUI();
 			}
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				new WpaCliDeployer().execute(getResources(), R.raw.wpa_cli, wpaCliPath, new WpaCliDeployListener() {
 
 					@Override
@@ -143,7 +143,7 @@ public class Setup extends AppCompatActivity {
 
 					@Override
 					public void onDeployFinish() {
-						Log.d(TAG, "sucessfull deployed wpa_cli");
+						Log.d(TAG, "successful deployed wpa_cli");
 						setupWPACli = true;
 						updateUI();
 					}
@@ -188,8 +188,7 @@ public class Setup extends AppCompatActivity {
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_setup, container, false);
-			return rootView;
+			return inflater.inflate(R.layout.fragment_setup, container, false);
 		}
 	}
 

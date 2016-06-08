@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import de.psdev.licensesdialog.LicensesDialog;
-import de.psdev.licensesdialog.LicensesDialogFragment;
 import pt.it.esoares.android.olsrdeployer.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)

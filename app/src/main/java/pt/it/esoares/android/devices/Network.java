@@ -123,18 +123,18 @@ public class Network implements Parcelable {
 	public String toSupplicant() {
 		String tab = "   ";
 		StringBuilder result = new StringBuilder();
-		result.append(tab + "ssid=\"" + name + "\"\n");
-		result.append(tab + "scan_ssid=1\n");
+		result.append(tab).append("ssid=\"").append(name).append("\"\n");
+		result.append(tab).append("scan_ssid=1\n");
 		if (hasFrequency()) {
-			result.append(tab + "frequency=" + String.valueOf(frequency) + "\n");
+			result.append(tab).append("frequency=").append(String.valueOf(frequency)).append("\n");
 		}
-		result.append(tab + "key_mgmt=NONE\n");
+		result.append(tab).append("key_mgmt=NONE\n");
 		if (useWEP()) {
-			result.append(tab + "wep_key0=\"" + wepKey + "\"\n");
-			result.append(tab + "wep_tx_keyidx=0\n");
+			result.append(tab).append("wep_key0=\"").append(wepKey).append("\"\n");
+			result.append(tab).append("wep_tx_keyidx=0\n");
 		}
-		result.append(tab + "priority=1\n");
-		result.append(tab + "mode=1\n");
+		result.append(tab).append("priority=1\n");
+		result.append(tab).append("mode=1\n");
 		return result.toString();
 	}
 
@@ -156,18 +156,18 @@ public class Network implements Parcelable {
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
-		result.append("Name: " + name);
+		result.append("Name: ").append(name);
 		if (wepKey != null && !"".equals(bssid)) {
-			result.append(", Wep Key: " + wepKey);
+			result.append(", Wep Key: ").append(wepKey);
 		}
 		if (hasFrequency()) {
-			result.append(", Frequency: " + String.valueOf(frequency));
+			result.append(", Frequency: ").append(String.valueOf(frequency));
 		}
 		if (bssid != null && !"".equals(bssid)) {
-			result.append(", BSSID: " + bssid);
+			result.append(", BSSID: ").append(bssid);
 		}
 		if (signal != 0) {
-			result.append(", Signal: -" + String.valueOf(signal));
+			result.append(", Signal: -").append(String.valueOf(signal));
 		}
 
 		return result.toString();

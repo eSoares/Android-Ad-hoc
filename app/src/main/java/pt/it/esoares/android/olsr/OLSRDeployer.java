@@ -18,9 +18,9 @@ public class OLSRDeployer
 	public static final int STATUS_CODE_NOT_EXPECIFIED = 0;
 	private OLSRDeployListener listener;
 
-	public OLSRDeployer(OLSRDeployListener listeneer) {
+	public OLSRDeployer(OLSRDeployListener listener) {
 		super();
-		this.listener = listeneer;
+		this.listener = listener;
 	}
 
 	@Override

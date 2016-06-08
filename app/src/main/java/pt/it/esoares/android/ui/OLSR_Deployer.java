@@ -126,13 +126,13 @@ public class OLSR_Deployer extends AppCompatActivity {
 		new TestOLSRExistence().execute(OLSRD_PATH, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
+			public void onUnsuccessfulExecution() {
 				dialog.dismiss();
 				setStatus(R.string.olsr_not_found, false);
 			}
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				dialog.dismiss();
 				setStatus(R.string.olsr_found, true);
 			}
@@ -143,15 +143,15 @@ public class OLSR_Deployer extends AppCompatActivity {
 		new FileCopyFromResources().execute(getResources(), R.raw.olsrd, OLSRD_PATH, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
+			public void onUnsuccessfulExecution() {
 				dialog.dismiss();
 				setStatus("Failed placing OLSR", false);
 			}
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				dialog.dismiss();
-				setStatus("Sucess placing OLSR", true);
+				setStatus("Success placing OLSR", true);
 			}
 		});
 		dialog.show();
@@ -161,14 +161,14 @@ public class OLSR_Deployer extends AppCompatActivity {
 		new FileRemover().execute(new String[] { OLSRD_PATH }, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
+			public void onUnsuccessfulExecution() {
 				setStatus("Failed to remove file", false);
 				dialog.dismiss();
 			}
 
 			@Override
-			public void onSucessfullExecution() {
-				setStatus("Sucess to remove file", true);
+			public void onSuccessfulExecution() {
+				setStatus("Success to remove file", true);
 				dialog.dismiss();
 			}
 		});
@@ -185,23 +185,23 @@ public class OLSR_Deployer extends AppCompatActivity {
 		new OLSRConfigDeploy().execute(OLSRD_CONFIG_PATH, olsrConfig, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
-				setStatus("OLSR Config not deplot", false);
+			public void onUnsuccessfulExecution() {
+				setStatus("OLSR Config not deployed", false);
 			}
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				// Execute OLSR
 				new ExecuteOLSR().execute(OLSRD_PATH, OLSRD_CONFIG_PATH, new GenericExecutionCallback() {
 
 					@Override
-					public void onUnsucessfullExecution() {
+					public void onUnsuccessfulExecution() {
 						dialog.dismiss();
 						setStatus("OLSR failed to start", false);
 					}
 
 					@Override
-					public void onSucessfullExecution() {
+					public void onSuccessfulExecution() {
 						dialog.dismiss();
 						setStatus("OLSR started with success", true);
 					}
@@ -215,13 +215,13 @@ public class OLSR_Deployer extends AppCompatActivity {
 		new OLSRRunningTest().execute(new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
+			public void onUnsuccessfulExecution() {
 				dialog.dismiss();
 				setStatus("OLSR isn't running", false);
 			}
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				dialog.dismiss();
 				setStatus("OLSR is running", true);
 			}
@@ -237,14 +237,14 @@ public class OLSR_Deployer extends AppCompatActivity {
 			new GenerateWPA_supplicant().execute(device, new Network("Ad-Hoc"), new GenericExecutionCallback() {
 
 				@Override
-				public void onUnsucessfullExecution() {
+				public void onUnsuccessfulExecution() {
 					setStatus("Failed to update wpa_supplicant", false);
 					dialog.dismiss();
 				}
 
 				@Override
-				public void onSucessfullExecution() {
-					setStatus("Sucess to update wpa_supplicant", true);
+				public void onSuccessfulExecution() {
+					setStatus("Success to update wpa_supplicant", true);
 					dialog.dismiss();
 				}
 			});
@@ -257,13 +257,13 @@ public class OLSR_Deployer extends AppCompatActivity {
 		new TestWpaCliExistence().execute(new String[] { WPACLI_PATH }, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
+			public void onUnsuccessfulExecution() {
 				dialog.dismiss();
 				setStatus("Missing wpa_cli", false);
 			}
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				dialog.dismiss();
 				setStatus("Found wpa_cli", true);
 			}
@@ -296,7 +296,7 @@ public class OLSR_Deployer extends AppCompatActivity {
 
 			@Override
 			public void onEnd() {
-				setStatus("Sucessfull Scan", true);
+				setStatus("Successful Scan", true);
 			}
 		}).run(WPACLI_PATH);
 	}
@@ -317,7 +317,7 @@ public class OLSR_Deployer extends AppCompatActivity {
 			@Override
 			public void onDeployFinish() {
 				dialog.dismiss();
-				setStatus("Sucessfull deployed wpa_cli", true);
+				setStatus("Successful deployed wpa_cli", true);
 
 			}
 		});
@@ -329,27 +329,27 @@ public class OLSR_Deployer extends AppCompatActivity {
 		new FileRemover().execute(new String[] { WPACLI_PATH }, new GenericExecutionCallback() {
 
 			@Override
-			public void onUnsucessfullExecution() {
+			public void onUnsuccessfulExecution() {
 				dialog.dismiss();
 				setStatus("Failed to remove file", false);
 			}
 
 			@Override
-			public void onSucessfullExecution() {
+			public void onSuccessfulExecution() {
 				dialog.dismiss();
-				setStatus("Sucess to remove file", true);
+				setStatus("Success to remove file", true);
 			}
 		});
 	}
 
-	private void setStatus(String value, boolean sucessfull) {
+	private void setStatus(String value, boolean successful) {
 		status.setText(value);
-		status.setBackgroundResource(sucessfull ? R.color.okey : R.color.error);
+		status.setBackgroundResource(successful ? R.color.okey : R.color.error);
 	}
 
-	private void setStatus(int resourceStringID, boolean sucessfull) {
+	private void setStatus(int resourceStringID, boolean successful) {
 		status.setText(resourceStringID);
-		status.setBackgroundResource(sucessfull ? R.color.okey : R.color.error);
+		status.setBackgroundResource(successful ? R.color.okey : R.color.error);
 	}
 
 }

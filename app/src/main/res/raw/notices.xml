@@ -37,4 +37,10 @@
         <copyright>Copyright 2013 Philip Schiffer</copyright>
         <license>Apache Software License 2.0</license>
     </notice>
+    <notice>
+        <name>InetAddressUtils</name>
+        <url>http://svn.apache.org/repos/asf/httpcomponents/httpclient/trunk/module-client/src/main/java/org/apache/http/conn/util/InetAddressUtils.java</url>
+        <copyright>Apache Software Foundation (ASF)</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
 </notices>

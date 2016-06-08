@@ -13,10 +13,6 @@ import pt.it.esoares.android.olsrdeployer.R;
 
 public class DeprecatedSettingsActivity extends PreferenceActivity {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

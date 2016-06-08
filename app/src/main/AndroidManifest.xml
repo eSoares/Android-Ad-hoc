@@ -66,14 +66,14 @@
         </activity>
         <activity
             android:name="pt.it.esoares.android.ui.Setup"
-            android:label="@string/title_activity_setup"></activity>
+            android:label="@string/title_activity_setup"/>
 
         <receiver
             android:name="pt.it.esoares.android.util.BootCompleteReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
         <receiver

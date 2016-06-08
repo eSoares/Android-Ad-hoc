@@ -30,7 +30,7 @@ public class GenerateWPA_supplicant extends
 		Network network = arg0[0].getNetwork();
 
 		StringBuilder config = new StringBuilder();
-		config.append("ctrl_interface=" + device.getInterfaceName() + "\n");
+		config.append("ctrl_interface=").append(device.getInterfaceName()).append("\n");
 		config.append("ap_scan=2\n");
 		config.append("update_config=1\n");
 		config.append("eapol_version=1\n");
@@ -67,9 +67,9 @@ public class GenerateWPA_supplicant extends
 	@Override
 	protected void onPostExecute(Boolean result) {
 		if (result) {
-			listener.onSucessfullExecution();
+			listener.onSuccessfulExecution();
 		} else {
-			listener.onUnsucessfullExecution();
+			listener.onUnsuccessfulExecution();
 		}
 	}
 

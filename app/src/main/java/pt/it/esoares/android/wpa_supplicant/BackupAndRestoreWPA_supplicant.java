@@ -82,9 +82,9 @@ public class BackupAndRestoreWPA_supplicant extends
 	@Override
 	protected void onPostExecute(Boolean result) {
 		if (result) {
-			listener.onSucessfullExecution();
+			listener.onSuccessfulExecution();
 		} else {
-			listener.onUnsucessfullExecution();
+			listener.onUnsuccessfulExecution();
 		}
 	}
 
