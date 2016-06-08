@@ -26,8 +26,8 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 			public void onSuccessfulExecution() {
 				if (prefs.getBoolean(Adhoc.USE_OLSR, true)) {
 //					 start OLSR
-					String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
-					String olsrPath = prefs.getString(Setup.OLSR_PATH, null);
+					String olsrConfigPath = prefs.getString(Setup.SDCARD_PROTOCOLS_PATH, null);
+					String olsrPath = prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null);
 					new StartOLSR(olsrConfigPath, olsrPath, GenericExecutionCallback.getEmptyCallback()).startOlsr(context, new OLSRSetting());
 				}
 			}

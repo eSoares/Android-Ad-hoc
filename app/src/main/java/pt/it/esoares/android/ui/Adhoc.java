@@ -1,25 +1,25 @@
 package pt.it.esoares.android.ui;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import android.os.Build;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.Locale;
 
 import pt.it.esoares.android.devices.Device;
 import pt.it.esoares.android.devices.DeviceFactory;
@@ -251,8 +251,8 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 	private void startStopOLSR() {
 		if (!olsr_connected) {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
-			String olsrPath = prefs.getString(Setup.OLSR_PATH, null);
+			String olsrConfigPath = prefs.getString(Setup.SDCARD_PROTOCOLS_PATH, null);
+			String olsrPath = prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null);
 			new StartOLSR(olsrConfigPath, olsrPath, new GenericExecutionCallback() {
 
 				@Override
@@ -350,11 +350,11 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			}
 			startActivity(i);
 			return true;
+		} else if (id == R.id.runSetup) {
+			Intent i=new Intent(this, Setup.class);
+			startActivity(i);
+			return true;
 		}
-		// else if (id == R.id.startOLSR) {
-		// startStopOLSR();
-		// return true;
-		// }
 		return super.onOptionsItemSelected(item);
 	}
 

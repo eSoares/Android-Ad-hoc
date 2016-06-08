@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="pt.it.esoares.android.olsrdeployer.Adhoc" >
+    tools:context="pt.it.esoares.android.ui.Adhoc" >
 
     <item
         android:id="@+id/action_settings"
@@ -9,13 +9,11 @@
         android:title="@string/action_settings"
         app:showAsAction="never"/>
 
-    <!--
-      <item 
-        android:id="@+id/startOLSR"
+      <item
+        android:id="@+id/runSetup"
         android:orderInCategory="101"
-        android:title="@string/menu_startStopOLSR"
+        android:title="@string/refresh_routing_protocols"
         app:showAsAction="never"
         />
-    -->
 
 </menu>

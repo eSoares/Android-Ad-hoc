@@ -32,8 +32,8 @@ public class StartNetwork extends AsyncTask<Context, Void, Device> {
 	@Override
 	protected void onPostExecute(Device result) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		String olsrConfigPath = prefs.getString(Setup.OLSR_CONFIG_PATH, null);
-		String olsrPath = prefs.getString(Setup.OLSR_PATH, null);
+		String olsrConfigPath = prefs.getString(Setup.SDCARD_PROTOCOLS_PATH, null);
+		String olsrPath = prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null);
 		Network network = Network.getFromPreferences(prefs);
 		IPInfo ipInfo = null;
 		try {
