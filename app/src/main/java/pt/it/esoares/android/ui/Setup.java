@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -50,7 +51,7 @@ public class Setup extends AppCompatActivity {
 	private void startSetup() {
 		String filesPath = getFilesDir().getAbsolutePath();
 		customProtocolsPath = filesPath + File.separatorChar + "customProtocols";
-		sdcardProtocolsPath = getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + File.separatorChar + "protocols";// todo document this
+		sdcardProtocolsPath = new File(Environment.getExternalStorageDirectory(), "routing_protocols").getAbsolutePath();// todo document this
 		wpaCliPath = filesPath + File.separatorChar + "wpa_cli";
 
 		Utils.changeWifiState(this, true);

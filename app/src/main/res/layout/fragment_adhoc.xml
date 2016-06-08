@@ -1,80 +1,103 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="pt.it.esoares.android.ui.InfoFragment" >
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                tools:context="pt.it.esoares.android.ui.InfoFragment">
 
-    <android.support.v7.widget.GridLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:grid="http://schemas.android.com/apk/res-auto"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:padding="10dp"
-        grid:columnCount="2"
-        grid:rowCount="5" >
+        android:layout_above="@+id/txt"
+        android:layout_alignParentTop="true"
+        android:scrollbarStyle="outsideOverlay">
 
-        <TextView
-            android:id="@+id/txt_networkname"
-            grid:layout_gravity="end"
-            android:paddingRight="@dimen/padding_grid"
-            android:paddingLeft="@dimen/padding_grid"
-            android:text="@string/txt_network_name"
-            android:textStyle="bold" />
+        <android.support.v7.widget.GridLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:grid="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="10dp"
+            grid:columnCount="2"
+            grid:rowCount="5">
 
-        <TextView
-            android:id="@+id/txt_Network_Name"
-            grid:layout_gravity="start" />
+            <TextView
+                android:id="@+id/txt_networkname"
+                android:paddingLeft="@dimen/padding_grid"
+                android:paddingRight="@dimen/padding_grid"
+                android:text="@string/txt_network_name"
+                android:textStyle="bold"
+                grid:layout_gravity="end"/>
 
-        <TextView
-            grid:layout_gravity="end"
-            android:paddingRight="@dimen/padding_grid"
-            android:paddingLeft="@dimen/padding_grid"
-            android:text="@string/txt_frequency"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/txt_Network_Name"
+                grid:layout_gravity="start"/>
 
-        <TextView
-            android:id="@+id/txt_Frequency"
-            grid:layout_gravity="start" />
+            <TextView
+                android:paddingLeft="@dimen/padding_grid"
+                android:paddingRight="@dimen/padding_grid"
+                android:text="@string/txt_frequency"
+                android:textStyle="bold"
+                grid:layout_gravity="end"/>
 
-        <TextView
-            grid:layout_gravity="end"
-            android:paddingRight="@dimen/padding_grid"
-            android:paddingLeft="@dimen/padding_grid"
-            android:text="@string/txt_protection"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/txt_Frequency"
+                grid:layout_gravity="start"/>
 
-        <TextView
-            android:id="@+id/txt_Protection"
-            grid:layout_gravity="start" />
+            <TextView
+                android:paddingLeft="@dimen/padding_grid"
+                android:paddingRight="@dimen/padding_grid"
+                android:text="@string/txt_protection"
+                android:textStyle="bold"
+                grid:layout_gravity="end"/>
 
-        <TextView
-            grid:layout_gravity="end"
-            android:paddingRight="@dimen/padding_grid"
-            android:paddingLeft="@dimen/padding_grid"
-            android:text="@string/txt_password"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/txt_Protection"
+                grid:layout_gravity="start"/>
 
-        <TextView
-            android:id="@+id/txt_Password"
-            grid:layout_gravity="start"
-            android:text="@string/txt_protection_none" />
+            <TextView
+                android:paddingLeft="@dimen/padding_grid"
+                android:paddingRight="@dimen/padding_grid"
+                android:text="@string/txt_password"
+                android:textStyle="bold"
+                grid:layout_gravity="end"/>
 
-        <TextView
-            grid:layout_gravity="end"
-            android:paddingRight="@dimen/padding_grid"
-            android:paddingLeft="@dimen/padding_grid"
-            android:text="@string/txt_ip"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/txt_Password"
+                android:text="@string/txt_protection_none"
+                grid:layout_gravity="start"/>
 
-        <TextView
-            android:id="@+id/txt_IP"
-            grid:layout_gravity="start" />
-    </android.support.v7.widget.GridLayout>
+            <TextView
+                android:paddingLeft="@dimen/padding_grid"
+                android:paddingRight="@dimen/padding_grid"
+                android:text="@string/txt_ip"
+                android:textStyle="bold"
+                grid:layout_gravity="end"/>
+
+            <TextView
+                android:id="@+id/txt_IP"
+                grid:layout_gravity="start"/>
+        </android.support.v7.widget.GridLayout>
+
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/spinner_routing_protocols"
+        android:gravity="bottom"
+        android:text="Routing protocol"/>
+
+    <Spinner
+        android:id="@+id/spinner_routing_protocols"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/start_stop_button"
+        android:entries="@array/routing_protocols"/>
 
     <Button
         android:id="@+id/start_stop_button"
@@ -82,8 +105,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="15dp"
+        android:layout_margin="@dimen/padding_grid"
         android:onClick="onStartStop"
-        android:text="@string/button_start_state" />
+        android:text="@string/button_start_state"/>
 
 </RelativeLayout>

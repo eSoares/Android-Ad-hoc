@@ -1,12 +1,20 @@
 package pt.it.esoares.android.ui;
 
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.ip.IPInfo;
@@ -31,6 +39,10 @@ public class InfoFragment extends Fragment {
 	private TextView passwordView;
 	private TextView ipView;
 	private Button buttonStartStop;
+	private Spinner routingProtocols;
+
+	public InfoFragment() {
+	}
 
 	/**
 	 * Returns a new instance of this fragment for the given section number.
@@ -41,9 +53,6 @@ public class InfoFragment extends Fragment {
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
 		fragment.setArguments(args);
 		return fragment;
-	}
-
-	public InfoFragment() {
 	}
 
 	@Override
@@ -66,8 +75,9 @@ public class InfoFragment extends Fragment {
 		protectionView = ((TextView) rootView.findViewById(R.id.txt_Protection));
 		passwordView = ((TextView) rootView.findViewById(R.id.txt_Password));
 		ipView = ((TextView) rootView.findViewById(R.id.txt_IP));
-		buttonStartStop=(Button) rootView.findViewById(R.id.start_stop_button);
+		buttonStartStop = (Button) rootView.findViewById(R.id.start_stop_button);
 		activity = (Adhoc) getActivity();
+		routingProtocols = (Spinner) rootView.findViewById(R.id.spinner_routing_protocols);
 
 	}
 
@@ -76,6 +86,7 @@ public class InfoFragment extends Fragment {
 		frequencyView.setText(String.valueOf(network.getFrequency()));
 		protectionView.setText(network.useWEP() ? R.string.txt_protection_wep : R.string.txt_protection_none);
 		passwordView.setText(network.useWEP() ? network.getWepKey() : "None");
+		refreshRoutingProtocols();
 	}
 
 	public void setNetwork(Network network) {
@@ -91,19 +102,47 @@ public class InfoFragment extends Fragment {
 	}
 
 
-	public void changeConnectingState(boolean connecting, boolean connected){
-		if(connecting){
+	public void changeConnectingState(boolean connecting, boolean connected) {
+		if (connecting) {
 			buttonStartStop.setEnabled(false);
 			buttonStartStop.setText(R.string.button_connecting_state);
-		}else if(connected){
+		} else if (connected) {
 			buttonStartStop.setEnabled(true);
 			buttonStartStop.setText(R.string.button_stop_state);
-		}else{
+		} else {
 			buttonStartStop.setEnabled(true);
 			buttonStartStop.setText(R.string.button_start_state);
 		}
-		
+
 	}
 
-	
+
+	private void refreshRoutingProtocols() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+		new AsyncTask<String, Void, String[]>() {
+			@Override
+			protected String[] doInBackground(String... params) {
+				if(params==null){
+					return null;
+				}
+				File dir = new File(params[0]);
+				return dir.list();
+			}
+
+			@Override
+			protected void onPostExecute(String[] strings) {
+				if(strings==null){
+					return;
+				}
+				ArrayList<String> strings1 = new ArrayList<>(strings.length + 1);
+				strings1.add(getContext().getString(R.string.none));
+				for (int i = 0; i < strings.length; i++) {
+					strings1.add(strings[i]);
+				}
+				routingProtocols.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, strings1));
+				super.onPostExecute(strings);
+			}
+		}.execute(prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null));
+	}
+
 }
