@@ -45,6 +45,7 @@
     <string name="pref_title_auto_start_onboot">Auto start on boot</string>
     <string name="pref_default_battery_filename">battery.txt</string>
     <string name="refresh_routing_protocols">Refresh routing protocols</string>
+    <string name="routing_protocols">Routing protocols</string>
 
     <string name="none">None</string>
 </resources>

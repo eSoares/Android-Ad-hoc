@@ -84,21 +84,6 @@
 
     </ScrollView>
 
-    <TextView
-        android:id="@+id/txt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/spinner_routing_protocols"
-        android:gravity="bottom"
-        android:text="Routing protocol"/>
-
-    <Spinner
-        android:id="@+id/spinner_routing_protocols"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/start_stop_button"
-        android:entries="@array/routing_protocols"/>
-
     <Button
         android:id="@+id/start_stop_button"
         android:layout_width="fill_parent"

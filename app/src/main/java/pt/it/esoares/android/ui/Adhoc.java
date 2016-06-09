@@ -36,36 +36,29 @@ import pt.it.esoares.android.util.tasks.StopAdHocNetwork;
 
 public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 
+	public static final String STATE_OLSR = "state olsr connected";
+	public static final String STATE_CONNECTED = "state network connected";
+	public static final String STATE_CONNECTING = "state network connecting";
+	public static final String USE_OLSR = "use olsr";
+	static final String DEVICE = "device";
+	private static Network network;
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
 	 * {@link FragmentPagerAdapter} derivative, which will keep every loaded fragment in memory. If this becomes too memory intensive, it
 	 * may be best to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
-
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
-
-	private static Network network;
 	boolean useOLSR;
-	private IPInfo ipInfo;
-	private Device device;
-
-	private String infoFragmentTAG;
-
-	public static final String STATE_OLSR = "state olsr connected";
-	public static final String STATE_CONNECTED = "state network connected";
-	public static final String STATE_CONNECTING = "state network connecting";
-	public static final String USE_OLSR = "use olsr";
-
-	static final String DEVICE = "device";
-
 	boolean connected = false;
 	boolean connecting = false;
 	boolean olsr_connected = false;
-
+	private IPInfo ipInfo;
+	private Device device;
+	private String infoFragmentTAG;
 	private Menu menu;
 	private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
@@ -141,7 +134,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			}
 
 		}
-		prefListener=new SharedPreferences.OnSharedPreferenceChangeListener() {
+		prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
 			@Override
 			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 				if (key.equals(STATE_CONNECTED) || key.equals(STATE_CONNECTING)) {
@@ -351,7 +344,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			startActivity(i);
 			return true;
 		} else if (id == R.id.runSetup) {
-			Intent i=new Intent(this, Setup.class);
+			Intent i = new Intent(this, Setup.class);
 			startActivity(i);
 			return true;
 		}
@@ -386,10 +379,11 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class below).
-			if (position == 0)
+			if (position == 0) {
 				return InfoFragment.newInstance(position);
-			else
-				return SearchNetworksFragment.newInstance(position);
+			} else {
+				return RoutingProtocolFragment.newInstance(1);
+			}
 		}
 
 		@Override
@@ -404,7 +398,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 				case 0:
 					return getString(R.string.title_info).toUpperCase(l);
 				case 1:
-					return getString(R.string.title_search_networks).toUpperCase(l);
+					return getString(R.string.routing_protocols).toUpperCase(l);
 			}
 			return null;
 		}

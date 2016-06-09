@@ -39,7 +39,6 @@ public class InfoFragment extends Fragment {
 	private TextView passwordView;
 	private TextView ipView;
 	private Button buttonStartStop;
-	private Spinner routingProtocols;
 
 	public InfoFragment() {
 	}
@@ -77,7 +76,6 @@ public class InfoFragment extends Fragment {
 		ipView = ((TextView) rootView.findViewById(R.id.txt_IP));
 		buttonStartStop = (Button) rootView.findViewById(R.id.start_stop_button);
 		activity = (Adhoc) getActivity();
-		routingProtocols = (Spinner) rootView.findViewById(R.id.spinner_routing_protocols);
 
 	}
 
@@ -86,7 +84,6 @@ public class InfoFragment extends Fragment {
 		frequencyView.setText(String.valueOf(network.getFrequency()));
 		protectionView.setText(network.useWEP() ? R.string.txt_protection_wep : R.string.txt_protection_none);
 		passwordView.setText(network.useWEP() ? network.getWepKey() : "None");
-		refreshRoutingProtocols();
 	}
 
 	public void setNetwork(Network network) {
@@ -117,32 +114,5 @@ public class InfoFragment extends Fragment {
 	}
 
 
-	private void refreshRoutingProtocols() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-		new AsyncTask<String, Void, String[]>() {
-			@Override
-			protected String[] doInBackground(String... params) {
-				if(params==null){
-					return null;
-				}
-				File dir = new File(params[0]);
-				return dir.list();
-			}
-
-			@Override
-			protected void onPostExecute(String[] strings) {
-				if(strings==null){
-					return;
-				}
-				ArrayList<String> strings1 = new ArrayList<>(strings.length + 1);
-				strings1.add(getContext().getString(R.string.none));
-				for (int i = 0; i < strings.length; i++) {
-					strings1.add(strings[i]);
-				}
-				routingProtocols.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, strings1));
-				super.onPostExecute(strings);
-			}
-		}.execute(prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null));
-	}
 
 }
