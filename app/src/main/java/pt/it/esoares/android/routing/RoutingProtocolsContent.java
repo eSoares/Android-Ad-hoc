@@ -30,8 +30,9 @@ public class RoutingProtocolsContent {
 	 * A map of sample (dummy) items, by ID.
 	 */
 	public static final Map<String, RoutingProtocol> ITEM_MAP = new HashMap<>();
-
 	private static final int COUNT = 0;
+	public static String PROTOCOLS_LOCATION;
+	private static OnRoutingProtocolsUpdated listener;
 
 	static {
 		// Add some sample items.
@@ -39,8 +40,6 @@ public class RoutingProtocolsContent {
 			addItem(createDummyItem(i));
 		}
 	}
-
-	private static OnRoutingProtocolsUpdated listener;
 
 	private static void addItem(RoutingProtocol item) {
 		ITEMS.add(item);
@@ -52,9 +51,10 @@ public class RoutingProtocolsContent {
 	}
 
 
-	public static void reload(Context context, final OnRoutingProtocolsUpdated listener ){
-		RoutingProtocolsContent.listener=listener;
+	public static void reload(Context context, OnRoutingProtocolsUpdated listener) {
+		RoutingProtocolsContent.listener = listener;
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		RoutingProtocolsContent.PROTOCOLS_LOCATION = prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null);
 		new AsyncTask<String, Void, String[]>() {
 			@Override
 			protected String[] doInBackground(String... params) {
@@ -71,74 +71,19 @@ public class RoutingProtocolsContent {
 					return;
 				}
 				for (int i = 0; i < strings.length; i++) {
-					RoutingProtocol protocol = new RoutingProtocol(strings[i], strings[i], true);
+					RoutingProtocol protocol = new RoutingProtocol(strings[i], strings[i], false);
 					if (!RoutingProtocolsContent.ITEMS.contains(protocol)) {
 						RoutingProtocolsContent.ITEMS.add(protocol);
 					}
 				}
 
-				listener.OnRoutingProtocolsUpdated();
+				RoutingProtocolsContent.listener.OnRoutingProtocolsUpdated();
 				super.onPostExecute(strings);
 			}
-		}.execute(prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null));
+		}.execute(RoutingProtocolsContent.PROTOCOLS_LOCATION);
 	}
 
-	/**
-	 * A dummy item representing a piece of name.
-	 */
-	public static class RoutingProtocol {
-		public final String id;
-		public final String name;
-		public final boolean hasSettings;
-		public boolean isRunning=false;
-
-		public RoutingProtocol(String id, String name, boolean hasSettings) {
-			this.id = id;
-			this.name = name;
-			this.hasSettings = hasSettings;
-		}
-
-		@Override
-		public String toString() {
-			return "RoutingProtocol{" +
-					"id='" + id + '\'' +
-					", name='" + name + '\'' +
-					", hasSettings=" + hasSettings +
-					", isRunning=" + isRunning +
-					'}';
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
-				return false;
-			}
-
-			RoutingProtocol that = (RoutingProtocol) o;
-
-			if (hasSettings != that.hasSettings) {
-				return false;
-			}
-			if (id != null ? !id.equals(that.id) : that.id != null) {
-				return false;
-			}
-			return name != null ? name.equals(that.name) : that.name == null;
-
-		}
-
-		@Override
-		public int hashCode() {
-			int result = id != null ? id.hashCode() : 0;
-			result = 31 * result + (name != null ? name.hashCode() : 0);
-			result = 31 * result + (hasSettings ? 1 : 0);
-			return result;
-		}
-	}
-
-	public interface OnRoutingProtocolsUpdated{
+	public interface OnRoutingProtocolsUpdated {
 		void OnRoutingProtocolsUpdated();
 	}
 }

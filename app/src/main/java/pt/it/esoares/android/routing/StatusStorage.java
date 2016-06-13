@@ -18,9 +18,9 @@ public class StatusStorage {
 		SharedPreferences.Editor editor = prefs.edit();
 		Set<String> protocols = new HashSet<>(RoutingProtocolsContent.ITEMS.size());
 		for (int i = 0; i < RoutingProtocolsContent.ITEMS.size(); i++) {
-			RoutingProtocolsContent.RoutingProtocol p = RoutingProtocolsContent.ITEMS.get(i);
+			RoutingProtocol p = RoutingProtocolsContent.ITEMS.get(i);
 			protocols.add(p.name);
-			editor.putBoolean(PROTOCOLS_PREFIX + p.name, p.isRunning);
+			editor.putBoolean(PROTOCOLS_PREFIX + p.name, p.isRunning.get());
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			editor.putStringSet(PROTOCOLS_PREFIX, protocols);
@@ -35,9 +35,9 @@ public class StatusStorage {
 	public static void loadProtocolsStatus(Context context) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		for (int i = 0; i < RoutingProtocolsContent.ITEMS.size(); i++) {
-			RoutingProtocolsContent.RoutingProtocol p = RoutingProtocolsContent.ITEMS.get(i);
+			RoutingProtocol p = RoutingProtocolsContent.ITEMS.get(i);
 			if (prefs.contains(PROTOCOLS_PREFIX + p.name)) {
-				p.isRunning = prefs.getBoolean(PROTOCOLS_PREFIX + p.name, false);
+				p.isRunning.set(prefs.getBoolean(PROTOCOLS_PREFIX + p.name, false));
 			}
 		}
 	}

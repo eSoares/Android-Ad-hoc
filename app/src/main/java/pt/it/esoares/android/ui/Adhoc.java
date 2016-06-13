@@ -382,7 +382,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			if (position == 0) {
 				return InfoFragment.newInstance(position);
 			} else {
-				return RoutingProtocolFragment.newInstance(1);
+				return RoutingProtocolFragment.newInstance();
 			}
 		}
 
