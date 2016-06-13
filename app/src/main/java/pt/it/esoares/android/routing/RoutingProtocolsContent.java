@@ -50,11 +50,14 @@ public class RoutingProtocolsContent {
 		return new RoutingProtocol(String.valueOf(position), "Item " + position, true);
 	}
 
+	public static void setup(Context c){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+		RoutingProtocolsContent.PROTOCOLS_LOCATION = prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null);
+	}
 
 	public static void reload(Context context, OnRoutingProtocolsUpdated listener) {
+		setup(context);
 		RoutingProtocolsContent.listener = listener;
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		RoutingProtocolsContent.PROTOCOLS_LOCATION = prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null);
 		new AsyncTask<String, Void, String[]>() {
 			@Override
 			protected String[] doInBackground(String... params) {

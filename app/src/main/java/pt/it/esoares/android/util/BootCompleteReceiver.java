@@ -7,11 +7,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import pt.it.esoares.android.olsr.OLSRSetting;
-import pt.it.esoares.android.ui.Adhoc;
-import pt.it.esoares.android.ui.Setup;
+import java.util.ArrayList;
+import java.util.List;
+
+import pt.it.esoares.android.routing.RoutingProtocolsContent;
+import pt.it.esoares.android.routing.StatusStorage;
+import pt.it.esoares.android.util.tasks.RoutingProtocolStartStop;
 import pt.it.esoares.android.util.tasks.StartNetwork;
-import pt.it.esoares.android.util.tasks.StartOLSR;
 
 public class BootCompleteReceiver extends BroadcastReceiver {
 
@@ -19,25 +21,33 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 	public void onReceive(Context arg0, Intent arg1) {
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(arg0);
 		final Context context = arg0;
-
-		new StartNetwork(arg0.getApplicationContext()).execute(new GenericExecutionCallback() {
-
-			@Override
-			public void onSuccessfulExecution() {
-				if (prefs.getBoolean(Adhoc.USE_OLSR, true)) {
-//					 start OLSR
-					String olsrConfigPath = prefs.getString(Setup.SDCARD_PROTOCOLS_PATH, null);
-					String olsrPath = prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null);
-					new StartOLSR(olsrConfigPath, olsrPath, GenericExecutionCallback.getEmptyCallback()).startOlsr(context, new OLSRSetting());
+		if (prefs.getBoolean("auto_star_onboot", false)) { // only start if auto start on boot is on
+			RoutingProtocolsContent.setup(context);
+			new StartNetwork(arg0.getApplicationContext()).execute(new GenericExecutionCallback() {
+				@Override
+				public void onSuccessfulExecution() {
+					String[] protocols = StatusStorage.getProtocolsList(context);
+					List<String> runningProtocols = new ArrayList<>(protocols.length);
+					for (int i = 0; i < protocols.length; i++) {
+						if (StatusStorage.isRunning(context, protocols[i])) {
+							runningProtocols.add(protocols[i]);
+						}
+					}
+					if (runningProtocols.size() > 0) {
+						// Stops each routing protocol in order to clean any temporary state
+						// then starts again the routing protocol
+						// Note: the order of starting multiple routing protocols is not recorder, maybe it should?
+						RoutingProtocolStartStop.restartRoutingProtocols(runningProtocols.toArray(new String[runningProtocols.size()]));
+					}
 				}
-			}
 
-			@Override
-			public void onUnsuccessfulExecution() {
-			}
-		}, arg0);
+				@Override
+				public void onUnsuccessfulExecution() {
+				}
+			}, context);
 
-		BatteryUpdateReceiver batteryLog = new BatteryUpdateReceiver();
-		arg0.getApplicationContext().registerReceiver(batteryLog, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+			BatteryUpdateReceiver batteryLog = new BatteryUpdateReceiver();
+			arg0.getApplicationContext().registerReceiver(batteryLog, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+		}
 	}
 }
