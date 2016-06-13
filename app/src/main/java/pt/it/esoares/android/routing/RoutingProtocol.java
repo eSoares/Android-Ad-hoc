@@ -1,12 +1,10 @@
 package pt.it.esoares.android.routing;
 
 import android.databinding.ObservableBoolean;
-import android.os.AsyncTask;
 import android.view.View;
 
-import java.io.File;
-
-import eu.chainfire.libsuperuser.Shell;
+import pt.it.esoares.android.util.GenericExecutionCallback;
+import pt.it.esoares.android.util.tasks.RoutingProtocolStartStop;
 
 /**
  * A dummy item representing a piece of name.
@@ -62,28 +60,24 @@ public class RoutingProtocol {
 		return result;
 	}
 
+	@SuppressWarnings("unused")// it's being reference in xml via data binding
 	public void toggleRun(View view) {
-		new AsyncTask<RoutingProtocol, Void, Void>() {
+		GenericExecutionCallback callback=new GenericExecutionCallback(){
 
 			@Override
-			protected Void doInBackground(RoutingProtocol... params) {
-				if (params == null || params.length < 1) {
-					return null;
-				}
-				String location = RoutingProtocolsContent.PROTOCOLS_LOCATION + File.separator + params[0].name;
-				if(!params[0].isRunning.get()) {
-					Shell.SU.run(location + File.separator + "start.sh");//todo docs
-				}else {
-					Shell.SU.run(location + File.separator + "stop.sh");//todo docs
-				}
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(Void aVoid) {
-				super.onPostExecute(aVoid);
+			public void onSuccessfulExecution() {
 				isRunning.set(!isRunning.get());
 			}
-		}.execute(this);
+
+			@Override
+			public void onUnsuccessfulExecution() {
+
+			}
+		};
+		if(this.isRunning.get()){
+			RoutingProtocolStartStop.stopRoutingProtocols(callback, this.name);
+		}else{
+			RoutingProtocolStartStop.startRoutingProtocols(callback, this.name);
+		}
 	}
 }

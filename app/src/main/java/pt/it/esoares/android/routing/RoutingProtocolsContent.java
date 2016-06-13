@@ -7,29 +7,17 @@ import android.preference.PreferenceManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import pt.it.esoares.android.ui.Setup;
 
-/**
- * Helper class for providing sample name for user interfaces created by
- * Android template wizards.
- * <p>
- * TODO: Replace all uses of this class before publishing your app.
- */
 public class RoutingProtocolsContent {
 
 	/**
-	 * An array of sample (dummy) items.
+	 * An array of items.
 	 */
 	public static final List<RoutingProtocol> ITEMS = new ArrayList<>();
 
-	/**
-	 * A map of sample (dummy) items, by ID.
-	 */
-	public static final Map<String, RoutingProtocol> ITEM_MAP = new HashMap<>();
 	private static final int COUNT = 0;
 	public static String PROTOCOLS_LOCATION;
 	private static OnRoutingProtocolsUpdated listener;
@@ -43,7 +31,6 @@ public class RoutingProtocolsContent {
 
 	private static void addItem(RoutingProtocol item) {
 		ITEMS.add(item);
-		ITEM_MAP.put(item.id, item);
 	}
 
 	private static RoutingProtocol createDummyItem(int position) {
