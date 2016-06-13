@@ -54,9 +54,6 @@ public class DeprecatedSettingsActivity extends PreferenceActivity {
 		// Add 'IP' preferences, and a corresponding header.
 		addPreferencesFromResource(R.xml.pref_ip);
 
-		// Add 'OLSR' preferences, and a corresponding header.
-		addPreferencesFromResource(R.xml.pref_olsr);
-
 
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated

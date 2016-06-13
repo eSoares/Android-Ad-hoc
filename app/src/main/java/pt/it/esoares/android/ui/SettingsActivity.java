@@ -96,7 +96,6 @@ public class SettingsActivity extends AppCompatActivity {
 			bindPreferenceSummaryToValue(findPreference("network_name_text"));
 			bindPreferenceSummaryToValue(findPreference("wep_password_text"));
 			bindPreferenceSummaryToValue(findPreference("channel_list"));
-			addPreferencesFromResource(R.xml.pref_olsr);
 			addPreferencesFromResource(R.xml.pref_extras);
 			addPreferencesFromResource(R.xml.pref_about);
 			findPreference("button_license").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
