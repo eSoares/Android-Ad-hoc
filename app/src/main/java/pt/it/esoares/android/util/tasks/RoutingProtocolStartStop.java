@@ -24,7 +24,7 @@ public class RoutingProtocolStartStop {
 				for (int i = 0; i < params.length; i++) {
 					String p = RoutingProtocolsContent.PROTOCOLS_LOCATION + File.separator + params[i] + File.separator;
 					List<String> commands = getExportedEnvironmentVariables();
-					commands.add(p + "stop.sh");//todo document this scripts
+					commands.add(p + "stop.sh");
 					Shell.SU.run(commands);
 					commands.remove(commands.size() - 1);
 					commands.add(p + "start.sh");
@@ -88,9 +88,8 @@ public class RoutingProtocolStartStop {
 	}
 
 	private static List<String> getExportedEnvironmentVariables() {
-		// todo document this vars
 		List<String> result = new ArrayList<>(10);
-		result.add(String.format(FORMAT_ENVIRONMENT_VARIABLES, "iwface", "wlan0"));
+		result.add(String.format(FORMAT_ENVIRONMENT_VARIABLES, "iwface", "wlan0")); // todo fix to be dynamic
 
 
 		return result;

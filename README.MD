@@ -2,6 +2,8 @@
 
 This project tries to enable Ad-Hoc network mode on Android devices.
 
+To add a custom routing protocol check the docs in [docs/routing protocols.MD](docs/routing protocols.MD).
+
 ---
 ##Working on:
 - Gigabyte Gsmart G1305 (CyanogenMod 7)
