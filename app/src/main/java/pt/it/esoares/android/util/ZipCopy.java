@@ -13,6 +13,8 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import eu.chainfire.libsuperuser.Shell;
+
 public class ZipCopy {
 	private static final int BUFFER_SIZE = 1024 * 2;
 
@@ -51,6 +53,8 @@ public class ZipCopy {
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
+				// set permissions to run
+				Shell.SU.run("chmod 755 " + newFile.getAbsolutePath());
 
 				ze = zis.getNextEntry();
 			}
