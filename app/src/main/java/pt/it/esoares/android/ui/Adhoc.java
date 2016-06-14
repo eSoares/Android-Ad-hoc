@@ -327,16 +327,20 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class below).
-			if (position == 0) {
-				return InfoFragment.newInstance(position);
-			} else {
-				return RoutingProtocolFragment.newInstance();
+			switch (position) {
+				case 0:
+					return InfoFragment.newInstance(position);
+				case 1:
+					return RoutingProtocolFragment.newInstance();
+				case 2:
+				default:
+					return ToolsFragment.newInstance();
 			}
 		}
 
 		@Override
 		public int getCount() {
-			return 2;
+			return 3;
 		}
 
 		@Override
@@ -347,6 +351,8 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 					return getString(R.string.title_info).toUpperCase(l);
 				case 1:
 					return getString(R.string.routing_protocols).toUpperCase(l);
+				case 2:
+					return getString(R.string.tools).toUpperCase(l);
 			}
 			return null;
 		}

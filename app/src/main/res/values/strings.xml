@@ -48,4 +48,11 @@
     <string name="routing_protocols">Routing protocols</string>
 
     <string name="none">None</string>
+    <string name="tools">Tools</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="get_know_nodes">Get Known Nodes</string>
+    <string name="tool_ping">PING</string>
+    <string name="tool_traceroute">Traceroute</string>
 </resources>
