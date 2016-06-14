@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import pt.it.esoares.android.olsrdeployer.R;
+import pt.it.esoares.android.ui.tools.KnownNodesDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,7 +40,29 @@ public class ToolsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_tools, container, false);
+		View view = inflater.inflate(R.layout.fragment_tools, container, false);
+		view.findViewById(R.id.getKnowNodes).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new KnownNodesDialog().show(getFragmentManager(), "knownodes");
+			}
+		});
+
+//		(view.findViewById(R.id.ping)).setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//
+//			}
+//		});
+//
+//		(view.findViewById(R.id.traceroute)).setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//
+//			}
+//		});
+
+		return view;
 	}
 
 }
