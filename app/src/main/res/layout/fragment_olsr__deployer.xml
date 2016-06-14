@@ -22,36 +22,6 @@
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:onClick="existsOLSR"
-                android:text="@string/test_olsr_existence" />
-
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:onClick="deployOLSR"
-                android:text="@string/deploy_olsr" />
-
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:onClick="removeOLSR"
-                android:text="@string/remove_olsr" />
-
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:onClick="startOLSR"
-                android:text="@string/start_olsr" />
-
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:onClick="checkOLSRRunning"
-                android:text="@string/check_olsr_running" />
-
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
                 android:onClick="wpa_supplicant"
                 android:text="@string/deploy_wpa_supplicant" />
 

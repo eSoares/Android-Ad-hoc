@@ -19,12 +19,6 @@ import pt.it.esoares.android.devices.Device;
 import pt.it.esoares.android.devices.DeviceFactory;
 import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.ip.IPGenerator;
-import pt.it.esoares.android.olsr.ExecuteOLSR;
-import pt.it.esoares.android.olsr.OLSRConfigDeploy;
-import pt.it.esoares.android.olsr.OLSRGenerator;
-import pt.it.esoares.android.olsr.OLSRRunningTest;
-import pt.it.esoares.android.olsr.OLSRSetting;
-import pt.it.esoares.android.olsr.TestOLSRExistence;
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.util.tasks.FileCopyFromResources;
 import pt.it.esoares.android.util.tasks.FileRemover;
@@ -43,11 +37,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class OLSR_Deployer extends AppCompatActivity {
-	Boolean existsOLSR;
 	static TextView status;
 	ProgressDialog dialog;
-	private String OLSRD_PATH;
-	private String OLSRD_CONFIG_PATH;
 	private String WPACLI_PATH;
 	private Device device;
 
@@ -60,10 +51,7 @@ public class OLSR_Deployer extends AppCompatActivity {
 			getSupportFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		dialog = new ProgressDialog(this);
-		OLSRD_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "olsrd";
-		OLSRD_CONFIG_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "olsr.conf";
 		WPACLI_PATH = getFilesDir().getAbsolutePath() + File.separatorChar + "wpa_cli";
-		Log.d("OLSR DEPLOYER", "Generated path: " + OLSRD_PATH);
 		// status= (TextView) findViewById(R.id.txt_status);
 		loadDevice();
 	}
@@ -118,114 +106,6 @@ public class OLSR_Deployer extends AppCompatActivity {
 			status = (TextView) rootView.findViewById(R.id.txt_status);
 			return rootView;
 		}
-	}
-
-	public void existsOLSR(View v) {
-		dialog.setTitle("Loading");
-		dialog.show();
-		new TestOLSRExistence().execute(OLSRD_PATH, new GenericExecutionCallback() {
-
-			@Override
-			public void onUnsuccessfulExecution() {
-				dialog.dismiss();
-				setStatus(R.string.olsr_not_found, false);
-			}
-
-			@Override
-			public void onSuccessfulExecution() {
-				dialog.dismiss();
-				setStatus(R.string.olsr_found, true);
-			}
-		});
-	}
-
-	public void deployOLSR(View v) {
-		new FileCopyFromResources().execute(getResources(), R.raw.olsrd, OLSRD_PATH, new GenericExecutionCallback() {
-
-			@Override
-			public void onUnsuccessfulExecution() {
-				dialog.dismiss();
-				setStatus("Failed placing OLSR", false);
-			}
-
-			@Override
-			public void onSuccessfulExecution() {
-				dialog.dismiss();
-				setStatus("Success placing OLSR", true);
-			}
-		});
-		dialog.show();
-	}
-
-	public void removeOLSR(View v) {
-		new FileRemover().execute(new String[] { OLSRD_PATH }, new GenericExecutionCallback() {
-
-			@Override
-			public void onUnsuccessfulExecution() {
-				setStatus("Failed to remove file", false);
-				dialog.dismiss();
-			}
-
-			@Override
-			public void onSuccessfulExecution() {
-				setStatus("Success to remove file", true);
-				dialog.dismiss();
-			}
-		});
-		dialog.show();
-	}
-
-	public void startOLSR(View v) {
-		if (device == null) {
-			return;
-		}
-		dialog.show();
-		String olsrConfig = OLSRGenerator.getOLSRConfig(device, new OLSRSetting());
-		// deploy olsrConfig
-		new OLSRConfigDeploy().execute(OLSRD_CONFIG_PATH, olsrConfig, new GenericExecutionCallback() {
-
-			@Override
-			public void onUnsuccessfulExecution() {
-				setStatus("OLSR Config not deployed", false);
-			}
-
-			@Override
-			public void onSuccessfulExecution() {
-				// Execute OLSR
-				new ExecuteOLSR().execute(OLSRD_PATH, OLSRD_CONFIG_PATH, new GenericExecutionCallback() {
-
-					@Override
-					public void onUnsuccessfulExecution() {
-						dialog.dismiss();
-						setStatus("OLSR failed to start", false);
-					}
-
-					@Override
-					public void onSuccessfulExecution() {
-						dialog.dismiss();
-						setStatus("OLSR started with success", true);
-					}
-				});
-			}
-		});
-	}
-
-	public void checkOLSRRunning(View v) {
-		dialog.show();
-		new OLSRRunningTest().execute(new GenericExecutionCallback() {
-
-			@Override
-			public void onUnsuccessfulExecution() {
-				dialog.dismiss();
-				setStatus("OLSR isn't running", false);
-			}
-
-			@Override
-			public void onSuccessfulExecution() {
-				dialog.dismiss();
-				setStatus("OLSR is running", true);
-			}
-		});
 	}
 
 	public void wpa_supplicant(View v) {

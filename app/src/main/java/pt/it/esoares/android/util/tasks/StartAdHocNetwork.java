@@ -1,7 +1,6 @@
 package pt.it.esoares.android.util.tasks;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -10,10 +9,6 @@ import pt.it.esoares.android.devices.Device;
 import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.ip.IPInfo;
 import pt.it.esoares.android.ip.Utils;
-import pt.it.esoares.android.olsr.ExecuteOLSR;
-import pt.it.esoares.android.olsr.OLSRConfigDeploy;
-import pt.it.esoares.android.olsr.OLSRGenerator;
-import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.util.GenericExecutionCallback;
 import pt.it.esoares.android.wpa_supplicant.BackupAndRestoreWPA_supplicant;
 import pt.it.esoares.android.wpa_supplicant.GenerateWPA_supplicant;
@@ -26,19 +21,17 @@ public class StartAdHocNetwork {
 	IPInfo ipInfo;
 	String olsrConfigPath;
 	String olsrExecutionPath;
-	Boolean useOLSR;
 	GenericExecutionCallback callback;
 	Context context;
 
 	public StartAdHocNetwork(Device device, Network network, IPInfo ipInfo, String olsrConfigPath,
-			String olsrExecutionPath, Boolean useOLSR, GenericExecutionCallback callback, Context context) {
+							 String olsrExecutionPath, GenericExecutionCallback callback, Context context) {
 		super();
 		this.device = device;
 		this.network = network;
 		this.ipInfo = ipInfo;
 		this.olsrConfigPath = olsrConfigPath;
 		this.olsrExecutionPath = olsrExecutionPath;
-		this.useOLSR = useOLSR;
 		this.callback = callback;
 		this.context = context;
 	}
@@ -81,11 +74,7 @@ public class StartAdHocNetwork {
 				if (!setIP()) {
 					return; // returns in case of error
 				} else {
-					if (useOLSR) {
-						setupOLSR();
-					} else {
-						callback.onSuccessfulExecution();
-					}
+					callback.onSuccessfulExecution();
 				}
 			}
 
@@ -103,45 +92,5 @@ public class StartAdHocNetwork {
 			return false;
 		}
 		return true;
-	}
-
-	private void setupOLSR() {
-		new AsyncTask<OLSRSetting, Void, String>() {
-
-			@Override
-			protected String doInBackground(OLSRSetting... params) {
-				return OLSRGenerator.getOLSRConfig(device, params.length != 0 ? params[0] : new OLSRSetting());
-			}
-
-			protected void onPostExecute(String result) {
-				// deploy olsrConfig
-				new OLSRConfigDeploy().execute(olsrConfigPath, result, new GenericExecutionCallback() {
-
-					@Override
-					public void onUnsuccessfulExecution() {
-						callback.onUnsuccessfulExecution();
-					}
-
-					@Override
-					public void onSuccessfulExecution() {
-						// Execute OLSR
-						new ExecuteOLSR().execute(olsrExecutionPath, olsrConfigPath, new GenericExecutionCallback() {
-
-							@Override
-							public void onUnsuccessfulExecution() {
-								callback.onUnsuccessfulExecution();
-							}
-
-							@Override
-							public void onSuccessfulExecution() {
-								callback.onSuccessfulExecution();
-							}
-						});
-					}
-				});
-
-			}
-
-		}.execute(new OLSRSetting());
 	}
 }

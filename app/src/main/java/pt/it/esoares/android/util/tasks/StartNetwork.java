@@ -42,7 +42,7 @@ public class StartNetwork extends AsyncTask<Context, Void, Device> {
 			e.printStackTrace();
 		}
 		boolean useOLSR = prefs.getBoolean("use_olsr", true);
-		new StartAdHocNetwork(result, network, ipInfo, olsrConfigPath, olsrPath, useOLSR, callback,
+		new StartAdHocNetwork(result, network, ipInfo, olsrConfigPath, olsrPath, callback,
 				context).startNetwork();
 		saveState(true, false, useOLSR);
 		super.onPostExecute(result);

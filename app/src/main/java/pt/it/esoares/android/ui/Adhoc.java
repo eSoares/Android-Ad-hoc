@@ -26,12 +26,9 @@ import pt.it.esoares.android.devices.DeviceFactory;
 import pt.it.esoares.android.devices.Network;
 import pt.it.esoares.android.ip.IPInfo;
 import pt.it.esoares.android.ip.Utils;
-import pt.it.esoares.android.olsr.OLSRKiller;
-import pt.it.esoares.android.olsr.OLSRSetting;
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.util.GenericExecutionCallback;
 import pt.it.esoares.android.util.tasks.StartNetwork;
-import pt.it.esoares.android.util.tasks.StartOLSR;
 import pt.it.esoares.android.util.tasks.StopAdHocNetwork;
 
 public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
@@ -52,10 +49,8 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
-	boolean useOLSR;
 	boolean connected = false;
 	boolean connecting = false;
-	boolean olsr_connected = false;
 	private IPInfo ipInfo;
 	private Device device;
 	private String infoFragmentTAG;
@@ -106,7 +101,6 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 		Editor editor = prefs.edit();
 		editor.putBoolean(STATE_CONNECTED, connected);
 		editor.putBoolean(STATE_CONNECTING, connecting);
-		editor.putBoolean(STATE_OLSR, olsr_connected);
 		editor.commit();
 	}
 
@@ -122,9 +116,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		useOLSR = prefs.getBoolean("use_olsr", true);
 		connected = prefs.getBoolean(STATE_CONNECTED, false);
-		olsr_connected = prefs.getBoolean(STATE_OLSR, false);
 		// connecting = prefs.getBoolean(STATE_CONNECTING, false);
 		connecting = false;
 		if (infoFragmentTAG != null) {
@@ -218,7 +210,7 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 			}, this);
 		} else {
 			// disconnect
-			new StopAdHocNetwork(device, useOLSR, new GenericExecutionCallback() {
+			new StopAdHocNetwork(device, new GenericExecutionCallback() {
 
 				@Override
 				public void onUnsuccessfulExecution() {
@@ -241,50 +233,6 @@ public class Adhoc extends AppCompatActivity implements ActionBar.TabListener {
 		}
 	}
 
-	private void startStopOLSR() {
-		if (!olsr_connected) {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			String olsrConfigPath = prefs.getString(Setup.SDCARD_PROTOCOLS_PATH, null);
-			String olsrPath = prefs.getString(Setup.CUSTOM_PROTOCOLS_PATH, null);
-			new StartOLSR(olsrConfigPath, olsrPath, new GenericExecutionCallback() {
-
-				@Override
-				public void onUnsuccessfulExecution() {
-					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-				}
-
-				@Override
-				public void onSuccessfulExecution() {
-					olsr_connected = true;
-					updateMenu(true);
-				}
-			}).startOlsr(this, new OLSRSetting());
-		} else {
-			new OLSRKiller().execute(new GenericExecutionCallback() {
-
-				@Override
-				public void onUnsuccessfulExecution() {
-					Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-				}
-
-				@Override
-				public void onSuccessfulExecution() {
-					olsr_connected = false;
-					updateMenu(olsr_connected);
-				}
-			});
-		}
-	}
-
-	protected void updateMenu(boolean olsr_connected) {
-		// MenuItem startStopMenuItem = menu.findItem(R.id.startOLSR);
-		// startStopMenuItem.setTitle(olsr_connected ? R.string.menu_stopOLSR : R.string.menu_startStopOLSR);
-		// save setting
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		Editor editor = prefs.edit();
-		editor.putBoolean(STATE_OLSR, olsr_connected);
-		editor.commit();
-	}
 
 	private void setupUI() {
 
