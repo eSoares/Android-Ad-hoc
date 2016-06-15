@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.ui.tools.KnownNodesDialog;
 import pt.it.esoares.android.ui.tools.PingDialog;
+import pt.it.esoares.android.ui.tools.TracerouteDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,13 +56,13 @@ public class ToolsFragment extends Fragment {
 				new PingDialog().show(getFragmentManager(), "ping");
 			}
 		});
-//
-//		(view.findViewById(R.id.traceroute)).setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//
-//			}
-//		});
+
+		(view.findViewById(R.id.traceroute)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new TracerouteDialog().show(getFragmentManager(), "traceroute");
+			}
+		});
 
 		return view;
 	}
