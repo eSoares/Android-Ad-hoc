@@ -16,13 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import eu.chainfire.libsuperuser.Shell;
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.olsrdeployer.databinding.DialogKnownNodesBinding;
+import pt.it.esoares.android.util.MyClipboardManager;
 
 public class KnownNodesDialog extends DialogFragment {
 
@@ -34,30 +38,28 @@ public class KnownNodesDialog extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		// Get the layout inflater
-		LayoutInflater inflater = getActivity().getLayoutInflater();
-
-		// Inflate and set the layout for the dialog
-		// Pass null as the parent view because its going in the dialog layout
-//		builder.setView(inflater.inflate(R.layout.dialog_known_nodes, null));
 		adapter = new MyAdapter(getContext());
 		builder.setAdapter(adapter, null);
-//				new DialogInterface.OnClickListener() {
-//			@Override
-//			public void onClick(DialogInterface dialog_, int which) {
-//
-//			}
-//		});
 		builder.setTitle("Known nodes");
-		adapter.add(new Node("192.168.1.0", 1, 1, "line"));
 		dialog = builder.create();
-//		adapter.notifyDataSetChanged();
-		dialog.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		ListView listView = dialog.getListView();
+		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Log.d("click", String.format("onClick: %s", ((Node) dialog.getListView().getAdapter().getItem(position)).line));
-
+				new AlertDialog.Builder(getContext())
+						.setMessage(((Node) dialog.getListView().getAdapter().getItem(position)).line)
+						.create()
+						.show();
 			}
+		});
+		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				MyClipboardManager.copyToClipboard(getContext(), ((DialogKnownNodesBinding) view.getTag()).getNode().ip);
+				return true;
+			}
+
 		});
 		return dialog;
 	}
@@ -76,6 +78,7 @@ public class KnownNodesDialog extends DialogFragment {
 		super.onDetach();
 		if (loadNodes != null) {
 			loadNodes.cancel(true);
+			loadNodes = null;
 		}
 	}
 
@@ -131,6 +134,12 @@ public class KnownNodesDialog extends DialogFragment {
 		public int hopCount;
 		public int metric;
 		public String line;
+		private Pattern parseRegex = Pattern.compile("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s*" + // ip
+				"(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s*" + // gateway
+				"(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\s*" + // mask
+				".{1,3}\\s*" + // flags
+				"(\\d{1,3})" + // metric
+				".*");
 
 		public Node(String ip, int hopCount, int metric, String line) {
 			this.ip = ip;
@@ -144,6 +153,17 @@ public class KnownNodesDialog extends DialogFragment {
 			//todo parse line
 			// line sample:
 			// 0.0.0.0         169.254.0.1     0.0.0.0         UG    0      0        0 wlan0
+			Matcher matcher = parseRegex.matcher(line);
+			if (matcher.matches()) {
+				this.ip = matcher.group(1);
+				String nextHop = matcher.group(2);
+				if (nextHop.equals(this.ip)) {
+					this.hopCount = 1;
+				} else {
+					this.hopCount = 2;
+				}
+				this.metric = Integer.parseInt(matcher.group(4));
+			}
 
 		}
 
@@ -190,13 +210,15 @@ public class KnownNodesDialog extends DialogFragment {
 						}
 					}
 				}
+				if (Thread.interrupted() || dialog == null || !dialog.isShowing()) {
+					return null;
+				}
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
-//					e.printStackTrace();
+					return null;
 				}
 			}
-//			return null;
 		}
 
 		@Override
