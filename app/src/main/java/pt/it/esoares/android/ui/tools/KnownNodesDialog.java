@@ -4,12 +4,14 @@ package pt.it.esoares.android.ui.tools;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +43,22 @@ public class KnownNodesDialog extends DialogFragment {
 		adapter = new MyAdapter(getContext());
 		builder.setAdapter(adapter, null);
 		builder.setTitle("Known nodes");
+		builder.setNeutralButton("Info", null);
 		dialog = builder.create();
+		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+			@Override
+			public void onShow(DialogInterface d) {
+				dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						new AlertDialog.Builder(getContext())
+								.setMessage(getText(R.string.tool_known_nodes_info))
+								.create()
+								.show();
+					}
+				});
+			}
+		});
 		ListView listView = dialog.getListView();
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override

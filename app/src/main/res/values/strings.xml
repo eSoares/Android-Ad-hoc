@@ -53,5 +53,6 @@
     <string name="get_know_nodes">Get Known Nodes</string>
     <string name="tool_ping">PING</string>
     <string name="tool_traceroute">Traceroute</string>
-    <string name="more_than_one">1+</string>
+    <string name="tool_known_nodes_more_than_one">1+</string>
+    <string name="tool_known_nodes_info">This list is built from the routing table. To copy a IP address just long press the item on the list. To see the full line of the routing table, click on the item.</string>
 </resources>
