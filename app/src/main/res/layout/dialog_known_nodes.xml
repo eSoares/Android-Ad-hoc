@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:lines="1"
-                android:text="@{String.valueOf(node.hopCount)}"
+                android:text="@{node.hopCount==1?String.valueOf(node.hopCount):@string/more_than_one}"
                 android:textStyle="normal|bold"
                 tools:text="1"/>
         </LinearLayout>
