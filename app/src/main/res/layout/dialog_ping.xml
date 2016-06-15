@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/default_gap"
+                android:paddingRight="@dimen/default_gap"
+                android:text="@string/txt_ip"/>
+
+            <EditText
+                android:id="@+id/txt_IP"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="192.168.1.0"
+                android:inputType="text|textPersonName"
+                android:paddingLeft="@dimen/default_gap"
+                android:paddingRight="@dimen/default_gap"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bt_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tool_ping"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Output"/>
+
+        <TextView
+            android:id="@+id/txt_output"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:padding="@dimen/default_gap"
+            android:scrollbars="vertical|horizontal"/>
+    </LinearLayout>
+</ScrollView>
