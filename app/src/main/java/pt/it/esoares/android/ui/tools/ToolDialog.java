@@ -9,6 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -50,7 +51,12 @@ public class ToolDialog extends DialogFragment {
 						}
 					});
 				}
-
+				ProgressBar pb = ((ProgressBar) dialog.findViewById(R.id.progressBar));
+				if (pb != null) {
+					pb.setVisibility(View.GONE);
+				}
+				dialog.findViewById(R.id.txt_output).setVisibility(View.GONE);
+				dialog.findViewById(R.id.txt_output_label).setVisibility(View.GONE);
 			}
 		});
 
@@ -59,6 +65,13 @@ public class ToolDialog extends DialogFragment {
 
 	private void runTool(String ip) {
 		new Tool(toolString).execute(ip);
+		ProgressBar pb = ((ProgressBar) dialog.findViewById(R.id.progressBar));
+		if (pb != null) {
+			pb.setVisibility(View.VISIBLE);
+			pb.setIndeterminate(true);
+		}
+		dialog.findViewById(R.id.txt_output).setVisibility(View.GONE);
+		dialog.findViewById(R.id.txt_output_label).setVisibility(View.GONE);
 	}
 
 	protected String getIp() {
@@ -92,6 +105,12 @@ public class ToolDialog extends DialogFragment {
 		protected void onPostExecute(String s) {
 			super.onPostExecute(s);
 			postResults(s);
+			ProgressBar pb = ((ProgressBar) dialog.findViewById(R.id.progressBar));
+			if (pb != null) {
+				pb.setVisibility(View.GONE);
+			}
+			dialog.findViewById(R.id.txt_output).setVisibility(View.VISIBLE);
+			dialog.findViewById(R.id.txt_output_label).setVisibility(View.VISIBLE);
 		}
 	}
 

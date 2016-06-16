@@ -41,9 +41,16 @@
             android:layout_height="wrap_content"
             android:text="@string/tool_ping"/>
 
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/txt_output_label"
             android:text="Output"/>
 
         <TextView
