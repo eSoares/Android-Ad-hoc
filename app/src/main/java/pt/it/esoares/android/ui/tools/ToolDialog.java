@@ -18,7 +18,8 @@ import eu.chainfire.libsuperuser.Shell;
 import pt.it.esoares.android.olsrdeployer.R;
 
 public class ToolDialog extends DialogFragment {
-	private AlertDialog dialog;
+	static private AlertDialog dialog;
+	static private Tool tool;
 	private int string_title;
 	private int string_button_name;
 	private String toolString;
@@ -63,12 +64,28 @@ public class ToolDialog extends DialogFragment {
 		return dialog;
 	}
 
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		tool.cancel(true);
+		tool = null;
+	}
+
 	private void runTool(String ip) {
-		new Tool(toolString).execute(ip);
-		ProgressBar pb = ((ProgressBar) dialog.findViewById(R.id.progressBar));
-		if (pb != null) {
-			pb.setVisibility(View.VISIBLE);
-			pb.setIndeterminate(true);
+		if (tool == null) {
+			tool = new Tool(toolString);
+			tool.execute(ip);
+			ProgressBar pb = ((ProgressBar) dialog.findViewById(R.id.progressBar));
+			if (pb != null) {
+				pb.setVisibility(View.VISIBLE);
+				pb.setIndeterminate(true);
+			}
+			((Button) dialog.findViewById(R.id.bt_start)).setText(R.string.button_stop_state);
+		} else {
+			tool.cancel(true);
+			tool = null;
+			dialog.findViewById(R.id.progressBar).setVisibility(View.GONE);
+			((Button) dialog.findViewById(R.id.bt_start)).setText(string_button_name);
 		}
 		dialog.findViewById(R.id.txt_output).setVisibility(View.GONE);
 		dialog.findViewById(R.id.txt_output_label).setVisibility(View.GONE);
@@ -111,6 +128,7 @@ public class ToolDialog extends DialogFragment {
 			}
 			dialog.findViewById(R.id.txt_output).setVisibility(View.VISIBLE);
 			dialog.findViewById(R.id.txt_output_label).setVisibility(View.VISIBLE);
+			((Button) dialog.findViewById(R.id.bt_start)).setText(string_button_name);
 		}
 	}
 
