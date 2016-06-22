@@ -1,16 +1,19 @@
 package pt.it.esoares.android.ui;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import pt.it.esoares.android.olsrdeployer.R;
 import pt.it.esoares.android.ui.tools.KnownNodesDialog;
 import pt.it.esoares.android.ui.tools.PingDialog;
 import pt.it.esoares.android.ui.tools.TracerouteDialog;
+import pt.it.esoares.android.util.GpsLocationService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +64,25 @@ public class ToolsFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				new TracerouteDialog().show(getFragmentManager(), "traceroute");
+			}
+		});
+
+
+		if (GpsLocationService.isRunning) {
+			((Button) (view.findViewById(R.id.start_stop_button_gps))).setText(R.string.button_stop_state);
+		}
+		(view.findViewById(R.id.start_stop_button_gps)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getContext(), GpsLocationService.class);
+				if (GpsLocationService.isRunning) {
+					getContext().stopService(intent);
+					((Button) v).setText(R.string.button_start_state);
+				} else {
+					intent.putExtra(GpsLocationService.EXTRA_START, true);
+					getContext().startService(intent);
+					((Button) v).setText(R.string.button_stop_state);
+				}
 			}
 		});
 
