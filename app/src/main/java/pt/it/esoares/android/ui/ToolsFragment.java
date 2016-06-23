@@ -71,6 +71,12 @@ public class ToolsFragment extends Fragment {
 		if (GpsLocationService.isRunning) {
 			((Button) (view.findViewById(R.id.start_stop_button_gps))).setText(R.string.button_stop_state);
 		}
+		(view.findViewById(R.id.gps_settings)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new GpsSettingsDialog().show(getFragmentManager(), "gps_settings");
+			}
+		});
 		(view.findViewById(R.id.start_stop_button_gps)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -12,6 +13,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 
 import java.io.File;
@@ -19,36 +21,39 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import pt.it.esoares.android.ui.GpsSettingsDialog;
 
 public class GpsLocationService extends Service {
 	public static final String EXTRA_START = "start";
-	public static boolean isRunning=false;
+	private static final String TAG = "GpsLocationService";
+	public static boolean isRunning = false;
 
-	private BlockingQueue<Location> locations = new ArrayBlockingQueue<Location>(5);
+	private BlockingQueue<Location> locations = new LinkedBlockingQueue<>(20);
 	private Thread locationLogger;
+	private LocationListener locationListener;
 
 	public GpsLocationService() {
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO: Return the communication channel to the service.
-		throw new UnsupportedOperationException("Not yet implemented");
+		throw new UnsupportedOperationException("Nop");
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (intent.hasExtra(EXTRA_START)) {
 			startLocationReceiving();
-			isRunning=true;
+			isRunning = true;
 		} else {
 			if (locationLogger != null) {
 				locationLogger.interrupt();
 			}
 			this.stopSelf();
-			isRunning=false;
+			isRunning = false;
 		}
 		return Service.START_REDELIVER_INTENT;
 	}
@@ -56,7 +61,11 @@ public class GpsLocationService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		isRunning=false;
+		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		if (locationManager != null && locationListener != null) {
+			locationManager.removeUpdates(locationListener);
+		}
+		isRunning = false;
 		locationLogger.interrupt();
 	}
 
@@ -65,7 +74,7 @@ public class GpsLocationService extends Service {
 		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 		// Define a listener that responds to location updates
-		LocationListener locationListener = new LocationListener() {
+		locationListener = new LocationListener() {
 			public void onLocationChanged(Location location) {
 				// Called when a new location is found by the network location provider.
 				makeUseOfNewLocation(location);
@@ -92,14 +101,17 @@ public class GpsLocationService extends Service {
 			// for ActivityCompat#requestPermissions for more details.
 			return;
 		}
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-		locationLogger = new Thread(new LocationLogger(new File(Environment.getExternalStorageDirectory(), "gps_log.txt")));
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		String log = prefs.getString(GpsSettingsDialog.GPS_LOG_FILE, GpsSettingsDialog.GPS_DEFAULT_LOG_FILE);
+		locationLogger = new Thread(new LocationLogger(new File(Environment.getExternalStorageDirectory(), log)));
 		locationLogger.start();
 	}
 
 	@SuppressLint("DefaultLocale")
 	private void makeUseOfNewLocation(Location location) {
-		locations.add(location);
+		locations.offer(location);
 	}
 
 
@@ -116,13 +128,21 @@ public class GpsLocationService extends Service {
 		@Override
 		public void run() {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+			if(!file.exists()){
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			FileWriter writer = null;
 			try {
 				writer = new FileWriter(file);
 				Location location;
 				while (true) {
 					location = locations.take();
-					writer.write(String.format("%s lat: %.2f long: %.2f at %.2fm", sdf.format(new Date(location.getTime())), location.getLatitude(), location.getLongitude(), location.getAltitude()));
+					writer.write(String.format("%s lat: %.2f long: %.2f at %.2fm\n", sdf.format(new Date(location.getTime())), location.getLatitude(), location.getLongitude(), location.getAltitude()));
+					writer.flush();
 				}
 			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();

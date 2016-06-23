@@ -55,4 +55,6 @@
     <string name="tool_traceroute">Traceroute</string>
     <string name="tool_known_nodes_more_than_one">1+</string>
     <string name="tool_known_nodes_info">This list is built from the routing table. To copy a IP address just long press the item on the list. To see the full line of the routing table, click on the item.</string>
+    <string name="gps_warning">Using GPS log consumes big amounts of energy. Be careful.</string>
+    <string name="gps_log_file">GPS log file</string>
 </resources>
