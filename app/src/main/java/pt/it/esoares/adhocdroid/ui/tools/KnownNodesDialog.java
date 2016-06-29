@@ -26,8 +26,8 @@ import java.util.regex.Pattern;
 
 import eu.chainfire.libsuperuser.Shell;
 import pt.it.esoares.adhocdroid.R;
-import pt.it.esoares.adhocdroid.util.MyClipboardManager;
 import pt.it.esoares.adhocdroid.databinding.DialogKnownNodesBinding;
+import pt.it.esoares.adhocdroid.util.MyClipboardManager;
 
 public class KnownNodesDialog extends DialogFragment {
 
@@ -172,13 +172,13 @@ public class KnownNodesDialog extends DialogFragment {
 			Matcher matcher = parseRegex.matcher(line);
 			if (matcher.matches()) {
 				this.ip = matcher.group(1);
-				String nextHop = matcher.group(2);
-				if (nextHop.equals(this.ip)) {
+				this.metric = Integer.parseInt(matcher.group(4));
+				String mask = matcher.group(3);
+				if (mask.equals("255.255.255.255") && metric != 0) {
 					this.hopCount = 1;
 				} else {
 					this.hopCount = 2;
 				}
-				this.metric = Integer.parseInt(matcher.group(4));
 			}
 
 		}
