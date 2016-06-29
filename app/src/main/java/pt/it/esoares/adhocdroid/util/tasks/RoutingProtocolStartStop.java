@@ -24,10 +24,10 @@ public class RoutingProtocolStartStop {
 				for (int i = 0; i < params.length; i++) {
 					String p = RoutingProtocolsContent.PROTOCOLS_LOCATION + File.separator + params[i] + File.separator;
 					List<String> commands = getExportedEnvironmentVariables();
-					commands.add(p + "stop.sh");
+					commands.add("cd " + p + " ; ./stop.sh");
 					Shell.SU.run(commands);
 					commands.remove(commands.size() - 1);
-					commands.add(p + "start.sh");
+					commands.add("cd " + p + " ; ./start.sh");
 					Shell.SU.run(commands);
 				}
 				return null;
@@ -45,7 +45,7 @@ public class RoutingProtocolStartStop {
 				for (int i = 0; i < params.length; i++) {
 					String p = RoutingProtocolsContent.PROTOCOLS_LOCATION + File.separator + params[i] + File.separator;
 					List<String> commands = getExportedEnvironmentVariables();
-					commands.add(p + "start.sh");
+					commands.add("cd " + p + " ; ./start.sh");
 					Shell.SU.run(commands);
 				}
 				return null;
@@ -71,7 +71,7 @@ public class RoutingProtocolStartStop {
 				for (int i = 0; i < params.length; i++) {
 					String p = RoutingProtocolsContent.PROTOCOLS_LOCATION + File.separator + params[i] + File.separator;
 					List<String> commands = getExportedEnvironmentVariables();
-					commands.add(p + "stop.sh");
+					commands.add("cd " + p + " ; ./stop.sh");
 					Shell.SU.run(commands);
 				}
 				return null;
