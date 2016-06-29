@@ -3,5 +3,5 @@
     android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pt.it.esoares.android.ui.Adhoc" />
+    tools:context="pt.it.esoares.adhocdroid.ui.Adhoc" />
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">OLSR deployer</string>
+    <string name="app_name">AdHocDroid</string>
     <string name="test_olsr_existence">Test OLSR Existing</string>
     <string name="action_settings">Settings</string>
     <string name="deploy_olsr">Deploy OLSR</string>

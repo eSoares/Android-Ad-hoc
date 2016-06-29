@@ -10,5 +10,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="pt.it.esoares.android.ui.RoutingProtocolFragment"
+    tools:context="pt.it.esoares.adhocdroid.ui.RoutingProtocolFragment"
     tools:listitem="@layout/fragment_routingprotocol"/>

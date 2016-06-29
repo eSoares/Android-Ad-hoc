@@ -6,7 +6,7 @@
 
         <variable
             name="node"
-            type="pt.it.esoares.android.ui.tools.KnownNodesDialog.Node"/>
+            type="pt.it.esoares.adhocdroid.ui.tools.KnownNodesDialog.Node"/>
     </data>
 
 
