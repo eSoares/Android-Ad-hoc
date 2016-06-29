@@ -67,7 +67,9 @@ public class ToolDialog extends DialogFragment {
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		tool.cancel(true);
+		if(tool!=null) {
+			tool.cancel(true);
+		}
 		tool = null;
 	}
 
