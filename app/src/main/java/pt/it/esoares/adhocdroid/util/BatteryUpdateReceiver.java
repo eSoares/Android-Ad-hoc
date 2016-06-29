@@ -3,9 +3,11 @@ package pt.it.esoares.adhocdroid.util;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.File;
@@ -27,7 +29,7 @@ public class BatteryUpdateReceiver extends BroadcastReceiver {
             return;
         }
         saveVal(context, newLevel);
-        File file = new File(Environment.getExternalStorageDirectory(), "log.txt");
+        File file = new File(Environment.getExternalStorageDirectory(), getLogFile(context));
         if (!file.exists()) {
             try {
                 if (!file.createNewFile()) {
@@ -59,5 +61,13 @@ public class BatteryUpdateReceiver extends BroadcastReceiver {
     private int getVal(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         return sharedPref.getInt(PREF_VAL, 101);
+    }
+
+    public void registerReceiver(Context context){
+        context.getApplicationContext().registerReceiver(this, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    }
+
+    private String getLogFile(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context).getString("log_battery_file_name", "log.txt");
     }
 }

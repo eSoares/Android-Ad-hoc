@@ -47,7 +47,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 			}, context);
 
 			BatteryUpdateReceiver batteryLog = new BatteryUpdateReceiver();
-			arg0.getApplicationContext().registerReceiver(batteryLog, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+			batteryLog.registerReceiver(arg0);
 		}
 	}
 }
